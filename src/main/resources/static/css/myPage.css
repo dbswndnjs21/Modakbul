@@ -24,6 +24,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%; /* 부모 요소에 맞춰 높이 설정 */
 }
 
 .sidebar .profile {
@@ -79,6 +80,36 @@ body {
 
 .main-content .content {
     margin-top: 20px;
+}
+
+/* 섹션 헤더 스타일 */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.section-header .plus-button {
+    width: 30px;
+    height: 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.section-header .plus-button:hover {
+    background-color: #218838;
 }
 
 /* 카드 스타일 */

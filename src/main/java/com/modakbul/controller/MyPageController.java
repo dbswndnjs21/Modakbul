@@ -19,6 +19,7 @@ public class MyPageController {
             model.addAttribute("member", member);
         } else {
             System.out.println("No valid authentication found.");
+            return "redirect:/login";
         }
         return "mypage/myPage";
     }

@@ -22,6 +22,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%; /* 부모 요소에 맞춰 높이 설정 */
+
 }
 
 .sidebar .profile {

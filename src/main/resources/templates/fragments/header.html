@@ -11,7 +11,7 @@
           <li class="nav-item"><a class="nav-link" th:href="@{/}">예약하기</a></li>
           <li class="nav-item"><a class="nav-link" th:href="@{/board/boardlist}">게시판</a></li>
           <li class="nav-item"><a class="nav-link" th:href="@{/}">문의하기</a></li>
-            <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">회원 로그인</a></li>
+            <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
             <li th:if="${member != null}">
                 <span th:text="${member.userName} + '님 반갑습니다!'"></span>
                 <form th:action="@{/logout}" method="post">

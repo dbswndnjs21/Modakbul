@@ -11,20 +11,8 @@
 
 <div class="container">
     <!-- 사이드바 -->
-    <aside class="sidebar">
-        <div class="profile">
-            <img src="/images/1..png" alt="프로필 이미지">
-            <h2 th:text="${member.userName}">사용자 이름</h2>
-        </div>
-        <nav class="menu">
-            <ul>
-                <li><a href="/mypage/reservations">예약 내역</a></li>
-                <li><a href="/mypage/reviews">내 리뷰</a></li>
-                <li><a href="/mypage/personalInfo">회원 정보 수정</a></li> <!-- 개인정보 수정 링크 추가 -->
-                <li><a href="/logout">로그아웃</a></li>
-            </ul>
-        </nav>
-    </aside>
+    <div th:insert="mypage/fragments/sidebar :: sidebar"></div>
+
 
     <!-- 메인 콘텐츠 -->
     <div class="main-content">
