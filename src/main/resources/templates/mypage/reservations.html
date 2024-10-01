@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 내역</title>
+    <link rel="stylesheet" href="/css/reservations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+    <!-- 사이드바 -->
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <div class="profile">
+            <img src="/images/1..png" alt="프로필 이미지">
+            <h2 th:text="${member.userName}">사용자 이름</h2>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="/mypage/reservations">예약 내역</a></li>
+                <li><a href="/mypage/reviews">내 리뷰</a></li>
+                <li><a href="/mypage/personalInfo">회원 정보 수정</a></li> <!-- 개인정보 수정 링크 추가 -->
+                <li><a href="/logout">로그아웃</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="main-content">
+        <header class="header">
+            <h1>예약 내역</h1>
+            <a href="/camping/reserve" class="btn-new">새 예약</a>
+        </header>
+
+        <!-- 예약 목록 테이블 -->
+        <table class="reservations-table">
+            <thead>
+            <tr>
+                <th>예약 번호</th>
+                <th>캠핑장 이름</th>
+                <th>예약 날짜</th>
+                <th>상태</th>
+                <th>취소</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 서버에서 예약 데이터를 반복 출력 -->
+            <tr>
+                <td>#12345</td>
+                <td>힐링 캠핑장</td>
+                <td>2024-10-01</td>
+                <td><span class="status-complete">완료</span></td>
+                <td><button class="btn-cancel">취소</button></td>
+            </tr>
+            <tr>
+                <td>#12346</td>
+                <td>휴식 캠핑장</td>
+                <td>2024-10-05</td>
+                <td><span class="status-pending">대기 중</span></td>
+                <td><button class="btn-cancel">취소</button></td>
+            </tr>
+            <tr>
+                <td>#12347</td>
+                <td>자연 캠핑장</td>
+                <td>2024-09-25</td>
+                <td><span class="status-cancelled">취소됨</span></td>
+                <td></td> <!-- 취소된 예약은 취소 버튼 비활성화 -->
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

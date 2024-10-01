@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인 정보 수정</title>
+    <link rel="stylesheet" href="/css/personalInfo.css"> <!-- 기존 CSS 파일 링크 -->
+</head>
+<body>
+<div class="container">
+    <!-- 사이드바 -->
+    <aside class="sidebar">
+        <div class="profile">
+            <img src="/images/1..png" alt="프로필 이미지">
+            <h2 th:text="${member.userName}">사용자 이름</h2>
+        </div>
+        <nav class="menu">
+            <ul>
+                <li><a href="/mypage/reservations">예약 내역</a></li>
+                <li><a href="/mypage/reviews">내 리뷰</a></li>
+                <li><a href="/mypage/personalInfo">회원 정보 수정</a></li> <!-- 개인정보 수정 링크 추가 -->
+                <li><a href="/logout">로그아웃</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <section class="main-content">
+        <header>
+            <h1>회원 정보 수정</h1>
+        </header>
+
+        <div class="content">
+    <form action="/mypage/updateInfo" method="post">
+        <div class="form-group">
+            <label for="username">사용자 이름</label>
+            <input type="text" id="username" name="username" th:value="${member.userName}" required>
+        </div>
+<!--        <div class="form-group">-->
+<!--            <label for="email">이메일</label>-->
+<!--            <input type="email" id="email" name="email" th:value="${member.mail}" required>-->
+<!--        </div>-->
+        <div class="form-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요" required>
+        </div>
+        <button type="submit" class="btn">저장하기</button>
+        <a href="/mypage" class="btn">취소</a>
+    </form>
+        </div>
+    </section>
+</div>
+</body>
+</html>
