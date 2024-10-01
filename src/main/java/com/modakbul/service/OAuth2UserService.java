@@ -1,6 +1,6 @@
 package com.modakbul.service;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
 import com.modakbul.repository.MemberRepository;
 import com.modakbul.security.CustomUserDetails;
 import jakarta.servlet.http.HttpSession;

@@ -1,6 +1,6 @@
 package com.modakbul.security;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

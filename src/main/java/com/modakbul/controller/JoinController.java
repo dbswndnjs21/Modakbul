@@ -1,6 +1,6 @@
 package com.modakbul.controller;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
 import com.modakbul.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
