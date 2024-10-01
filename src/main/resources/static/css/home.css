@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+body {
+  background-color: rgba(255, 255, 255, 0.95); /* 흰색에 약간의 투명도를 주어 주황색이 비치도록 함 */
+  background-blend-mode: multiply; /* 배경 혼합 모드 설정 */
+  background-color: rgba(255, 127, 80, 0.1); /* 약간의 주황색 추가 */
+  font-family: 'Arial', sans-serif;
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.btn-success {
+  background-color: #ff7f50; /* 주황빛 버튼 */
+  border: none; /* 버튼 경계 제거 */
+  border-radius: 20px;
+}
+
+.card {
+  background-color: #ffffff; /* 흰색 카드 */
+  border: 2px solid #ff7f50; /* 주황빛 테두리 추가 */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  filter: invert(100%); /* 화살표 색상 변경 (흰색으로) */
+  width: 5%; /* 화살표 너비 설정 */
+  height: 100%; /* 화살표 높이 설정 */
+  top: 50%; /* 세로 중앙 정렬 */
+  transform: translateY(-50%); /* 세로 중앙 정렬 보정 */
+}
+
+.carousel-control-prev {
+  left: -10%; /* 왼쪽 화살표 위치 */
+}
+
+.carousel-control-next {
+  right: -10%; /* 오른쪽 화살표 위치 */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  font-size: 3rem; /* 화살표 크기 증가 */
+}
