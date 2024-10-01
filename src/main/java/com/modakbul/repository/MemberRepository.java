@@ -1,6 +1,6 @@
 package com.modakbul.repository;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {

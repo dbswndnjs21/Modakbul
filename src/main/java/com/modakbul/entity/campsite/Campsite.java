@@ -1,4 +1,4 @@
-package com.modakbul.entity;
+package com.modakbul.entity.campsite;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

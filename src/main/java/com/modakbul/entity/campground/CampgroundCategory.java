@@ -1,4 +1,4 @@
-package com.modakbul.entity;
+package com.modakbul.entity.campground;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-public class CampsiteOption {
+public class CampgroundCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String campsiteOptions;
+    private String categoryName;
 }

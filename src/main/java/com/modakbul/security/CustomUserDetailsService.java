@@ -1,6 +1,6 @@
 package com.modakbul.security;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
 import com.modakbul.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

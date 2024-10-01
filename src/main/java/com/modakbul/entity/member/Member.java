@@ -1,4 +1,4 @@
-package com.modakbul.entity;
+package com.modakbul.entity.member;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +33,4 @@ public class Member {
     @UpdateTimestamp
     private Date updatedAt;
     private String provider; // "kakao", "naver", "google"
-
-    //바꿔버리기 또 바꾸기
 }

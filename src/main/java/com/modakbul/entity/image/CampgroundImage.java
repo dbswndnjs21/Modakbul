@@ -1,5 +1,6 @@
-package com.modakbul.entity;
+package com.modakbul.entity.image;
 
+import com.modakbul.entity.campground.Campground;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +22,8 @@ public class CampgroundImage {
     @JoinColumn(name = "campgroud_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
     private Campground campground;
 
-    private String campGroundName;
-    private String campGroundAddress;
-    private String addressDetail;
+    private String fileName;
+    private String saveFileName;
+    private String imagePath;
+    private int imageOrder;
 }

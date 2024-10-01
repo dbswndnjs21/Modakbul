@@ -1,4 +1,4 @@
-package com.modakbul.entity;
+package com.modakbul.entity.campground;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
