@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+body {
+  background-color: rgba(255, 255, 255, 0.95); /* 흰색에 약간의 투명도를 주어 주황색이 비치도록 함 */
+  background-blend-mode: multiply; /* 배경 혼합 모드 설정 */
+  background-color: rgba(255, 127, 80, 0.1); /* 약간의 주황색 추가 */
+  font-family: 'Arial', sans-serif;
+  margin: 0; /* 기본 마진 제거 */
+}
+
+.container {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 배치 */
+  align-items: center; /* 가운데 정렬 */
+}
+
+.card {
+  border: 2px solid #ff7f50; /* 주황빛 테두리 추가 */
+  border-radius: 10px; /* 카드 모서리 둥글게 */
+  width: 600px; /* 카드 너비 증가 */
+  height: auto; /* 카드 높이를 자동으로 설정하여 내용에 맞추기 */
+  display: flex; /* Flexbox 사용 */
+  flex-direction: column; /* 세로 방향으로 배치 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  margin: 20px 0; /* 카드 간의 간격 */
+  background-color: #ffffff; /* 흰색 카드 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 카드 그림자 */
+}
+
+.card-img-top {
+  border-radius: 10px 10px 0 0; /* 카드 이미지 모서리 둥글게 */
+  width: 100%; /* 이미지 너비를 카드에 맞추기 */
+  height: 300px; /* 카드 높이를 고정 */
+  object-fit: contain; /* 이미지 비율 유지, 카드에 맞게 조정 */
+}
+
+.card-body {
+  padding: 15px; /* 카드 본문 패딩 */
+  height: auto; /* 카드 본문의 높이를 자동으로 설정하여 내용에 맞추기 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 본문 중앙 정렬 */
+  align-items: center; /* 본문 가운데 정렬 */
+}
+
+h2 {
+  color: #333; /* 제목 색상 */
+}
+
+.btn-success {
+  background-color: #ff7f50; /* 주황빛 버튼 */
+  border: none; /* 버튼 경계 제거 */
+  border-radius: 20px;
+}
+
+.btn-success:hover {
+  background-color: #e06e43; /* 버튼 호버 색상 */
+  border-color: #cf5f36; /* 버튼 호버 테두리 색상 */
+}

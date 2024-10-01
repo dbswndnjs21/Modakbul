@@ -1,6 +1,5 @@
 package com.modakbul.entity.image;
 
-import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.freeboard.Freeboard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
