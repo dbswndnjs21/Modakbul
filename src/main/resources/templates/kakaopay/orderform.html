@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        // 카카오페이 결제 팝업창 연결
+        $(function() {
+            $("#btn-pay-ready").click(function(e) {
+                e.preventDefault();
+                // 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
+                let data = {
+                    name: '아이폰 16 pro',    // 카카오페이에 보낼 대표 상품명
+                    totalPrice: 999999 // 총 결제금액
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/order/pay/ready',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        location.href = response.next_redirect_pc_url;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<h1>카카오페이 결제</h1>
+<button id="btn-pay-ready">결제 준비하기</button>
+</body>
+</html>
