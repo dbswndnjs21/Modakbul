@@ -21,26 +21,38 @@ import java.util.Map;
 public class KakaoPayService {
 
 
-
     // 카카오페이 결제창 연결
     public ReadyResponse payReady(String name, int totalPrice) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-        String userId = principal.getUsername();
-        System.out.println(userId);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+        String userId = null;
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+            userId = userDetails.getUsername();  // 사용자 ID 추출
+            System.out.println(userId);
+        } else if (principal instanceof OAuth2User) {
+            OAuth2User oauthUser = (OAuth2User) principal;
+            userId = oauthUser.getName();  // OAuth 사용자 이름 추출
+            System.out.println(userId);
+        } else {
+            throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
+        }
 
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
-        parameters.put("partner_order_id", "1234567890");                       // 주문번호
-        parameters.put("partner_user_id", "뭐가들어가니");                        // 회원 아이디
-        parameters.put("item_name", name);                                      // 상품명
-        parameters.put("quantity", "1");                                        // 상품 수량
-        parameters.put("total_amount", String.valueOf(totalPrice));             // 상품 총액
-        parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
+        parameters.put("cid", "TC0ONETIME");                                         // 가맹점 코드(테스트용)
+        parameters.put("partner_order_id", "1234567890");                            // 주문번호
+        parameters.put("partner_user_id", userId);                                   // 회원 아이디
+        parameters.put("item_name", name);                                           // 상품명
+        parameters.put("quantity", "1");                                             // 상품 수량
+        parameters.put("total_amount", String.valueOf(totalPrice));                  // 상품 총액
+        parameters.put("tax_free_amount", "0");                                      // 상품 비과세 금액
         parameters.put("approval_url", "http://localhost:8080/order/pay/completed"); // 결제 성공 시 URL
-        parameters.put("cancel_url", "http://localhost/order/pay/cancel");      // 결제 취소 시 URL
-        parameters.put("fail_url", "http://localhost/order/pay/fail");          // 결제 실패 시 URL
+        parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
+        parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
 
         // HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -61,11 +73,26 @@ public class KakaoPayService {
     // 사용자가 결제 수단을 선택하고 비밀번호를 입력해 결제 인증을 완료한 뒤,
     // 최종적으로 결제 완료 처리를 하는 단계
     public ApproveResponse payApprove(String tid, String pgToken) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+
+        String userId;
+        if (principal instanceof CustomUserDetails) {
+            CustomUserDetails userDetails = (CustomUserDetails) principal;
+            userId = userDetails.getUsername();
+        } else if (principal instanceof OAuth2User) {
+            OAuth2User oauthUser = (OAuth2User) principal;
+            userId = oauthUser.getName();
+        } else {
+            throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
+        }
+
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                    // 가맹점 코드(테스트용)
         parameters.put("tid", tid);                             // 결제 고유번호
         parameters.put("partner_order_id", "1234567890");       // 주문번호
-        parameters.put("partner_user_id", "뭐가들어가니");        // 회원 아이디
+        parameters.put("partner_user_id", userId);              // 회원 아이디
         parameters.put("pg_token", pgToken);                    // 결제승인 요청을 인증하는 토큰
 
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
