@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class CampgroundSuboption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "campground_option_id")
