@@ -22,9 +22,9 @@ public class PaymentController {
     @Value("${imp.api.secretkey}")
     private String secretKey;
 
-    @GetMapping("/import")
+    @GetMapping("/iamport")
     public String importForm() {
-        return "import/import";
+        return "iamport/iamport";
     }
 
     @PostConstruct
@@ -38,6 +38,15 @@ public class PaymentController {
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
         if (payment != null && payment.getResponse() != null) {
             log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse().getMerchantUid());
+            Payment paymentData = payment.getResponse();
+            // 여기서 paymentData 보내서 service에서 DB에 저장하면될듯
+
+            System.out.println("결제 금액: " + paymentData.getAmount());
+            System.out.println("결제 상태: " + paymentData.getStatus());
+            System.out.println("결제 메소드: " + paymentData.getPayMethod());
+            System.out.println("결제 승인 시간: " + paymentData.getPaidAt());
+            System.out.println("주문명: " + paymentData.getName());
+            System.out.println("결제 카드사: " + paymentData.getCardName());
         } else {
             log.error("결제 요청 실패 또는 응답이 없습니다.");
         }
