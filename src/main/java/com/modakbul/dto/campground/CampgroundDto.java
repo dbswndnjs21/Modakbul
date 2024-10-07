@@ -14,8 +14,8 @@ public class CampgroundDto {
     private int campgroundCategoryId;
     private int locationId;
     private Long hostId;
-    private String campGroundName;
-    private String campGroundAddress;
+    private String campgroundName;
+    private String campgroundAddress;
     private String addressDetail;
     private String phone;
     private int approve;
