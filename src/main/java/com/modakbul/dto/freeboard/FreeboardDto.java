@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.modakbul.entity.freeboard.Freeboard;
+import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.entity.member.Member;
 
 @AllArgsConstructor
@@ -25,6 +26,7 @@ public class FreeboardDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<MultipartFile>file1;
+    private List<FreeboardImage> images;
     
  // 엔티티로 변환하는 메서드
     public Freeboard toEntity(Long memberId) {
