@@ -13,32 +13,23 @@ import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.repository.freeboard.FreeboardImageRepository;
 import com.modakbul.repository.freeboard.FreeboardRepository;
 import com.modakbul.security.CustomUserDetails;
+import com.modakbul.service.freeboard.FreeboardService;
 
 @Controller
 public class FreeboardListController {
-	@Autowired FreeboardRepository freeboardRepository;
-	@Autowired FreeboardImageRepository freeboardImageRepository;
+	@Autowired FreeboardService freeboardService;
 	
-	@GetMapping("/freeboard/freeBoardList")
-	public String board(@AuthenticationPrincipal CustomUserDetails member, Model model) {
-		if (member != null) {
-	        model.addAttribute("member", member);
-	    }
-		List<Freeboard>list = freeboardRepository.findAll();
-	    // 각 Freeboard에 연결된 이미지 리스트 추가
-	    for (Freeboard freeboard : list) {
-	        // 정렬된 이미지를 가져옴
-	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
-	        freeboard.setImages(images); // Freeboard 엔티티에 이미지 설정 (setter 메서드 필요)
-	        for (FreeboardImage image : images) {
-	            System.out.println("Freeboard ID: " + freeboard.getId() + ", Image File Name: " + image.getFileName() + image.getSaveFileName());
+	 @GetMapping("/freeboard/freeBoardList")
+	    public String board(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+	        if (member != null) {
+	            model.addAttribute("member", member);
 	        }
+
+	        // 서비스 메서드 호출하여 게시판 리스트 및 이미지 가져오기
+	        List<Freeboard> list = freeboardService.findAllWithImages();
+	        
+	        model.addAttribute("list", list);
+	        return "freeboard/freeBoardList";
 	    }
-	    
-		model.addAttribute("list", list);
-		
-		
-		return "freeboard/freeBoardList";
-	}
 	
 }
