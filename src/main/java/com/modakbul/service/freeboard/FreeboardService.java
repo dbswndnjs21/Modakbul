@@ -82,4 +82,22 @@ public class FreeboardService {
 	        return list;
 	    }
 	 
+	 // 게시글과 이미지 조회
+	    public FreeboardDto getPostWithImagesById(Long id) {
+	        Freeboard board = freeboardRepository.findById(id)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + id));
+
+	        // 이미지 조회 (게시글과 연결된 이미지)
+	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardId(id);
+	        // DTO로 변환
+	        return FreeboardDto.builder()
+	                .id(board.getId())
+	                .memberId(board.getMember().getId())
+	                .title(board.getTitle())
+	                .content(board.getContent())
+	                .createdAt(board.getCreatedAt())
+	                .updatedAt(board.getUpdatedAt())
+	                .images(images) // 이미지를 DTO에 추가
+	                .build();
+	    }
 }
