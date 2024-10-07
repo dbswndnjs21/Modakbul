@@ -1,6 +1,6 @@
 package com.modakbul.entity.freeboard;
 
-import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,4 +33,16 @@ public class Freeboard {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+   
+    @Transient // JPA에 의해 관리되지 않도록 함
+    private List<FreeboardImage> images;
+
+    // Getter와 Setter
+    public List<FreeboardImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<FreeboardImage> images) {
+        this.images = images;
+    }
 }
