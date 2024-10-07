@@ -1,39 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/css/join.css}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
-<button id="join1">회원가입</button> <button id="join2">관리자가입</button>
+<div class="container">
+    <button id="join1">회원가입</button>
+    <button id="join2">관리자가입</button>
 
-<div id="memberjoin">
-    <h1>회원 가입</h1>
-    <form id="memberJoinForm" th:action="@{/join}" method="post">
-        <label for="userName1">이름:</label>
-        <input type="text" id="userName1" name="userName" required>
-        <br>
-        <label for="userId1">사용자 ID:</label>
-        <input type="text" id="userId1" name="userId" required>
-        <br>
-        <label for="password1">비밀번호:</label>
-        <input type="password" id="password1" name="password" required>
-        <br>
-        <label for="phone1">전화번호:</label>
-        <input type="text" id="phone1" name="phone" required>
-        <br>
-        <label for="mail1">이메일:</label>
-        <input type="email" id="mail1" name="mail" required>
-        <button type="button" id="sendAuthCode">인증 코드 발송</button>
-        <br>
-        <label for="authCode">인증 코드:</label>
-        <input type="text" id="authCode" name="authCode" required>
-        <br>
-        <input type="hidden" name="role" value="MEMBER">
-        <button type="button" id="joinButton">가입</button> <!-- 가입 버튼 -->
-    </form>
+    <div id="memberjoin">
+        <h1>회원 가입</h1>
+        <form id="memberJoinForm" th:action="@{/join}" method="post">
+            <div class="form-group">
+                <label for="userName1">이름:</label>
+                <input type="text" id="userName1" name="userName" required>
+            </div>
+            <div class="form-group">
+                <label for="userId1">사용자 ID:</label>
+                <input type="text" id="userId1" name="userId" required>
+            </div>
+            <div class="form-group">
+                <label for="password1">비밀번호:</label>
+                <input type="password" id="password1" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="phone1">전화번호:</label>
+                <input type="text" id="phone1" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="mail1">이메일:</label>
+                <input type="email" id="mail1" name="mail" required>
+                <button type="button" id="sendAuthCode">인증 코드 발송</button>
+            </div>
+            <div class="form-group">
+                <label for="authCode">인증 코드:</label>
+                <input type="text" id="authCode" name="authCode" required>
+            </div>
+            <input type="hidden" name="role" value="MEMBER">
+            <button type="button" id="joinButton">가입</button> <!-- 가입 버튼 -->
+        </form>
+    </div>
 </div>
 
 <script type="text/javascript">

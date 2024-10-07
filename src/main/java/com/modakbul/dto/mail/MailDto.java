@@ -9,9 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MailDto {
     private String email;
-
-    public void setEmail(String email) {
-        this.email = email.trim(); // 공백 제거
-    }
 }
 
