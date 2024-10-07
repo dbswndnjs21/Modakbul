@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class PaymentCancel {
     @Id
-    private Long id;  // Member 테이블의 id가 그대로 기본 키가 됨
+    private Long id;
 
     @OneToOne
     @MapsId
