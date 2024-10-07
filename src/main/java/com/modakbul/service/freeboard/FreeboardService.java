@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +26,8 @@ import jakarta.transaction.Transactional;
 public class FreeboardService {
 	@Autowired FreeboardRepository freeboardRepository;
 	@Autowired FreeboardImageRepository freeboardImageRepository;
-	
+	@Value("${file.path}")
+	private String filePath;
 		
 	 public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
 	        // Freeboard 엔티티 생성
@@ -69,7 +72,14 @@ public class FreeboardService {
 	        return "파일 업로드 성공"; // 성공 메시지 반환
 	    }
 	 
+	 public List<Freeboard> findAllWithImages() {
+	        List<Freeboard> list = freeboardRepository.findAll();
+	        for (Freeboard freeboard : list) {
+	            // 정렬된 이미지를 가져옴
+	            List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
+	            freeboard.setImages(images); // Freeboard 엔티티에 이미지 설정
+	        }
+	        return list;
+	    }
 	 
-	
-	
 }

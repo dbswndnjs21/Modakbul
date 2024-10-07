@@ -28,16 +28,14 @@
 		<div id="postList">
 			<div th:each="post : ${list}" class="card mb-3">
 				<th:block th:if="${post != null}">
-					<th:block th:each="image : ${post.images}">
-						<p th:text="${image.saveFileName}"></p>
-						<!-- 파일 이름을 출력 -->
+					<th:block th:if="${post.images != null and post.images.size() > 0}">
+						<img
+							th:src="@{/upload/{saveFileName}(saveFileName=${post.images[0].saveFileName})}"
+							class="card-img-top" alt="게시글 사진"
+							style="height: 300px; object-fit: cover;"
+							th:alt="${post.images[0].fileName}">
 					</th:block>
 				</th:block>
-				<img th:if="${post.images != null and post.images.size() > 0}"
-					th:src="@{/upload/{saveFileName}(saveFileName=${post.images[0].saveFileName})}"
-					class="card-img-top" alt="게시글 사진"
-					style="height: 300px; object-fit: cover;"
-					th:alt="${post.images[0].fileName}">
 				<div class="card-body">
 					<h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
 					<p class="card-text" th:text="${post.content}">게시글 내용</p>
