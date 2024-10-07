@@ -1,9 +1,6 @@
 package com.modakbul.entity.campsite;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,9 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-public class CampsiteOption {
+public class CampsiteSuboption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "campsite_option")
+    private CampsiteOption campsiteOption;
+
     private String optionName;
 }

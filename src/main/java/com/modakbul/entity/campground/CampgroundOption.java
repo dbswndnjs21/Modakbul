@@ -18,5 +18,5 @@ public class CampgroundOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String campgroundOptions;
+    private String optionName;
 }
