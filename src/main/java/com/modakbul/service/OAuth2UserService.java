@@ -85,18 +85,18 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // CustomUsrDetails 객체 생성
-        CustomUserDetails customUsrDetails = new CustomUserDetails(member, attributes);
+        CustomUserDetails customUserDetails = new CustomUserDetails(member, attributes);
 
         // SecurityContext에 사용자 정보 저장
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         Authentication authentication = new OAuth2AuthenticationToken(
-                customUsrDetails, // CustomUsrDetails 사용
+                customUserDetails, // CustomUsrDetails 사용
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")),
                 registrationId
         );
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        return customUsrDetails; // CustomUsrDetails 반환
+        return customUserDetails; // CustomUsrDetails 반환
     }
 }
