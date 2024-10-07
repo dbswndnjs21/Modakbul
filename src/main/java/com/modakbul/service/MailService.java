@@ -5,6 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -46,7 +47,8 @@ public class MailService {
         return message;
     }
 
-    public String sendSimpleMessage(String sendEmail) throws MessagingException {
+    @Async
+    public void sendSimpleMessageAsync(String sendEmail) throws MessagingException {
         String number = createNumber();
         MimeMessage message = createMail(sendEmail, number);
         try {
@@ -56,8 +58,8 @@ public class MailService {
             e.printStackTrace();
             throw new IllegalArgumentException("메일 발송 중 오류가 발생했습니다.");
         }
-        return number;
     }
+
 
     // 인증 코드 검증
     public boolean verifyAuthCode(String email, String inputAuthCode) {

@@ -21,9 +21,13 @@ public class MailController {
 
     @ResponseBody
     @PostMapping("/emailCheck")
-    public String emailCheck(@RequestBody MailDTO mailDTO) throws MessagingException, UnsupportedEncodingException {
-        String authCode = mailService.sendSimpleMessage(mailDTO.getEmail());
-        return authCode; // Response body에 인증 번호 반환
+    public ResponseEntity<String> emailCheck(@RequestBody MailDTO mailDTO) {
+        try {
+            mailService.sendSimpleMessageAsync(mailDTO.getEmail()); // 비동기로 메일 발송
+            return ResponseEntity.ok("메일 발송 요청이 완료되었습니다."); // 사용자에게 즉시 응답
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메일 발송 중 오류가 발생했습니다.");
+        }
     }
 
     @ResponseBody
@@ -40,5 +44,4 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 유효하지 않습니다.");
         }
     }
-
 }
