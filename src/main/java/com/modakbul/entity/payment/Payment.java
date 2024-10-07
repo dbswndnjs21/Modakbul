@@ -43,6 +43,7 @@ public class Payment {
     @Column(unique = true) // 유니크 제약 조건 설정
     private Long orderNumber;
     private int amount;
+    private String productName;
     private String paymentMethod;
     private int paymentStatus;
     private LocalDateTime paymentDate;
