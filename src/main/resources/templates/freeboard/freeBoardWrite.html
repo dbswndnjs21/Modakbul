@@ -24,7 +24,7 @@
       <p>Member Name: <span th:text="${member.userName}"></span></p>
     </div>
     
-    <form th:action="@{/board/freeBoardWrite}" method="POST" enctype="multipart/form-data">
+    <form th:action="@{/freeboard/freeBoardWrite}" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="id" th:value="${memberId}" />
       <div class="mb-3">
         <label for="title" class="form-label">제목</label>
