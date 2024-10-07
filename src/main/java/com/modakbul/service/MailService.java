@@ -18,7 +18,7 @@ import java.util.Random;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private static final String senderEmail = "ljhkyj25@gmail.com";
+    private static final String senderEmail = "modakbul192@gmail.com";
     private static final Map<String, AuthCode> authCodeMap = new HashMap<>(); // 이메일과 인증 코드 저장
 
     public class AuthCode {
@@ -67,10 +67,10 @@ public class MailService {
         String body = "<html>" +
                 "<body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;'>" +
                 "<div style='max-width: 600px; margin: auto; background-color: white; padding: 30px; border: 1px solid #e1e1e1; border-radius: 8px;'>" +
-                "<h2 style='color: #4a4a4a; border-bottom: 2px solid #0072c6; padding-bottom: 10px;'>회원가입을 위한 인증 메일입니다.</h2>" +
+                "<h2 style='color: #4a4a4a; border-bottom: 2px solid #0072c6; padding-bottom: 10px;'>[모닥불] 회원가입을 위한 인증 메일입니다.</h2>" +
                 "<p style='line-height: 1.6;'>안녕하세요, 회원님</p>" +
-                "<p style='line-height: 1.6;'>프로모션 이메일 인증을 위한 인증번호가 발급되었습니다.</p>" +
-                "<p style='line-height: 1.6;'>아래의 인증번호 6자리를 진행 중인 화면에 입력하고 인증을 완료해 주세요.</p>" +
+                "<p style='line-height: 1.6;'>[모닥불] 회원가입 이메일 인증을 위한 인증번호가 발급되었습니다.</p>" +
+                "<p style='line-height: 1.6;'>아래의 인증번호 8자리를 진행 중인 화면에 입력하고 인증을 완료해 주세요.</p>" +
                 "<h1 style='color: #0072c6; text-align: center;'>" + number + "</h1>" +
                 "<hr style='border: 1px solid #e1e1e1; margin: 20px 0;'> <!-- 구분선 -->" +
                 "<p style='line-height: 1.6;'>유효기간: <strong>2023.09.11 15:08 까지</strong></p>" +
