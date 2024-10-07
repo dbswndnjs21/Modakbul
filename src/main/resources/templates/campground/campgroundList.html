@@ -18,9 +18,9 @@
     <tbody>
     <tr th:each="campground : ${campgrounds}">
         <td th:text="${campground.id}">1</td>
-        <td th:text="${campground.campGroundName}">Camp Name</td>
-        <td th:text="${campground.campgroundCategory.categoryName}">Category</td>
-        <td th:text="${campground.location.city}">Location</td>
+        <td th:text="${campground.campgroundName}">Camp Name</td>
+<!--        <td th:text="${campground.campgroundCategory.categoryName}">Category</td>-->
+        <td th:text="${campground.location}">Location</td>
         <td><a th:href="@{/campgrounds/{id}(id=${campground.id})}">Details</a></td>
     </tr>
     </tbody>

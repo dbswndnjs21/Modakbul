@@ -1,15 +1,12 @@
 package com.modakbul.controller.campground;
+
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.service.campground.CampgroundService;
+import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/campgrounds")
 public class CampgroundController {
     private final CampgroundService campgroundService;
@@ -21,12 +18,26 @@ public class CampgroundController {
     @GetMapping
     public String showCampgroundList(Model model) {
         model.addAttribute("campgrounds", campgroundService.getAllCampgrounds());
-        return "campgroundList";
+        return "campground/campgroundList";
     }
 
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable Long id, Model model) {
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
-        return "campgroundDetail";
+        return "campground/campgroundDetail";
+    }
+
+    // 캠핑장 추가 폼 페이지로 이동
+    @GetMapping("/add")
+    public String showAddCampgroundForm(Model model) {
+        model.addAttribute("campground", new Campground());
+        return "campground/campgroundForm";
+    }
+
+    // 폼에서 입력된 캠핑장 정보를 저장
+    @PostMapping("/add")
+    public String addCampground(@ModelAttribute("campground") Campground campground) {
+        campgroundService.createCampground(campground);
+        return "redirect:/campground/campgrounds";
     }
 }

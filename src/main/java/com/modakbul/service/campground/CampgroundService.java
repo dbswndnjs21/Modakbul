@@ -21,4 +21,8 @@ public class CampgroundService {
     public Campground getCampgroundById(Long id) {
         return campgroundRepository.findById(id).orElse(null);
     }
+
+    public Campground createCampground(Campground campground) {
+        return campgroundRepository.save(campground);
+    }
 }
