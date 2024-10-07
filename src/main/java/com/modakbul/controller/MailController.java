@@ -1,7 +1,7 @@
 package com.modakbul.controller;
 
-import com.modakbul.dto.AuthCodeDTO;
-import com.modakbul.dto.MailDTO;
+import com.modakbul.dto.mail.AuthCodeDto;
+import com.modakbul.dto.mail.MailDto;
 import com.modakbul.service.MailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
-
 @RestController
 @RequiredArgsConstructor
 public class MailController {
@@ -21,7 +19,7 @@ public class MailController {
 
     @ResponseBody
     @PostMapping("/emailCheck")
-    public ResponseEntity<String> emailCheck(@RequestBody MailDTO mailDTO) {
+    public ResponseEntity<String> emailCheck(@RequestBody MailDto mailDTO) {
         try {
             mailService.sendSimpleMessageAsync(mailDTO.getEmail()); // 비동기로 메일 발송
             return ResponseEntity.ok("메일 발송 요청이 완료되었습니다."); // 사용자에게 즉시 응답
@@ -32,7 +30,7 @@ public class MailController {
 
     @ResponseBody
     @PostMapping("/verifyAuthCode")
-    public ResponseEntity<String> verifyAuthCode(@RequestBody AuthCodeDTO authCodeDTO) {
+    public ResponseEntity<String> verifyAuthCode(@RequestBody AuthCodeDto authCodeDTO) {
         String email = authCodeDTO.getEmail();
         String authCode = authCodeDTO.getAuthCode();
 

@@ -1,4 +1,4 @@
-package com.modakbul.dto;
+package com.modakbul.dto.mail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MailDTO {
+public class MailDto {
     private String email;
 
     public void setEmail(String email) {
