@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Campground List</title>
+</head>
+<body>
+<h2>Campground List</h2>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Campground Name</th>
+        <th>Category</th>
+        <th>Location</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="campground : ${campgrounds}">
+        <td th:text="${campground.id}">1</td>
+        <td th:text="${campground.campGroundName}">Camp Name</td>
+        <td th:text="${campground.campgroundCategory.categoryName}">Category</td>
+        <td th:text="${campground.location.city}">Location</td>
+        <td><a th:href="@{/campgrounds/{id}(id=${campground.id})}">Details</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

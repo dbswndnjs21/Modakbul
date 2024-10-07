@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Campground Detail</title>
+</head>
+<body>
+<h2>Campground Detail</h2>
+<p><strong>Campground Name:</strong> <span th:text="${campground.campGroundName}">Camp Name</span></p>
+<p><strong>Category:</strong> <span th:text="${campground.campgroundCategory.categoryName}">Category</span></p>
+<p><strong>Location:</strong> <span th:text="${campground.location.city}">Location</span></p>
+<p><strong>Address:</strong> <span th:text="${campground.campGroundAddress}">Address</span></p>
+<p><strong>Phone:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>
+<p><a th:href="@{/campgrounds}">Back to List</a></p>
+</body>
+</html>
