@@ -39,7 +39,8 @@ public class MailController {
         if (isValid) {
             return ResponseEntity.ok("인증 성공");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 유효하지 않습니다.");
+            // 인증 코드가 유효하지 않거나 만료된 경우
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 유효하지 않거나 만료되었습니다.");
         }
     }
 }

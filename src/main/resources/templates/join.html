@@ -6,6 +6,9 @@
     <title>회원가입</title>
     <link rel="stylesheet" th:href="@{/css/join.css}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <style>
+        /* 기존 CSS 유지 */
+    </style>
 </head>
 <body>
 <div class="container">
@@ -35,10 +38,16 @@
                 <label for="mail1">이메일:</label>
                 <input type="email" id="mail1" name="mail" required>
                 <button type="button" id="sendAuthCode">인증 코드 발송</button>
+                <select id="emailDomain" name="emailDomain">
+                    <option value="@naver.com">@naver.com</option>
+                    <option value="@gmail.com">@gmail.com</option>
+                    <option value="@google.com">@google.com</option>
+                </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="authCodeGroup" style="display: none;"> <!-- 숨김 처리 -->
                 <label for="authCode">인증 코드:</label>
                 <input type="text" id="authCode" name="authCode" required>
+                <div id="timer" style="color: red; font-weight: bold;"></div> <!-- 타이머 표시 -->
             </div>
             <input type="hidden" name="role" value="MEMBER">
             <button type="button" id="joinButton">가입</button> <!-- 가입 버튼 -->
@@ -47,45 +56,79 @@
 </div>
 
 <script type="text/javascript">
+    let timerInterval; // 타이머 인터벌 변수
+    let timeLeft = 180; // 3분 (180초)
+
     $(function () {
         // 회원가입 인증 코드 발송
         $("#sendAuthCode").click(function () {
             const email = $("#mail1").val();
-            if (email) {
+            const selectedDomain = $("#emailDomain").val();
+
+            if (validateEmail(email, selectedDomain)) {
                 $.ajax({
                     url: '/emailCheck',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ email: email }),
+                    data: JSON.stringify({ email: email + selectedDomain }),
                     success: function () {
                         alert('인증 코드가 이메일로 전송되었습니다.');
+                        startTimer(); // 타이머 시작
+                        $("#authCodeGroup").show(); // 인증 코드 입력란 및 타이머 표시
                     },
                     error: function () {
                         alert('메일 발송 중 오류가 발생했습니다.');
                     }
                 });
             } else {
-                alert('이메일을 입력해 주세요.');
+                alert('유효하지 않은 이메일입니다. 다시 입력해 주세요.');
             }
         });
+
+        // 타이머 시작 함수
+        function startTimer() {
+            clearInterval(timerInterval); // 기존 타이머 클리어
+            timeLeft = 180; // 3분 초기화
+            $("#timer").text("남은 시간: 3:00");
+
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                $("#timer").text("남은 시간: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $("#timer").text("인증 시간이 만료되었습니다."); // 만료 메시지
+                    alert("인증 시간이 만료되었습니다. 인증번호를 다시 요청하세요.");
+                }
+            }, 1000);
+        }
+
+        // 이메일 유효성 검사 함수
+        function validateEmail(email, domain) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const completeEmail = email + domain; // 도메인 추가
+            return regex.test(completeEmail);
+        }
 
         // 회원가입 버튼 클릭
         $("#joinButton").click(function () {
             const email = $("#mail1").val();
+            const selectedDomain = $("#emailDomain").val();
             const authCode = $("#authCode").val();
 
-            if (email && authCode) {
+            if (validateEmail(email, selectedDomain) && authCode) {
                 $.ajax({
-                    url: '/verifyAuthCode', // 인증 코드 검증을 위한 엔드포인트
+                    url: '/verifyAuthCode',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ email: email, authCode: authCode }),
+                    data: JSON.stringify({ email: email + selectedDomain, authCode: authCode }),
                     success: function (response) {
                         if (response === "인증 성공") {
-                            // 인증 성공 시 폼 제출
                             $("#memberJoinForm").submit();
                         } else {
-                            alert("인증 코드가 틀렸습니다. 다시 확인해 주세요."); // 인증 실패 시 메시지 표시
+                            alert("인증 코드가 틀렸습니다. 다시 확인해 주세요.");
                         }
                     },
                     error: function () {
@@ -93,7 +136,7 @@
                     }
                 });
             } else {
-                alert('이메일과 인증 코드를 입력해 주세요.');
+                alert('정확한 이메일 주소와 인증 코드를 입력해 주세요.');
             }
         });
     });
