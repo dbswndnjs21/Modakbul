@@ -24,13 +24,15 @@ import com.modakbul.entity.member.Member;
 import com.modakbul.repository.freeboard.FreeboardImageRepository;
 import com.modakbul.repository.freeboard.FreeboardRepository;
 import com.modakbul.security.CustomUserDetails;
+import com.modakbul.service.freeboard.FreeboardService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class FreeboardWriteController {
-	@Autowired FreeboardRepository freeBoardRepository;
-	@Autowired FreeboardImageRepository freeboardImageRepository;
+	@Autowired 
+    FreeboardService freeboardService;
+	
 	@Value("${file.path}")
 	private String filePath;
 	
@@ -46,61 +48,18 @@ public class FreeboardWriteController {
 	    return "freeboard/freeBoardWrite"; // 로그인된 경우 작성 페이지로 이동
 	}
 	
-	@PostMapping("/board/freeBoardWrite")
-	public String write(FreeboardDto freeboardDto, 
-	                    @AuthenticationPrincipal CustomUserDetails member, 
-	                    @RequestParam("images") List<MultipartFile> files, 
-	                    Model model) {
-	    // Freeboard 엔티티 생성
-	    Freeboard freeboard = freeboardDto.toEntity(member.getId()); // 작성자 정보 추가
-	    freeboard.setCreatedAt(LocalDateTime.now());
-	    freeboard.setUpdatedAt(LocalDateTime.now());
-
-	    // Freeboard 저장
-	    Freeboard savedFreeboard = freeBoardRepository.save(freeboard);
-
-	    // 파일 저장 경로 확인 및 생성
-	    File destDir = new File(filePath);
-	    if (!destDir.exists()) {
-	        destDir.mkdirs(); // 부모 디렉토리도 포함하여 모든 경로 생성
-	    }
-
-	    // 이미지 처리
-	    int imageOrder = 1; // 이미지 순서 변수 초기화
-	    for (MultipartFile mf : files) {
-	        if (mf.isEmpty()) {
-	            continue; // 비어있는 파일은 건너뜀
-	        }
-
-	        String orgFileName = mf.getOriginalFilename(); // 전송된 파일명
-	        String saveFileName = UUID.randomUUID() + "_" + orgFileName; // 저장할 파일명
-
-	        try {
-	            // 파일 저장
-	            File f = new File(destDir, saveFileName); // 저장할 정보를 갖는 파일 객체
-	            mf.transferTo(f); // 업로드한 파일을 f에 복사하기
-	            
-	            // FreeboardImage DTO 생성
-	            FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
-	                    .fileName(orgFileName)
-	                    .saveFileName(saveFileName)
-	                    .imagePath(filePath)
-	                    .imageOrder(imageOrder++) // 이미지 순서 (필요 시 조정)
-	                    .build();
-
-	            // FreeboardImage 엔티티 생성 및 저장
-	            FreeboardImage freeboardImage = freeboardImageDto.toEntity(savedFreeboard); // savedFreeboard 연결
-	            freeboardImageRepository.save(freeboardImage);
-	            
-	            model.addAttribute("result", "파일 업로드 성공");
-	        } catch (IOException e) {
-	            e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
-	            model.addAttribute("result", "파일 업로드 실패: " + e.getMessage());
-	        }
-	    }
-
-	    // 작성 후 리스트로 리다이렉트
-	    return "redirect:/freeboard/freeBoardList"; 
-	}
+	@PostMapping("/freeboard/freeBoardWrite")
+    public String write(FreeboardDto freeboardDto, 
+                        @AuthenticationPrincipal CustomUserDetails member, 
+                        @RequestParam("images") List<MultipartFile> files, 
+                        Model model) {
+        // 서비스 호출하여 게시글 작성 및 파일 업로드 처리
+        String result = freeboardService.writeFreeboard(freeboardDto, member.getId(), files, filePath);
+        
+        model.addAttribute("result", result); // 결과 메시지 추가
+        
+        // 작성 후 리스트로 리다이렉트
+        return "redirect:/freeboard/freeBoardList"; 
+    }
 	
 }

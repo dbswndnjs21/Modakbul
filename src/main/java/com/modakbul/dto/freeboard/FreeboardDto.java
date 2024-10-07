@@ -33,7 +33,7 @@ public class FreeboardDto {
         member.setId(memberId); // DTO에서 받은 memberId를 설정
 
         return Freeboard.builder()
-                .id(this.id)
+                .id(null)
                 .member(member)  // 생성된 Member 객체를 설정
                 .title(this.title)
                 .content(this.content)
