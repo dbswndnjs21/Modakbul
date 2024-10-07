@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 인증 메일</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #4a4a4a;
+            border-bottom: 2px solid #ff7f50;
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #ff7f50;
+            text-align: center;
+        }
+        hr {
+            border: 1px solid #e1e1e1;
+            margin: 20px 0;
+        }
+        .info-box {
+            background-color: #f9f9f9;
+            border: 1px solid #e1e1e1;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 12px; /* 폰트 크기 조정 (footer와 동일하게) */
+            color: #4a4a4a; /* 폰트 색상 조정 (footer와 동일하게) */
+        }
+        .footer {
+            text-align: left; /* 왼쪽 정렬 */
+            color: #4a4a4a; /* 폰트 색상 조정 (info-box와 동일하게) */
+            margin-top: 20px;
+            font-size: 12px; /* 폰트 크기 조정 */
+        }
+        .header-line {
+            border-top: 2px solid #ff7f50; /* 상단 줄색상 */
+            margin-bottom: 20px; /* 줄과 내용 사이 간격 */
+        }
+        .logo {
+            display: block;
+            margin: 10px auto; /* 중앙 정렬 */
+            max-width: 100%; /* 반응형 이미지 */
+            height: auto; /* 비율 유지 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-line"></div> <!-- 상단 줄 -->
+    <img th:src="@{/images/1.png}" alt="로고" class="logo"> <!-- 타임리프를 사용한 이미지 삽입 -->
+    <h2>[모닥불] 회원가입을 위한 인증 메일입니다.</h2>
+    <p style="line-height: 1.6;">안녕하세요, 회원님</p>
+    <p style="line-height: 1.6;">[모닥불] 회원가입 이메일 인증을 위한 인증번호가 발급되었습니다.</p>
+    <p style="line-height: 1.6;">아래의 인증번호 8자리를 진행 중인 화면에 입력하고 인증을 완료해 주세요.</p>
+    <h1>12345678</h1> <!-- 여기에 실제 인증번호를 삽입 -->
+    <hr>
+    <div class="info-box">
+        <h4 style="margin: 0;">안내</h4>
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li style="line-height: 1.6;">회원님의 개인정보 보호를 위해서 인증 번호 유효기간 내에 인증을 받아야 정상적으로 회원가입이 가능합니다.</li>
+            <li style="line-height: 1.6;">타인에게 실수로 회원님의 이메일 주소를 입력했을 경우 해당 이메일이 발송 될 수 있습니다.</li>
+            <li style="line-height: 1.6;">궁금하신 사항은 고객센터 FAQ를 확인하시거나 070-8240-3211번으로 연락주시면 정성껏 답변해 드리겠습니다.</li>
+        </ul>
+    </div>
+    <p class="footer">
+        모닥불<br>
+        • 본 메일은 발신 전용으로 회신되지 않습니다.<br>
+        • 회원가입 안내, 주문배송 등의 주요 공지사항은 수신동의 여부와 관계없이 발송됩니다.<br>
+        • 문의사항은 FAQ 또는 1:1 문의를 이용해 주세요.<br>
+        (주)모닥불 | 대표이사 : 이유현 | 사업자등록번호 : 192-168-80-14<br>
+        통신판매신고번호 : 제 4957호 | 주소 : 서울시 종로구 율곡로10길 105 | 고객센터 : 070-8240-3211
+    </p>
+</div>
+</body>
+</html>

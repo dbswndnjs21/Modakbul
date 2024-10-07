@@ -18,8 +18,16 @@ public class MemberService {
 
     public void save(Member member) {
         String password = member.getPassword();
-        String encodePassword = passwordEncoder.encode(password); // 암호환 한 코드
+        String encodePassword = passwordEncoder.encode(password); // 암호화
         member.setPassword(encodePassword);
         memberRepository.save(member);
+    }
+
+
+    public Member findByUserId(String userId) {
+        return memberRepository.findByUserId(userId);
+    }
+    public Member findByMail(String mail) { // 추가된 메서드
+        return memberRepository.findByMail(mail);
     }
 }
