@@ -17,7 +17,15 @@
   <!-- 메인 콘텐츠 영역 -->
   <section class="container my-5">
     <h2 class="text-center mb-4">글쓰기</h2>
+    <!-- 값 확인용 -->
+     <div>
+      <p>Member ID: <span th:text="${memberId}"></span></p>
+      <p>User ID: <span th:text="${userId}"></span></p>
+      <p>Member Name: <span th:text="${member.userName}"></span></p>
+    </div>
+    
     <form th:action="@{/board/freeBoardWrite}" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="id" th:value="${memberId}" />
       <div class="mb-3">
         <label for="title" class="form-label">제목</label>
         <input type="text" id="title" name="title" class="form-control" required>
@@ -32,7 +40,7 @@
       </div>
       <!-- 이미지 미리보기 영역 -->
       <div id="preview" class="d-flex flex-wrap"></div>
-
+		
       <button type="submit" class="btn btn-success w-100">등록</button>
     </form>
     <div class="text-center mt-3">
