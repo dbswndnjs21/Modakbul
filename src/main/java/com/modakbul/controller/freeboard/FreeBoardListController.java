@@ -1,4 +1,4 @@
-package com.modakbul.controller;
+package com.modakbul.controller.freeboard;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

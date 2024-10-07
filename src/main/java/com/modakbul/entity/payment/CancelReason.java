@@ -1,4 +1,4 @@
-package com.modakbul.entity.campsite;
+package com.modakbul.entity.payment;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Entity
 @Builder
-public class CampsiteOption {
+public class CancelReason {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String optionName;
+    private String reason;
 }

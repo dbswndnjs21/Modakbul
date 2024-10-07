@@ -32,8 +32,8 @@ public class Campground {
     @JoinColumn(name = "host_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
     private Host host;
 
-    private String campGroundName;
-    private String campGroundAddress;
+    private String campgroundName;
+    private String campgroundAddress;
     private String addressDetail;
     private String phone;
     private int approve;
