@@ -42,7 +42,11 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     public String getUsername() {
         return member.getUserId();
     }
-
+    
+    public Long getId() {
+    	return member.getId();
+    }
+    
     public String getUserName() {
         return member.getUserName();
     }
