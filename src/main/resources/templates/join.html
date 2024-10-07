@@ -11,7 +11,7 @@
 
 <div id="memberjoin">
     <h1>회원 가입</h1>
-    <form th:action="@{/join}" method="post">
+    <form id="memberJoinForm" th:action="@{/join}" method="post">
         <label for="userName1">이름:</label>
         <input type="text" id="userName1" name="userName" required>
         <br>
@@ -26,46 +26,65 @@
         <br>
         <label for="mail1">이메일:</label>
         <input type="email" id="mail1" name="mail" required>
+        <button type="button" id="sendAuthCode">인증 코드 발송</button>
+        <br>
+        <label for="authCode">인증 코드:</label>
+        <input type="text" id="authCode" name="authCode" required>
         <br>
         <input type="hidden" name="role" value="MEMBER">
-        <button type="submit">가입</button>
-    </form>
-</div>
-
-<div id="adminjoin">
-    <h1>관리자 가입</h1>
-    <form th:action="@{/join}" method="post">
-        <label for="userName2">이름:</label>
-        <input type="text" id="userName2" name="userName" required>
-        <br>
-        <label for="userId2">사용자 ID:</label>
-        <input type="text" id="userId2" name="userId" required>
-        <br>
-        <label for="password2">비밀번호:</label>
-        <input type="password" id="password2" name="password" required>
-        <br>
-        <label for="phone2">전화번호:</label>
-        <input type="text" id="phone2" name="phone" required>
-        <br>
-        <label for="mail2">이메일:</label>
-        <input type="email" id="mail2" name="mail" required>
-        <br>
-        <input type="hidden" name="role" value="ADMIN">
-        <button type="submit">가입</button>
+        <button type="button" id="joinButton">가입</button> <!-- 가입 버튼 -->
     </form>
 </div>
 
 <script type="text/javascript">
-    $(function (){
-        $("#memberjoin").hide();
-        $("#adminjoin").hide();
-        $("#join1").click(function () {
-            $("#memberjoin").show();
-            $("#adminjoin").hide();
+    $(function () {
+        // 회원가입 인증 코드 발송
+        $("#sendAuthCode").click(function () {
+            const email = $("#mail1").val();
+            if (email) {
+                $.ajax({
+                    url: '/emailCheck',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email }),
+                    success: function () {
+                        alert('인증 코드가 이메일로 전송되었습니다.');
+                    },
+                    error: function () {
+                        alert('메일 발송 중 오류가 발생했습니다.');
+                    }
+                });
+            } else {
+                alert('이메일을 입력해 주세요.');
+            }
         });
-        $("#join2").click(function () {
-            $("#memberjoin").hide();
-            $("#adminjoin").show();
+
+        // 회원가입 버튼 클릭
+        $("#joinButton").click(function () {
+            const email = $("#mail1").val();
+            const authCode = $("#authCode").val();
+
+            if (email && authCode) {
+                $.ajax({
+                    url: '/verifyAuthCode', // 인증 코드 검증을 위한 엔드포인트
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email, authCode: authCode }),
+                    success: function (response) {
+                        if (response === "인증 성공") {
+                            // 인증 성공 시 폼 제출
+                            $("#memberJoinForm").submit();
+                        } else {
+                            alert("인증 코드가 틀렸습니다. 다시 확인해 주세요."); // 인증 실패 시 메시지 표시
+                        }
+                    },
+                    error: function () {
+                        alert('인증 코드 검증 중 오류가 발생했습니다.');
+                    }
+                });
+            } else {
+                alert('이메일과 인증 코드를 입력해 주세요.');
+            }
         });
     });
 </script>
