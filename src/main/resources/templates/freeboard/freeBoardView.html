@@ -20,6 +20,11 @@
 		<div class="card">
 			<div class="card-header">
 				<h4 class="card-title mb-3" th:text="${board.title}">게시글 제목</h4>
+				  <!-- 수정 및 삭제 버튼 (작성자와 현재 로그인 사용자가 같을 때만 표시) -->
+                <div th:if="${board.userId == userId}">
+                    <a href="#" class="btn btn-outline-warning btn-sm me-2">수정</a>
+                    <a href="#" class="btn btn-outline-danger btn-sm">삭제</a>
+                </div>
 				<ul class="list-inline">
 					<li class="list-inline-item"><strong>작성자:</strong> <span
 						th:text="${board.userId}">작성자명</span></li>
@@ -79,11 +84,16 @@
 				<p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
 			</div>
 		</div>
+		
+		<!-- 목록 버튼 추가 -->
+        <div class="text-center my-4">
+            <a th:href="@{/freeboard/freeBoardList}" class="btn btn-primary">게시글 리스트</a>
+        </div>
 
 		<!-- 댓글 영역 -->
 		<div class="mt-5">
 			<h5>댓글</h5>
-			
+
 			<!-- 댓글 입력 -->
 			<form th:action="@{/comment/add}" method="post">
 				<div class="mb-3">
