@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>개인 정보 수정</title>
-    <link rel="stylesheet" href="/css/personalInfo.css"> <!-- 기존 CSS 파일 링크 -->
+    <link rel="stylesheet" href="/css/personalInfo.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery 추가 -->
 </head>
 <body>
 <div class="container">
@@ -17,24 +18,59 @@
         </header>
 
         <div class="content">
-    <form action="/mypage/updateInfo" method="post">
-        <div class="form-group">
-            <label for="username">사용자 이름</label>
-            <input type="text" id="username" name="username" th:value="${member.userName}" >
-        </div>
-<!--        <div class="form-group">-->
-<!--            <label for="email">이메일</label>-->
-<!--            <input type="email" id="email" name="email" th:value="${member.mail}" required>-->
-<!--        </div>-->
-        <div class="form-group">
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요" required>
-        </div>
-        <button type="submit" class="btn">저장하기</button>
-        <a href="/mypage" class="btn">취소</a>
-    </form>
+            <form id="updateForm" action="/mypage/updateInfo" method="post">
+                <div class="form-group">
+                    <label for="username">사용자 이름</label>
+                    <input type="text" id="username" name="username" th:value="${member.userName}">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" placeholder="새 비밀번호를 입력하세요" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">비밀번호 확인</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="비밀번호를 다시 입력하세요" required>
+                </div>
+
+                <button type="submit" class="btn">저장하기</button>
+                <a href="/mypage" class="btn">취소</a>
+            </form>
         </div>
     </section>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $("#updateForm").on("submit", function(event) {
+            event.preventDefault(); // 폼 제출 기본 동작 중지
+
+            // 비밀번호 일치 여부 확인
+            var password = $("#password").val();
+            var confirmPassword = $("#confirmPassword").val();
+
+            if (password !== confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
+                return; // 비밀번호가 일치하지 않으면 폼 제출 중단
+            }
+
+            // 비밀번호가 일치할 경우, 서버로 요청 전송
+            $.ajax({
+                type: "POST",
+                url: "/mypage/updateInfo",
+                data: $(this).serialize(),
+                success: function(response) {
+                    alert("수정이 완료되었습니다!"); // 수정 완료 알림창
+                    window.location.href = "/mypage/personalInfo"; // 마이페이지로 리다이렉트
+                },
+                error: function(xhr, status, error) {
+                    alert("수정 중 오류가 발생했습니다."); // 오류 발생 시 알림창
+                }
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

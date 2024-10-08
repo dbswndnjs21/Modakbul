@@ -5,18 +5,18 @@ import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/mypage")
 public class MyPageController {
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
@@ -67,10 +67,27 @@ public class MyPageController {
             System.out.println("회원 정보 업데이트: " + username);
 
             // 업데이트 완료 후 마이페이지로 리다이렉트
-            return "redirect:/mypage/myPage";
+            return "redirect:/mypage/personalInfo";
         }
         return "redirect:/login";
     }
+    @PostMapping("/checkPassword")
+    @ResponseBody
+    public String checkPassword(@AuthenticationPrincipal CustomUserDetails member,
+                                @RequestParam("password") String password) {
+        if (member != null) {
+            Member memberEntity = memberService.findByUserId(member.getUsername());
+
+            // 입력한 비밀번호와 저장된 비밀번호 비교
+            if (passwordEncoder.matches(password, memberEntity.getPassword())) {
+                return "success"; // 비밀번호가 일치하면 success 반환
+            } else {
+                return "failure"; // 비밀번호가 일치하지 않으면 failure 반환
+            }
+        }
+        return "failure"; // 인증되지 않은 경우
+    }
+
     @GetMapping("/reviews")
     public String rewviews(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
