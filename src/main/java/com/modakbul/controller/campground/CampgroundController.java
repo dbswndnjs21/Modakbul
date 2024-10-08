@@ -45,16 +45,6 @@ public class CampgroundController {
         return "redirect:/campground/campgrounds";
     }
 
-//    // 캠핑장 리스트를 특정 날짜 범위에 따라 검색
-//    @GetMapping("/search")
-//    public String searchCampgrounds(@RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime checkIn,
-//                                    @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime checkOut,
-//                                    Model model) {
-//        List<Campground> availableCampgrounds = campgroundService.findAvailableCampgrounds(checkIn, checkOut);
-//        model.addAttribute("campgrounds", availableCampgrounds);
-//        return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
-//    }
-
     @GetMapping("/search")
     public String searchCampgrounds(
             @RequestParam(value = "query", required = false) String query,
