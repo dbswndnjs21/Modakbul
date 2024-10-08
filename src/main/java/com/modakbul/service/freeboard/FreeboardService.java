@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,7 +73,8 @@ public class FreeboardService {
 	    }
 	 
 	 public List<Freeboard> findAllWithImages() {
-	        List<Freeboard> list = freeboardRepository.findAll();
+		// 최신 글이 위에 오도록 정렬
+		    List<Freeboard> list = freeboardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")); //
 	        for (Freeboard freeboard : list) {
 	            // 정렬된 이미지를 가져옴
 	            List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
