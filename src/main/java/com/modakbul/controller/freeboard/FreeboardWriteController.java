@@ -51,7 +51,7 @@ public class FreeboardWriteController {
 	@PostMapping("/freeboard/freeBoardWrite")
     public String write(FreeboardDto freeboardDto, 
                         @AuthenticationPrincipal CustomUserDetails member, 
-                        @RequestParam("images") List<MultipartFile> files, 
+                        @RequestParam("files") List<MultipartFile> files, 
                         Model model) {
         // 서비스 호출하여 게시글 작성 및 파일 업로드 처리
         String result = freeboardService.writeFreeboard(freeboardDto, member.getId(), files, filePath);
