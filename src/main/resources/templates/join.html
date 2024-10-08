@@ -44,11 +44,6 @@
                 <label for="mail1">이메일:</label>
                 <input type="email" id="mail1" name="mail" required>
                 <button type="button" id="sendAuthCode">인증 코드 발송</button>
-                <select id="emailDomain" name="emailDomain">
-                    <option value="@naver.com">@naver.com</option>
-                    <option value="@gmail.com">@gmail.com</option>
-                    <option value="@google.com">@google.com</option>
-                </select>
                 <span id="emailCheckMessage" class="validation-message"></span>
             </div>
             <div class="form-group" id="authCodeGroup" style="display: none;">
@@ -95,13 +90,12 @@
         // 이메일 중복 체크
         $("#mail1").on("input", function () {
             const email = $(this).val();
-            const selectedDomain = $("#emailDomain").val();
             if (email) {
                 $.ajax({
                     url: '/checkEmail',
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ email: email + selectedDomain }),
+                    data: JSON.stringify({ email: email }),
                     success: function (response) {
                         if (response === "사용 가능") {
                             $("#emailCheckMessage").text("사용 가능한 이메일입니다.").css("color", "green");
@@ -118,14 +112,81 @@
             }
         });
 
-        // 이메일 인증 코드 발송 로직 등 기존 스크립트 유지
+        // 인증 코드 발송
         $("#sendAuthCode").click(function () {
-            // 이메일 인증 코드 발송 로직
+            const email = $("#mail1").val();
+
+            if (validateEmail(email)) {
+                $.ajax({
+                    url: '/emailCheck',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email }),
+                    success: function () {
+                        alert('인증 코드가 이메일로 전송되었습니다.');
+                        startTimer(); // 타이머 시작
+                        $("#authCodeGroup").show(); // 인증 코드 입력란 및 타이머 표시
+                    },
+                    error: function () {
+                        alert('메일 발송 중 오류가 발생했습니다.');
+                    }
+                });
+            } else {
+                alert('유효하지 않은 이메일입니다. 다시 입력해 주세요.');
+            }
         });
 
-        // 이메일 유효성 검사 및 가입 로직 등 기존 스크립트 유지
+        // 타이머 시작 함수
+        function startTimer() {
+            clearInterval(timerInterval); // 기존 타이머 클리어
+            timeLeft = 180; // 3분 초기화
+            $("#timer").text("남은 시간: 3:00");
+
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                $("#timer").text("남은 시간: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $("#timer").text("인증 시간이 만료되었습니다."); // 만료 메시지
+                    alert("인증 시간이 만료되었습니다. 인증번호를 다시 요청하세요.");
+                }
+            }, 1000);
+        }
+
+        // 이메일 유효성 검사 함수
+        function validateEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        // 회원가입 버튼 클릭
         $("#joinButton").click(function () {
-            // 가입 로직
+            const email = $("#mail1").val();
+            const authCode = $("#authCode").val();
+
+            if (validateEmail(email) && authCode) {
+                $.ajax({
+                    url: '/verifyAuthCode',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email, authCode: authCode }),
+                    success: function (response) {
+                        if (response === "인증 성공") {
+                            $("#memberJoinForm").submit();
+                        } else {
+                            alert("인증 코드가 틀렸습니다. 다시 확인해 주세요.");
+                        }
+                    },
+                    error: function () {
+                        alert('인증 코드 검증 중 오류가 발생했습니다.');
+                    }
+                });
+            } else {
+                alert('정확한 이메일 주소와 인증 코드를 입력해 주세요.');
+            }
         });
     });
 </script>
