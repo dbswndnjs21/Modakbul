@@ -87,6 +87,14 @@ public class MyPageController {
         }
         return "failure"; // 인증되지 않은 경우
     }
+    @GetMapping("/checkPasswordPage")
+    public String checkPasswordPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        if (member != null) {
+            model.addAttribute("member", member);
+        }
+        return "mypage/checkPasswordPage"; // 비밀번호 확인 페이지 뷰 반환
+    }
+
 
     @GetMapping("/reviews")
     public String rewviews(@AuthenticationPrincipal CustomUserDetails member, Model model) {
