@@ -74,7 +74,7 @@ public class FreeboardService {
 	 
 	 public List<Freeboard> findAllWithImages() {
 		// 최신 글이 위에 오도록 정렬
-		    List<Freeboard> list = freeboardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")); //
+		    List<Freeboard> list = freeboardRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")); //
 	        for (Freeboard freeboard : list) {
 	            // 정렬된 이미지를 가져옴
 	            List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
