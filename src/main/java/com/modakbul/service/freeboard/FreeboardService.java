@@ -21,6 +21,7 @@ import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.repository.freeboard.FreeboardImageRepository;
 import com.modakbul.repository.freeboard.FreeboardRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -28,8 +29,8 @@ import jakarta.transaction.Transactional;
 public class FreeboardService {
 	@Autowired FreeboardRepository freeboardRepository;
 	@Autowired FreeboardImageRepository freeboardImageRepository;
-		
-	 public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
+	
+	public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
 	        // Freeboard 엔티티 생성
 	        Freeboard freeboard = freeboardDto.toEntity(memberId);
 	        freeboard.setCreatedAt(LocalDateTime.now());
@@ -112,4 +113,28 @@ public class FreeboardService {
 	                .images(imageDtos) // 이미지를 DTO에 추가
 	                .build();
 	    }
+	    
+	    public void deleteBoard(Long id, String filePath) {
+	    	
+	    	 // 게시글 조회
+	        Optional<Freeboard> freeboardOpt = freeboardRepository.findById(id);
+	        if (!freeboardOpt.isPresent()) {
+	            throw new EntityNotFoundException("게시글이 존재하지 않습니다."); // 예외 처리
+	        }
+
+	        Freeboard freeboard = freeboardOpt.get();
+	        
+	        // 관련 이미지 삭제 (옵션)
+	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardId(freeboard.getId());
+	        for (FreeboardImage image : images) {
+	            // 이미지 파일 시스템에서 삭제 (필요 시)
+	             File file = new File(filePath +"\\"+ image.getSaveFileName());
+	             file.delete();
+	            // 데이터베이스에서 이미지 삭제
+	            freeboardImageRepository.delete(image);
+	        }
+	        // 게시글 삭제
+	        freeboardRepository.delete(freeboard);
+	    }
+	    
 }
