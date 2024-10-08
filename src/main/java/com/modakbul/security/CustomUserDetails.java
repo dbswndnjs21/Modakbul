@@ -53,6 +53,10 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     public String getProvider(){return member.getProvider();}
 
+    public Member getMember() {
+        return member;
+    }
+
     // OAuth2User 메서드 구현
     @Override
     public Map<String, Object> getAttributes() {
@@ -63,4 +67,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     public String getName() {
         return member.getUserName(); // OAuth2User의 getName()은 회원 이름 반환
     }
+
+
 }

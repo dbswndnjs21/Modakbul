@@ -21,4 +21,15 @@ public class ApproveResponse {
     private String created_at;          // 결제 준비 요청 시각
     private String approved_at;         // 결제 승인 시각
     private String payload;
+    // Amount 클래스 정의
+    private Amount amount;              // 상품 가격을 포함하는 Amount 객체
+
+    @Getter
+    @Setter
+    @ToString
+    public static class Amount {
+        private int total;               // 총 결제 금액
+        private int tax_free;            // 비과세 금액
+        private int discount;            // 할인 금액
+    }
 }

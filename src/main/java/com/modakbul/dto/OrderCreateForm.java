@@ -8,6 +8,6 @@ import lombok.Setter;
 public class OrderCreateForm {
     private String name;
     private int totalPrice;
+    private String orderNumber;
 
-    // 필요에 따라 다른 필드 추가
 }
