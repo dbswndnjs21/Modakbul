@@ -22,7 +22,7 @@
 				<h4 class="card-title mb-3" th:text="${board.title}">게시글 제목</h4>
 				  <!-- 수정 및 삭제 버튼 (작성자와 현재 로그인 사용자가 같을 때만 표시) -->
                 <div th:if="${board.userId == userId}">
-                    <a th:href="@{/freeboard/freeBoardList}" class="btn btn-outline-warning btn-sm me-2">수정</a>
+                    <a th:href="@{/freeboard/freeBoardUpadate/{id}(id=${board.id})}" class="btn btn-outline-warning btn-sm me-2">수정</a>
                      <a th:href="@{/freeboard/freeBoardDelete/{id}(id=${board.id})}" class="btn btn-outline-danger btn-sm">삭제</a>
                 </div>
 				<ul class="list-inline">
