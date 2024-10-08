@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +27,6 @@ import jakarta.transaction.Transactional;
 public class FreeboardService {
 	@Autowired FreeboardRepository freeboardRepository;
 	@Autowired FreeboardImageRepository freeboardImageRepository;
-	@Value("${file.path}")
-	private String filePath;
 		
 	 public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
 	        // Freeboard 엔티티 생성
@@ -89,15 +88,26 @@ public class FreeboardService {
 
 	        // 이미지 조회 (게시글과 연결된 이미지)
 	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardId(id);
+	        List<FreeboardImageDto> imageDtos = images.stream()
+	                .map(image -> FreeboardImageDto.builder()
+	                        .id(image.getId())
+	                        .freeboardId(image.getFreeboard().getId())
+	                        .fileName(image.getFileName())
+	                        .saveFileName(image.getSaveFileName())
+	                        .imagePath(image.getImagePath())
+	                        .imageOrder(image.getImageOrder())
+	                        .build())
+	                .collect(Collectors.toList());
+	        
 	        // DTO로 변환
 	        return FreeboardDto.builder()
 	                .id(board.getId())
-	                .memberId(board.getMember().getId())
+	                .userId(board.getMember().getUserId())
 	                .title(board.getTitle())
 	                .content(board.getContent())
 	                .createdAt(board.getCreatedAt())
 	                .updatedAt(board.getUpdatedAt())
-	                .images(images) // 이미지를 DTO에 추가
+	                .images(imageDtos) // 이미지를 DTO에 추가
 	                .build();
 	    }
 }
