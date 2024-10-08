@@ -10,10 +10,14 @@
         $(function() {
             $("#btn-pay-ready").click(function(e) {
                 e.preventDefault();
-                // 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
+
+                // 주문번호 생성
+                const orderNumber = createOrderNum();
+
                 let data = {
                     name: '아이폰 16 pro',    // 카카오페이에 보낼 대표 상품명
-                    totalPrice: 999999 // 총 결제금액
+                    totalPrice: 999999,        // 총 결제금액
+                    orderNumber: orderNumber    // 생성한 주문번호 추가
                 };
 
                 $.ajax({
@@ -27,6 +31,21 @@
                 });
             });
         });
+
+        // 주문번호 생성 함수
+        function createOrderNum() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 두 자리 포맷
+            const day = String(date.getDate()).padStart(2, '0'); // 두 자리 포맷
+            let orderNum = `${year}${month}${day}`;
+
+            for (let i = 0; i < 5; i++) {
+                orderNum += Math.floor(Math.random() * 10); // 0부터 9까지 랜덤 숫자 추가
+            }
+
+            return orderNum;
+        }
     </script>
 </head>
 <body>
