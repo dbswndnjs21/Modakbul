@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class CampsiteDto {
     private Long id;
     private int campsiteCategoryId;
+    private Long campgroundId;
     private String campsiteName;
     private String campsiteDescription;
     private int head_count;

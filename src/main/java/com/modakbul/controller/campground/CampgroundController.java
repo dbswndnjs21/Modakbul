@@ -2,9 +2,13 @@ package com.modakbul.controller.campground;
 
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.service.campground.CampgroundService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/campgrounds")
@@ -41,10 +45,32 @@ public class CampgroundController {
         return "redirect:/campground/campgrounds";
     }
 
+//    // 캠핑장 리스트를 특정 날짜 범위에 따라 검색
+//    @GetMapping("/search")
+//    public String searchCampgrounds(@RequestParam("checkInDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime checkIn,
+//                                    @RequestParam("checkOutDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime checkOut,
+//                                    Model model) {
+//        List<Campground> availableCampgrounds = campgroundService.findAvailableCampgrounds(checkIn, checkOut);
+//        model.addAttribute("campgrounds", availableCampgrounds);
+//        return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
+//    }
+
     @GetMapping("/search")
-    public String searchCampgrounds(@RequestParam("query") String query, Model model) {
-        model.addAttribute("campgrounds", campgroundService.searchCampgrounds(query));
-        return "campground/campgroundList"; // 검색 결과를 동일한 리스트 페이지에서 보여줌
+    public String searchCampgrounds(
+            @RequestParam(value = "query", required = false) String query,
+            Model model) {
+
+        List<Campground> filteredCampgrounds;
+
+        // query가 존재하면 이름이나 지역으로 검색
+        if (query != null && !query.isEmpty()) {
+            filteredCampgrounds = campgroundService.searchCampgrounds(query);
+        } else {
+            filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+        }
+
+        model.addAttribute("campgrounds", filteredCampgrounds);
+        return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
     }
 
 }
