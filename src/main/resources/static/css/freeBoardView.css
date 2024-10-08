@@ -1,0 +1,197 @@
+@charset "UTF-8";
+
+/* 전체 페이지 스타일 */
+body {
+  background-color: rgba(255, 255, 255, 0.95); /* 흰색에 약간의 투명도 */
+  background-blend-mode: multiply; /* 배경 혼합 모드 설정 */
+  background-color: rgba(255, 127, 80, 0.1); /* 약간의 주황색 */
+  font-family: 'Arial', sans-serif;
+  margin: 0; /* 기본 마진 제거 */
+}
+
+/* 컨테이너 */
+.container {
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 배치 */
+  align-items: center; /* 중앙 정렬 */
+}
+
+/* 게시글 카드 */
+.card {
+  border: 2px solid #ff7f50; /* 주황빛 테두리 */
+  border-radius: 10px; /* 카드 모서리 둥글게 */
+  width: 600px; /* 카드 너비 설정 */
+  background-color: #ffffff; /* 카드 배경 흰색 */
+  margin: 20px 0; /* 카드 간의 간격 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+.card-img-top {
+  border-radius: 10px 10px 0 0; /* 상단 모서리 둥글게 */
+  width: 100%;
+  height: 300px; /* 이미지 고정 높이 */
+  object-fit: cover; /* 이미지가 카드에 잘 맞게 */
+}
+
+/* 카드 본문 */
+.card-body {
+  padding: 20px; /* 본문 패딩 */
+  text-align: center;
+}
+
+.card-title {
+  font-size: 24px;
+  color: #333; /* 제목 색상 */
+}
+
+.card-text {
+  font-size: 16px;
+  color: #555; /* 본문 내용 색상 */
+  line-height: 1.5;
+}
+
+/* 목록 버튼 */
+.btn-primary {
+  background-color: #ff7f50; /* 주황빛 버튼 */
+  border: none;
+  border-radius: 20px;
+}
+
+.btn-primary:hover {
+  background-color: #e06e43; /* 호버 시 색상 변경 */
+  border-color: #cf5f36;
+}
+
+/* 댓글 섹션 */
+.comment-section {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  margin-top: 20px;
+}
+
+.comment-section h5 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+/* 댓글 */
+.comment {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.comment strong {
+  font-size: 14px;
+  color: #333;
+}
+
+.comment span {
+  font-size: 12px;
+  color: #888;
+}
+
+.comment p {
+  margin: 5px 0 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* 대댓글 */
+.reply {
+  margin-left: 20px;
+  border-left: 2px solid #e0e0e0;
+  padding-left: 10px;
+}
+
+.reply-btn {
+  font-size: 12px;
+  color: #ff7f50; /* 답글 버튼 색상 */
+  text-decoration: none;
+}
+
+.reply-btn:hover {
+  text-decoration: underline;
+}
+
+/* 댓글 입력 폼 */
+textarea.form-control {
+  border-radius: 5px;
+  resize: none;
+}
+
+.btn-success {
+  background-color: #ff7f50; /* 주황빛 버튼 */
+  border: none;
+  border-radius: 20px;
+}
+
+.btn-success:hover {
+  background-color: #e06e43;
+}
+
+/* 게시글 제목 스타일 */
+.card-header {
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* 작성자, 작성일, 조회수 스타일 */
+.list-inline {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.list-inline-item {
+  margin-right: 20px;
+}
+
+/* 본문 텍스트 스타일 */
+.card-body p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+
+/* 댓글 입력 폼 스타일 */
+.comment-section h5 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+form textarea {
+  resize: none;
+}
+
+.reply-form {
+  margin-top: 10px;
+}
+
+/* 댓글, 답글 스타일 */
+.comment {
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.reply {
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 2px solid #e9ecef;
+}
+
+/* 버튼 스타일 */
+.btn-link {
+  color: #0d6efd;
+  text-decoration: underline;
+}
