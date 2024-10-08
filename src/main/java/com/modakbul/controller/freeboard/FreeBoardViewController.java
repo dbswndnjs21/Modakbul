@@ -18,9 +18,9 @@ public class FreeBoardViewController {
 	
 	@GetMapping("/freeboard/freeBoardView")
 	public String boardView(@RequestParam("id") Long id, Model model,@AuthenticationPrincipal CustomUserDetails member) {
-		FreeboardDto boardDto = freeboardService.getPostWithImagesById(id);
+		FreeboardDto board = freeboardService.getPostWithImagesById(id);
 		
-		model.addAttribute("board", boardDto);
+		model.addAttribute("board", board);
 		model.addAttribute("userId", member.getUsername());
 		model.addAttribute("member", member);
 		
