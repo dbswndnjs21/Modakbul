@@ -1,9 +1,15 @@
 package com.modakbul.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modakbul.dto.ApproveResponse;
 import com.modakbul.dto.ReadyResponse;
+import com.modakbul.entity.member.Member;
+import com.modakbul.entity.payment.Payment;
+import com.modakbul.repository.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +19,22 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Slf4j
 @Service
 public class KakaoPayService {
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
 
     // 카카오페이 결제창 연결
-    public ReadyResponse payReady(String name, int totalPrice) {
+    public ReadyResponse payReady(String name, int totalPrice,String orderNumber) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -31,10 +43,12 @@ public class KakaoPayService {
         String userId = null;
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetails) {
+            System.out.println("TEST1 CustomUserDetails: " + principal);
             CustomUserDetails userDetails = (CustomUserDetails) principal;
             userId = userDetails.getUsername();  // 사용자 ID 추출
             System.out.println(userId);
         } else if (principal instanceof OAuth2User) {
+            System.out.println("TEST1 OAuth2User: " + principal);
             OAuth2User oauthUser = (OAuth2User) principal;
             userId = oauthUser.getName();  // OAuth 사용자 이름 추출
             System.out.println(userId);
@@ -44,13 +58,13 @@ public class KakaoPayService {
 
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                                         // 가맹점 코드(테스트용)
-        parameters.put("partner_order_id", "1234567890");                            // 주문번호
+        parameters.put("partner_order_id", orderNumber);                            // 주문번호
         parameters.put("partner_user_id", userId);                                   // 회원 아이디
         parameters.put("item_name", name);                                           // 상품명
         parameters.put("quantity", "1");                                             // 상품 수량
         parameters.put("total_amount", String.valueOf(totalPrice));                  // 상품 총액
         parameters.put("tax_free_amount", "0");                                      // 상품 비과세 금액
-        parameters.put("approval_url", "http://localhost:8080/order/pay/completed"); // 결제 성공 시 URL
+        parameters.put("approval_url", "http://localhost:8080/order/pay/completed?orderNumber="+ orderNumber); // 결제 성공 시 URL
         parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
         parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
 
@@ -72,16 +86,20 @@ public class KakaoPayService {
     // 카카오페이 결제 승인
     // 사용자가 결제 수단을 선택하고 비밀번호를 입력해 결제 인증을 완료한 뒤,
     // 최종적으로 결제 완료 처리를 하는 단계
-    public ApproveResponse payApprove(String tid, String pgToken) {
+    public ApproveResponse payApprove(String tid, String pgToken, String orderNumber) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
 
         String userId;
+        Member member = null;
         if (principal instanceof CustomUserDetails) {
+            System.out.println("TEST2 CustomUserDetails: " + principal);
             CustomUserDetails userDetails = (CustomUserDetails) principal;
             userId = userDetails.getUsername();
+            member = userDetails.getMember();
         } else if (principal instanceof OAuth2User) {
+            System.out.println("TEST2 OAuth2User: " + principal);
             OAuth2User oauthUser = (OAuth2User) principal;
             userId = oauthUser.getName();
         } else {
@@ -91,7 +109,7 @@ public class KakaoPayService {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                    // 가맹점 코드(테스트용)
         parameters.put("tid", tid);                             // 결제 고유번호
-        parameters.put("partner_order_id", "1234567890");       // 주문번호
+        parameters.put("partner_order_id", orderNumber);       // 주문번호
         parameters.put("partner_user_id", userId);              // 회원 아이디
         parameters.put("pg_token", pgToken);                    // 결제승인 요청을 인증하는 토큰
 
@@ -101,6 +119,19 @@ public class KakaoPayService {
         String url = "https://open-api.kakaopay.com/online/v1/payment/approve";
         ApproveResponse approveResponse = template.postForObject(url, requestEntity, ApproveResponse.class);
         log.info("결제승인 응답객체: " + approveResponse);
+
+        Payment payment = Payment.builder()
+                .member(member)                                    // 결제한 회원
+                .orderNumber(Long.parseLong(orderNumber))      // 주문번호 설정
+                .amount(approveResponse.getAmount().getTotal())    // 총 결제 금액
+                .productName(approveResponse.getItem_name())     // 승인 응답에서 받은 상품명
+                .paymentMethod("KakaoPay")                         // 결제 방식
+                .paymentStatus(1)                                  // 결제 상태 (예: 1 = 승인됨)
+                .paymentDate(LocalDateTime.parse(approveResponse.getCreated_at()))                  // 결제 날짜
+                .approveDate(LocalDateTime.parse(approveResponse.getApproved_at()))                  // 승인 날짜
+                .build();
+
+        paymentRepository.save(payment); // 결제 정보 DB에 저장
 
         return approveResponse;
     }
@@ -113,4 +144,5 @@ public class KakaoPayService {
 
         return headers;
     }
+
 }
