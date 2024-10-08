@@ -40,4 +40,11 @@ public class CampgroundController {
         campgroundService.createCampground(campground);
         return "redirect:/campground/campgrounds";
     }
+
+    @GetMapping("/search")
+    public String searchCampgrounds(@RequestParam("query") String query, Model model) {
+        model.addAttribute("campgrounds", campgroundService.searchCampgrounds(query));
+        return "campground/campgroundList"; // 검색 결과를 동일한 리스트 페이지에서 보여줌
+    }
+
 }

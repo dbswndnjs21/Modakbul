@@ -25,4 +25,10 @@ public class CampgroundService {
     public Campground createCampground(Campground campground) {
         return campgroundRepository.save(campground);
     }
+
+    public List<Campground> searchCampgrounds(String query) {
+        // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
+        return campgroundRepository.findByCampgroundNameContainingIgnoreCase(query);
+    }
+
 }
