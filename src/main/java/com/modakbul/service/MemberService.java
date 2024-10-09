@@ -22,7 +22,18 @@ public class MemberService {
         member.setPassword(encodePassword);
         memberRepository.save(member);
     }
+    // 사용자 정보 업데이트 메서드 추가
+    public void updateMemberInfo(Member member, String username, String password) {
+        member.setUserName(username);
 
+        // 비밀번호가 입력되었으면 암호화 후 업데이트
+        if (password != null && !password.isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(password);
+            member.setPassword(encodedPassword);
+        }
+
+        memberRepository.save(member);  // 변경된 정보 저장
+    }
 
     public Member findByUserId(String userId) {
         return memberRepository.findByUserId(userId);
