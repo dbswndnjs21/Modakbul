@@ -3,6 +3,7 @@ package com.modakbul.service.freeboard;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -136,5 +137,86 @@ public class FreeboardService {
 	        // 게시글 삭제
 	        freeboardRepository.delete(freeboard);
 	    }
+	    
+	    public void updateSelect(Long id) {
+	    	Optional<Freeboard> freeboardOpt = freeboardRepository.findById(id);
+	    	if (!freeboardOpt.isPresent()) {
+	            throw new EntityNotFoundException("게시글이 존재하지 않습니다."); // 예외 처리
+	        }
+	    	Freeboard freeboard = freeboardOpt.get();
+	    	List<FreeboardImage> images = freeboardImageRepository.findByFreeboardId(freeboard.getId());
+	    }
+	    
+	    // 게시글 수정 메서드
+	    public String updateFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String[] removedImages, String filePath) {
+	        // 1. 수정할 게시글 찾기
+	        Optional<Freeboard> optionalBoard = freeboardRepository.findById(freeboardDto.getId());
+	        if (!optionalBoard.isPresent()) {
+	            return "해당 게시글을 찾을 수 없습니다.";
+	        }
+
+	        Freeboard freeboard = optionalBoard.get();
+
+	        // 2. 게시글 내용 수정
+	        freeboard.setTitle(freeboardDto.getTitle());
+	        freeboard.setContent(freeboardDto.getContent());
+	        freeboardRepository.save(freeboard);
+
+	        // 3. 기존 이미지 중 삭제되지 않은 이미지는 그대로 유지
+	        List<FreeboardImage> existingImages = freeboardImageRepository.findByFreeboard(freeboard);
+	        List<FreeboardImage> imagesToKeep = new ArrayList<>();
+
+	        if (existingImages != null && !existingImages.isEmpty()) {
+	            for (FreeboardImage image : existingImages) {
+	                boolean toRemove = false;
+	                if (removedImages != null) {
+	                    for (String removedImage : removedImages) {
+	                        if (image.getSaveFileName().equals(removedImage)) {
+	                            toRemove = true;
+	                            break;
+	                        }
+	                    }
+	                }
+	                if (!toRemove) {
+	                    imagesToKeep.add(image); // 삭제되지 않은 이미지는 유지 목록에 추가
+	                }
+	            }
+	        }
+
+	        // 4. 새로 업로드된 이미지 처리
+	        if (files != null && !files.isEmpty()) {
+	            for (MultipartFile file : files) {
+	                if (!file.isEmpty()) {
+	                    try {
+	                        // 새로운 파일명 생성
+	                        String originalFileName = file.getOriginalFilename();
+	                        String saveFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+
+	                        // 파일 저장
+	                        file.transferTo(new File(filePath + saveFileName));
+
+	                        // 이미지 정보 저장
+	                        FreeboardImage newImage = new FreeboardImage();
+	                        newImage.setFreeboard(freeboard);
+	                        newImage.setFileName(saveFileName);
+	                        newImage.setSaveFileName(saveFileName);
+	                        imagesToKeep.add(newImage); // 새로 추가된 이미지도 유지 목록에 포함
+
+	                    } catch (IOException e) {
+	                        e.printStackTrace();
+	                        return "파일 업로드 중 오류가 발생했습니다.";
+	                    }
+	                }
+	            }
+	        }
+
+	        // 5. 실제로 유지할 이미지만 저장 (기존 이미지 중 유지될 이미지 + 새로 추가된 이미지)
+	        freeboardImageRepository.deleteByFreeboard(freeboard); // 모든 기존 이미지 삭제
+	        freeboardImageRepository.saveAll(imagesToKeep); // 유지할 이미지를 다시 저장
+
+	        return "게시글 수정이 완료되었습니다.";
+	    }
+
+	    
 	    
 }
