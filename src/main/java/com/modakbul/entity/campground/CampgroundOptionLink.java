@@ -21,8 +21,8 @@ public class CampgroundOptionLink {
     private Campground campground;
 
     @ManyToOne
-    @JoinColumn(name = "campground_option_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
-    private CampgroundOption campgroundOption;
+    @JoinColumn(name = "campground_suboption_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
+    private CampgroundSuboption campgroundSuboption;
 
     private boolean is_exist;
 }

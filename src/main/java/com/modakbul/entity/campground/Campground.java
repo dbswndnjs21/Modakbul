@@ -24,8 +24,8 @@ public class Campground {
 
     // Location과의 Many-to-One 관계 설정
     @ManyToOne
-    @JoinColumn(name = "location_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
-    private Location location;
+    @JoinColumn(name = "location_detail_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
+    private LocationDetail locationDetail;
 
     // Host과의 Many-to-One 관계 설정
     @ManyToOne

@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class CampgroundOptionLinkDto {
-    private Long id;
-    private Long campgroundId;
-    private int campgroundSubOptionId;
-    private boolean is_exist;
+public class LocationDetailDto {
+    private int id;
+    private int locationId;
+    private String locationName;
 }
