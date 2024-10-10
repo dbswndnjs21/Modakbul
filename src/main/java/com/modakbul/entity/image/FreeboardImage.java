@@ -1,5 +1,6 @@
 package com.modakbul.entity.image;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.modakbul.entity.freeboard.Freeboard;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class FreeboardImage {
 
     @ManyToOne
     @JoinColumn(name = "freeboard_id")
+    @JsonIgnore
     private Freeboard freeboard;
 
     private String fileName;
