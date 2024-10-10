@@ -53,7 +53,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         return member.getUserName();
     }
 
-    public String getProvider(){return member.getProvider();}
 
     public Member getMember() {
         return member;
