@@ -45,7 +45,8 @@ public class Payment {
     private int amount;
     private String productName;
     private String paymentMethod;
-    private int paymentStatus;
+    private String paymentStatus;
     private LocalDateTime paymentDate;
     private LocalDateTime approveDate;
+    private String paymentTid;
 }

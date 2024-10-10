@@ -1,13 +1,13 @@
 package com.modakbul.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modakbul.dto.ApproveResponse;
+import com.modakbul.dto.KaKaoPayCancelDto;
 import com.modakbul.dto.ReadyResponse;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Payment;
 import com.modakbul.repository.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
+import com.siot.IamportRestClient.response.IamportResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -17,17 +17,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
+import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 @Slf4j
 @Service
-public class KakaoPayService {
+public class PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -126,9 +128,10 @@ public class KakaoPayService {
                 .amount(approveResponse.getAmount().getTotal())    // 총 결제 금액
                 .productName(approveResponse.getItem_name())     // 승인 응답에서 받은 상품명
                 .paymentMethod("KakaoPay")                         // 결제 방식
-                .paymentStatus(1)                                  // 결제 상태 (예: 1 = 승인됨)
+                .paymentStatus("paid")                                  // 결제 상태 (예: 1 = 승인됨)
                 .paymentDate(LocalDateTime.parse(approveResponse.getCreated_at()))                  // 결제 날짜
                 .approveDate(LocalDateTime.parse(approveResponse.getApproved_at()))                  // 승인 날짜
+                .paymentTid(tid)
                 .build();
 
         paymentRepository.save(payment); // 결제 정보 DB에 저장
@@ -143,6 +146,68 @@ public class KakaoPayService {
         headers.set("Content-type", "application/json");
 
         return headers;
+    }
+
+    public void saveIamPortPayment(IamportResponse<com.siot.IamportRestClient.response.Payment> paymentResponse){
+        com.siot.IamportRestClient.response.Payment paymentData = paymentResponse.getResponse();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) principal;
+        Member member = userDetails.getMember();
+
+        Payment paymentEntity = new Payment();
+        paymentEntity.setProductName(paymentData.getName());
+        paymentEntity.setAmount(paymentData.getAmount().intValue());
+        paymentEntity.setApproveDate(paymentData.getPaidAt().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime());
+        paymentEntity.setPaymentStatus(paymentData.getStatus());
+        paymentEntity.setPaymentMethod("IamPort");
+        // 여기부터 다시 봐야함
+        paymentEntity.setOrderNumber(Long.valueOf(paymentData.getMerchantUid()));
+//        paymentEntity.setPaymentDate(paymentData.);  결재 준비 또는 승인 시작 시간
+        paymentEntity.setMember(member);
+
+
+        /// 쭉 DB에 담고
+//        System.out.println("결제 금액: " + paymentData.getAmount());
+//            System.out.println("결제 상태: " + paymentData.getStatus());
+//            System.out.println("결제 메소드: " + paymentData.getPayMethod());
+//            System.out.println("결제 승인 시간: " + paymentData.getPaidAt());
+//            System.out.println("주문명: " + paymentData.getName());
+//            System.out.println("결제 카드사: " + paymentData.getCardName());
+
+        paymentRepository.save(paymentEntity);
+
+    }
+
+    public KaKaoPayCancelDto KakaoPayCancel(Long orderNumber){
+        Payment findTidPayment = paymentRepository.findByOrderNumber(orderNumber);
+        String paymentTid = findTidPayment.getPaymentTid();
+        int amount = findTidPayment.getAmount();
+        System.out.println(paymentTid);
+        Map<String, Object> payParams = new HashMap<>();
+        payParams.put("cid", "TC0ONETIME");                     //가맹점코드
+        payParams.put("tid", paymentTid);                     //결제고유번호
+        payParams.put("cancel_amount", amount);                 //취소금액
+        payParams.put("cancel_tax_free_amount", 0);             //취소비과세금액
+
+        //카카오페이 결제요청 api 요청
+        HttpEntity<Map> request = new HttpEntity<>(payParams, getHeaders());
+
+        RestTemplate template = new RestTemplate();
+        String url = "https://open-api.kakaopay.com/online/v1/payment/cancel";
+
+        //요청결과
+        KaKaoPayCancelDto res = template.postForObject(url, request, KaKaoPayCancelDto.class);
+
+        log.debug("{}", res.toString());
+
+        findTidPayment.setPaymentStatus(res.getStatus());
+        paymentRepository.save(findTidPayment);
+
+        return res;
     }
 
 }

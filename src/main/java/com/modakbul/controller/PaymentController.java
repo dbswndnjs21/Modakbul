@@ -1,10 +1,12 @@
 package com.modakbul.controller;
 
+import com.modakbul.service.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private IamportClient iamportClient;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Value("${imp.api.key}")
     private String apiKey;
@@ -41,12 +46,14 @@ public class PaymentController {
             Payment paymentData = payment.getResponse();
             // 여기서 paymentData 보내서 service에서 DB에 저장하면될듯
 
-            System.out.println("결제 금액: " + paymentData.getAmount());
-            System.out.println("결제 상태: " + paymentData.getStatus());
-            System.out.println("결제 메소드: " + paymentData.getPayMethod());
-            System.out.println("결제 승인 시간: " + paymentData.getPaidAt());
-            System.out.println("주문명: " + paymentData.getName());
-            System.out.println("결제 카드사: " + paymentData.getCardName());
+            paymentService.saveIamPortPayment(payment);
+
+//            System.out.println("결제 금액: " + paymentData.getAmount());
+//            System.out.println("결제 상태: " + paymentData.getStatus());
+//            System.out.println("결제 메소드: " + paymentData.getPayMethod());
+//            System.out.println("결제 승인 시간: " + paymentData.getPaidAt());
+//            System.out.println("주문명: " + paymentData.getName());
+//            System.out.println("결제 카드사: " + paymentData.getCardName());
         } else {
             log.error("결제 요청 실패 또는 응답이 없습니다.");
         }
