@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class MemberService {
@@ -40,5 +42,13 @@ public class MemberService {
     }
     public Member findByMail(String mail) { // 추가된 메서드
         return memberRepository.findByMail(mail);
+    }
+
+    public List<Member> findAllMembers() {
+        return memberRepository.findAll();
+    }
+
+    public void deleteMember(Long id) {
+        memberRepository.deleteById(id);
     }
 }
