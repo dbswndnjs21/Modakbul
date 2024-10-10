@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class CampgroundOptionLinkDto {
     private Long id;
     private Long campgroundId;
-    private int campgroundOptionId;
+    private int campgroundSubOptionId;
     private boolean is_exist;
 }
