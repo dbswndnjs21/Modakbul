@@ -46,7 +46,7 @@ public class AdminPageController {
     }
     @GetMapping("/campGround")
     public String campGround(){
-        return "campground";
+        return "admin/campground";
     }
     @GetMapping("/freeBoard")
     public String freeBoard(){
