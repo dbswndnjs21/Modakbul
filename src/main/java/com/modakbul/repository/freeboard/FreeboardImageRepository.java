@@ -14,4 +14,6 @@ public interface FreeboardImageRepository extends JpaRepository<FreeboardImage, 
     FreeboardImage findBySaveFileName(String saveFileName);
     void deleteByFreeboard(Freeboard freeboard);
     List<FreeboardImage> findByFreeboard(Freeboard freeboard);
+    void deleteBysaveFileNameAndFreeboardId(String saveFileName, Long freeboardId);
+    
 }

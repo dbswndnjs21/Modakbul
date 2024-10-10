@@ -43,17 +43,18 @@ public class FreeboardUpdateController {
             @RequestParam(value = "removedImages", required = false) String[] removedImages, 
             @RequestParam("id") Long id, 
             Model model) {
-		System.out.println(freeboardDto);
-		System.out.println("Removed Images: " + (removedImages != null ? Arrays.toString(removedImages) : "null"));
-		System.out.println("Removed Images Length: " + (removedImages != null ? removedImages.length : "0"));
-		System.out.println(id);
-		System.out.println(member.getId());
-		 // 서비스 호출하여 게시글 수정 및 파일 처리
-        String result = freeboardService.updateFreeboard(freeboardDto, member.getId(), files, removedImages, filePath);
-        
-        model.addAttribute("result", result); // 결과 메시지 추가
+		
+		// 게시글 정보 업데이트
+	    if ((files != null && !files.isEmpty()) || (removedImages != null && removedImages.length > 0)) {
+	        // 파일이 있거나 삭제할 파일이 있는 경우
+	    	System.out.println(removedImages[0]);
+	        freeboardService.updateImageFreeboard(freeboardDto, member.getId(), files, removedImages, filePath);
+	    } else {
+	        // 파일이 없고 삭제할 파일도 없는 경우
+	        freeboardService.updateFreeboard(freeboardDto, member.getId());
+	    }
         
         // 수정 완료 후 리스트 페이지로 리다이렉트
-        return "redirect:freeboard/freeBoardList";
+        return "redirect:/freeboard/freeBoardList";
 	}
 }
