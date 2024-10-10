@@ -1,4 +1,4 @@
-package com.modakbul.repository;
+package com.modakbul.repository.member;
 
 import com.modakbul.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

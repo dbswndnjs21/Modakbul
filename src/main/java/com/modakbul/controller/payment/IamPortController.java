@@ -1,6 +1,6 @@
-package com.modakbul.controller;
+package com.modakbul.controller.payment;
 
-import com.modakbul.service.PaymentService;
+import com.modakbul.service.payment.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
-public class PaymentController {
+public class IamPortController {
 
     private IamportClient iamportClient;
 

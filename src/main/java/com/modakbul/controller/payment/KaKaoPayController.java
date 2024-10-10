@@ -1,10 +1,10 @@
-package com.modakbul.controller;
+package com.modakbul.controller.payment;
 
-import com.modakbul.dto.ApproveResponse;
-import com.modakbul.dto.KaKaoPayCancelDto;
-import com.modakbul.dto.OrderCreateForm;
-import com.modakbul.dto.ReadyResponse;
-import com.modakbul.service.PaymentService;
+import com.modakbul.dto.payment.ApproveResponse;
+import com.modakbul.dto.payment.KaKaoPayCancelDto;
+import com.modakbul.dto.payment.OrderCreateForm;
+import com.modakbul.dto.payment.ReadyResponse;
+import com.modakbul.service.payment.PaymentService;
 import com.modakbul.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
-public class OrderController {
+public class KaKaoPayController {
 
     private final PaymentService PaymentService;
     private final PaymentService paymentService;

@@ -1,4 +1,4 @@
-package com.modakbul.repository;
+package com.modakbul.repository.payment;
 
 import com.modakbul.entity.payment.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;

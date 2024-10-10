@@ -1,4 +1,4 @@
-package com.modakbul.service;
+package com.modakbul.service.member;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

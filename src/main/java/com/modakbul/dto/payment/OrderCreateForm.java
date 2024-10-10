@@ -1,4 +1,4 @@
-package com.modakbul.dto;
+package com.modakbul.dto.payment;
 
 import lombok.Getter;
 import lombok.Setter;

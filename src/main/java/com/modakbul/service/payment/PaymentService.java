@@ -1,11 +1,11 @@
-package com.modakbul.service;
+package com.modakbul.service.payment;
 
-import com.modakbul.dto.ApproveResponse;
-import com.modakbul.dto.KaKaoPayCancelDto;
-import com.modakbul.dto.ReadyResponse;
+import com.modakbul.dto.payment.ApproveResponse;
+import com.modakbul.dto.payment.KaKaoPayCancelDto;
+import com.modakbul.dto.payment.ReadyResponse;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Payment;
-import com.modakbul.repository.PaymentRepository;
+import com.modakbul.repository.payment.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.siot.IamportRestClient.response.IamportResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +17,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j

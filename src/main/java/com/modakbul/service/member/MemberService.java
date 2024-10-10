@@ -1,7 +1,7 @@
-package com.modakbul.service;
+package com.modakbul.service.member;
 
 import com.modakbul.entity.member.Member;
-import com.modakbul.repository.MemberRepository;
+import com.modakbul.repository.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

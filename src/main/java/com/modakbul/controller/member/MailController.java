@@ -1,8 +1,8 @@
-package com.modakbul.controller;
+package com.modakbul.controller.member;
 
 import com.modakbul.dto.mail.AuthCodeDto;
 import com.modakbul.dto.mail.MailDto;
-import com.modakbul.service.MailService;
+import com.modakbul.service.member.MailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

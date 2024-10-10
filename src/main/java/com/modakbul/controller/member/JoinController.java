@@ -1,9 +1,8 @@
-package com.modakbul.controller;
+package com.modakbul.controller.member;
 
 import com.modakbul.entity.member.Member;
-import com.modakbul.service.MemberService;
+import com.modakbul.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

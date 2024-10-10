@@ -1,8 +1,8 @@
-package com.modakbul.controller;
+package com.modakbul.controller.member;
 
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
-import com.modakbul.service.MemberService;
+import com.modakbul.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
