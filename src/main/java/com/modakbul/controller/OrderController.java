@@ -1,12 +1,15 @@
 package com.modakbul.controller;
 
 import com.modakbul.dto.ApproveResponse;
+import com.modakbul.dto.KaKaoPayCancelDto;
 import com.modakbul.dto.OrderCreateForm;
 import com.modakbul.dto.ReadyResponse;
-import com.modakbul.service.KakaoPayService;
+import com.modakbul.service.PaymentService;
 import com.modakbul.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/order")
 public class OrderController {
 
-    private final KakaoPayService kakaoPayService;
+    private final PaymentService PaymentService;
+    private final PaymentService paymentService;
 
     @GetMapping("/kakaoForm")
     public String kakaoForm(){
@@ -35,7 +39,7 @@ public class OrderController {
         log.info("주문 금액: " + totalPrice);
 
         // 카카오 결제 준비하기
-        ReadyResponse readyResponse = kakaoPayService.payReady(name, totalPrice, orderNumber);
+        ReadyResponse readyResponse = PaymentService.payReady(name, totalPrice, orderNumber);
         // 세션에 결제 고유번호(tid) 저장
         SessionUtils.addAttribute("tid", readyResponse.getTid());
         log.info("결제 고유번호: " + readyResponse.getTid());
@@ -51,9 +55,16 @@ public class OrderController {
         log.info("결제 고유번호: " + tid);
 
         // 카카오 결제 요청하기
-        ApproveResponse approveResponse = kakaoPayService.payApprove(tid, pgToken, orderNumber);
+        ApproveResponse approveResponse = PaymentService.payApprove(tid, pgToken, orderNumber);
         model.addAttribute("approveResponse", approveResponse);
 
         return "kakaopay/ordercompleted";
+    }
+
+    @PostMapping("/pay/cancel")
+    public ResponseEntity<KaKaoPayCancelDto> payCancel(@RequestParam("orderNumber") Long orderNumber) {
+        System.out.println("orderNumber : " + orderNumber);
+        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.KakaoPayCancel(orderNumber);
+        return new ResponseEntity<>(kaKaoPayCancelDto, HttpStatus.OK);
     }
 }
