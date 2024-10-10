@@ -318,4 +318,7 @@ public class FreeboardService {
 	        // 업데이트된 게시글 저장
 	        freeboardRepository.save(freeboard);
 	    }
+	public List<Freeboard> getAllPosts() {
+		return freeboardRepository.findAll();
+	}
 }
