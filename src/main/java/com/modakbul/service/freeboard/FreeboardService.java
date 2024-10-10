@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,16 +77,25 @@ public class FreeboardService {
 	        return "파일 업로드 성공"; // 성공 메시지 반환
 	    }
 	 
-	 public List<Freeboard> findAllWithImages() {
-		// 최신 글이 위에 오도록 정렬
-		    List<Freeboard> list = freeboardRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")); //
-	        for (Freeboard freeboard : list) {
-	            // 정렬된 이미지를 가져옴
-	            List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
-	            freeboard.setImages(images); // Freeboard 엔티티에 이미지 설정
-	        }
-	        return list;
+	public List<Freeboard> findWithImagesPaged(int page, int size) {
+	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt")); // 최신 글이 위로 오게 정렬
+	    Page<Freeboard> freeboardPage = freeboardRepository.findAll(pageable);
+
+	    List<Freeboard> freeboards = freeboardPage.getContent();  // 해당 페이지의 데이터만 가져옴
+	    
+	    System.out.println("Page: " + page + ", Loaded Posts: " + freeboards.size());
+
+	    // 이미지 데이터 추가 로직
+	    for (Freeboard freeboard : freeboards) {
+	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
+	        freeboard.setImages(images); // 이미지 설정
+
+	        // 각 게시글의 정보 출력 (확인용)
+	        System.out.println("Post ID: " + freeboard.getId() + ", Title: " + freeboard.getTitle());
 	    }
+
+	    return freeboards;
+	}
 	 
 	 // 게시글과 이미지 조회
 	    public FreeboardDto getPostWithImagesById(Long id) {
