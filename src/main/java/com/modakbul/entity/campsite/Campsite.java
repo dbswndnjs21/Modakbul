@@ -1,5 +1,6 @@
 package com.modakbul.entity.campsite;
 
+import com.modakbul.entity.campground.Campground;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +21,12 @@ public class Campsite {
     @JoinColumn(name = "campsite_category_id")
     private CampsiteCategory campsiteCategory;
 
+    @ManyToOne
+    @JoinColumn(name = "campground_id")
+    private Campground campground;
+
+    private int campsitePrice;
     private String campsiteName;
     private String campsiteDescription;
-    private int head_count;
+    private int headCount;
 }
