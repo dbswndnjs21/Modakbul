@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div th:fragment="sidebar">
+    <div class="sidebar">
+        <h2>관리 메뉴</h2>
+        <a th:href="@{/admin/member}">멤버 목록</a>
+        <a th:href="@{/admin/campGround}">캠핑장 목록</a>
+        <a th:href="@{/admin/freeBoard}">자유 게시판 목록</a>
+        <a th:href="@{/admin/comments}">댓글 목록</a>
+        <a th:href="@{/}">홈으로</a>
+    </div>
+</div>
+</body>
+</html>

@@ -27,17 +27,40 @@ public class AdminPageController {
     @Autowired
     private FreeboardService freeboardService;
 
-    @GetMapping
-    public String adminPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+    @ModelAttribute
+    public void addAttributes(Model model){
         List<Member> members = memberService.findAllMembers();
         List<Campground> camp = campgroundService.getAllCampgrounds();
         List<Freeboard> freeboard = freeboardService.findAllWithImages();
-        model.addAttribute("member", member);
+
         model.addAttribute("members", members);
         model.addAttribute("camp", camp);
         model.addAttribute("freeboard", freeboard);
+    }
+
+    @GetMapping
+    public String adminPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        model.addAttribute("member", member);
         return "admin/adminPage";
     }
+    @GetMapping("/member")
+    public String memberPage(){
+        return "admin/member";
+    }
+    @GetMapping("/campGround")
+    public String campGround(){
+        return "admin/campGround";
+    }
+    @GetMapping("/freeBoard")
+    public String freeBoard(){
+        return "admin/freeBoard";
+    }
+    @GetMapping("/comments")
+    public String comments(){
+        return "admin/comments";
+    }
+
+
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id) {
         memberService.deleteMember(id);

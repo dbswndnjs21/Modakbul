@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>관리자 페이지</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/admin.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="sidebar">
-    <h2>관리 메뉴</h2>
-    <a th:href="@{/admin/member}">멤버 목록</a>
-    <a th:href="@{/admin/campground}">캠핑장 목록</a>
-    <a th:href="@{/admin/freeboard}">자유 게시판 목록</a>
-    <a th:href="@{/admin/comments}">댓글 목록</a>
-    <a th:href="@{/}">홈으로</a>
-</div>
+<!-- 사이드바 포함 -->
+<div th:replace="admin/fragments/sidebar :: sidebar"></div>
 
 <div class="main-content">
     <h1>멤버 목록</h1>
     <table>
         <thead>
         <tr>
+            <th>번호</th>
             <th>ID</th>
             <th>이메일</th>
             <th>이름</th>
@@ -32,6 +27,7 @@
         <tbody>
         <tr th:each="members : ${members}">
             <td th:text="${members.id}"></td>
+            <td th:text="${members.userId}"></td>
             <td th:text="${members.mail}"></td>
             <td th:text="${members.userName}"></td>
             <td th:text="${members.phone}"></td>
