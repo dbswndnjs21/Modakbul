@@ -2,6 +2,7 @@ package com.modakbul.controller.campground;
 
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.service.campground.CampgroundService;
+import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
@@ -14,9 +15,11 @@ import java.util.List;
 @RequestMapping("/campgrounds")
 public class CampgroundController {
     private final CampgroundService campgroundService;
+    private final CampsiteService campsiteService;
 
-    public CampgroundController(CampgroundService campgroundService) {
+    public CampgroundController(CampgroundService campgroundService, CampsiteService campsiteService) {
         this.campgroundService = campgroundService;
+        this.campsiteService = campsiteService;
     }
 
     @GetMapping
@@ -28,6 +31,7 @@ public class CampgroundController {
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable Long id, Model model) {
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
+        model.addAttribute("campsites", campsiteService.findByCampgroundId(id));
         return "campground/campgroundDetail";
     }
 
