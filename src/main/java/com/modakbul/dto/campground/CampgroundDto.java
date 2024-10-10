@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class CampgroundDto {
     private Long id;
     private int campgroundCategoryId;
-    private int locationId;
+    private int locationDetailId;
     private Long hostId;
     private String campgroundName;
     private String campgroundAddress;
