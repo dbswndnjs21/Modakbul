@@ -1,61 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>모닥불 게시판</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet" th:href="@{/css/header.css}">
-<link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
-<!-- CSS 파일 링크 -->
-<link rel="stylesheet" th:href="@{/css/footer.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모닥불 게시판</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
-	<!-- 헤더 영역 -->
-	<header th:replace="~{fragments/header :: header}"></header>
+    <!-- 헤더 영역 -->
+    <header th:replace="~{fragments/header :: header}"></header>
 
-	<!-- 메인 콘텐츠 영역 -->
-	<section class="container my-5">
-		<div class="text-center mb-4">
-			<h2>게시판</h2>
-			<a th:href="@{/freeboard/freeBoardWrite}"
-				class="btn btn-success mt-2">글 등록</a>
-			<!-- 글 등록 버튼, 제목 아래로 이동 -->
-		</div>
+    <!-- 메인 콘텐츠 영역 -->
+    <section class="container my-5">
+        <div class="text-center mb-4">
+            <h2>게시판</h2>
+            <a th:href="@{/freeboard/freeBoardWrite}" class="btn btn-success mt-2">글 등록</a>
+        </div>
 
-		<div id="postList">
-			<div th:each="post : ${list}" class="card mb-3">
-				<th:block th:if="${post != null}">
-					<th:block th:if="${post.images != null and post.images.size() > 0}">
-						<img
-							th:src="@{/upload/{saveFileName}(saveFileName=${post.images[0].saveFileName})}"
-							class="card-img-top" alt="게시글 사진"
-							style="height: 300px; object-fit: cover;"
-							th:alt="${post.images[0].fileName}">
-					</th:block>
-				</th:block>
-				<div class="card-body">
-					<h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
-					<p class="card-text" th:text="${post.content}">게시글 내용</p>
-					<a th:href="@{/freeboard/freeBoardView(id=${post.id})}"
-						class="btn btn-success">자세히 보기</a>
-				</div>
-			</div>
-		</div>
+        <div id="postList">
+            <div th:each="post : ${list}" class="card mb-3" data-id="${post.id}">
+                <th:block th:if="${post != null}">
+                    <th:block th:if="${post.images != null and post.images.size() > 0}">
+                        <img th:src="@{/upload/{saveFileName}(saveFileName=${post.images[0].saveFileName})}" class="card-img-top" alt="게시글 사진" style="height: 300px; object-fit: cover;" th:alt="${post.images[0].fileName}">
+                    </th:block>
+                </th:block>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
+                    <p class="card-text" th:text="${post.content}">게시글 내용</p>
+                    <a th:href="@{/freeboard/freeBoardView(id=${post.id})}" class="btn btn-success">자세히 보기</a>
+                </div>
+            </div>
+        </div>
 
-		<div id="loading" class="text-center my-4" style="display: none;">
-			<p>Loading...</p>
-		</div>
-	</section>
+        <div id="loading" class="text-center my-4" style="display: none;">
+            <p>Loading...</p>
+        </div>
+    </section>
 
-	<!-- 푸터 영역 -->
-	<footer th:replace="~{fragments/footer :: footer}"></footer>
+    <!-- 푸터 영역 -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="/js/scripts.js"></script>
-	<!-- JS 파일 링크 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/scripts.js"></script>
+    <script>
+    let page = 0;
+    const size = 5; // 한 번에 5개씩 불러옴
+    let isLoading = false; // 로딩 상태 추적
+
+    window.addEventListener('scroll', () => {
+        // 스크롤이 페이지 끝에 도달했을 때
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            loadMorePosts();
+        }
+    });
+
+    function loadMorePosts() {
+        if (isLoading) return; // 이미 로딩 중이면 함수 종료
+        isLoading = true; // 로딩 시작
+
+        document.getElementById("loading").style.display = "block"; // 로딩 표시
+
+        // AJAX 요청
+        fetch(`/freeboard/loadMore?page=${page}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loading").style.display = "none"; // 로딩 숨기기
+                isLoading = false; // 로딩 종료
+
+                if (data.length > 0) {
+                    appendPosts(data);
+                    page++; // 다음 페이지로 넘어감
+                } else {
+                    console.log("더 이상 불러올 게시글이 없습니다.");
+                }
+            })
+            .catch(error => {
+                console.error("Error loading more posts:", error);
+                isLoading = false; // 에러 발생 시 로딩 종료
+            });
+    }
+
+    function appendPosts(posts) {
+        const postList = document.getElementById("postList");
+        const existingPostIds = new Set();
+
+        // 이미 렌더링된 게시글 ID를 추적
+        postList.querySelectorAll('.card').forEach(card => {
+            const postId = card.getAttribute('data-id');
+            existingPostIds.add(postId);
+        });
+
+        posts.forEach(post => {
+            if (!existingPostIds.has(post.id)) {  // 중복된 게시글은 추가하지 않음
+                const postCard = document.createElement("div");
+                postCard.className = "card mb-3";
+                postCard.setAttribute('data-id', post.id);  // 게시글 ID 설정
+                
+                postCard.innerHTML = `
+                    <img src="/upload/${post.images[0]?.saveFileName}" class="card-img-top" alt="${post.images[0]?.fileName}" style="height: 300px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">${post.title}</h5>
+                        <p class="card-text">${post.content}</p>
+                        <a href="/freeboard/freeBoardView?id=${post.id}" class="btn btn-success">자세히 보기</a>
+                    </div>
+                `;
+                postList.appendChild(postCard);
+            }
+        });
+    }
+
+    </script>
 </body>
 </html>
