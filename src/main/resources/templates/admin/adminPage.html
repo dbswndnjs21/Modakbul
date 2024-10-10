@@ -2,133 +2,115 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>멤버 목록</title>
+    <title>관리자 페이지</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<a th:href="@{/}">홈으로 가자!!!</a>
-<h1>멤버 목록</h1>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>이메일</th>
-        <th>이름</th>
-        <th>전화번호</th>
-        <th>역할</th>
-        <th>작업</th> <!-- 작업 열 추가 -->
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="members : ${members}">
-        <td th:text="${members.id}"></td>
-        <td th:text="${members.mail}"></td>
-        <td th:text="${members.userName}"></td>
-        <td th:text="${members.phone}"></td>
-        <td th:text="${members.role}"></td>
-        <td>
-            <form th:action="@{/admin/delete/{id}(id=${members.id})}" method="post">
-                <input type="hidden" name="_method" value="DELETE"/> <!-- hidden input 추가 -->
-                <button type="submit" onclick="return confirm('정말로 이 멤버를 삭제하시겠습니까?');">삭제</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="sidebar">
+    <h2>관리 메뉴</h2>
+    <a th:href="@{/admin/member}">멤버 목록</a>
+    <a th:href="@{/admin/campground}">캠핑장 목록</a>
+    <a th:href="@{/admin/freeboard}">자유 게시판 목록</a>
+    <a th:href="@{/admin/comments}">댓글 목록</a>
+    <a th:href="@{/}">홈으로</a>
+</div>
 
-<hr>
+<div class="main-content">
+    <h1>멤버 목록</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이메일</th>
+            <th>이름</th>
+            <th>전화번호</th>
+            <th>역할</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="members : ${members}">
+            <td th:text="${members.id}"></td>
+            <td th:text="${members.mail}"></td>
+            <td th:text="${members.userName}"></td>
+            <td th:text="${members.phone}"></td>
+            <td th:text="${members.role}"></td>
+            <td>
+                <form th:action="@{/admin/delete/{id}(id=${members.id})}" method="post">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button type="submit" onclick="return confirm('정말로 이 멤버를 삭제하시겠습니까?');">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<h1>캠핑장 승인 관리</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>캠핑장 이름</th>
-        <th>주소</th>
-        <th>전화번호</th>
-        <th>승인 상태</th>
-        <th>작업</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="camp : ${camp}">
-        <td th:text="${camp.id}"></td>
-        <td th:text="${camp.campGroundName}"></td>
-        <td th:text="${camp.campGroundAddress}"></td>
-        <td th:text="${camp.phone}"></td>
-        <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
-        <td>
-            <button th:if="${camp.approve == 0}" onclick="approveCampground(${campground.id})">승인</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <hr>
 
-<hr>
+    <h1>캠핑장 승인 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>캠핑장 이름</th>
+            <th>주소</th>
+            <th>전화번호</th>
+            <th>승인 상태</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="camp : ${camp}">
+            <td th:text="${camp.id}"></td>
+            <td th:text="${camp.campGroundName}"></td>
+            <td th:text="${camp.campGroundAddress}"></td>
+            <td th:text="${camp.phone}"></td>
+            <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
+            <td>
+                <button th:if="${camp.approve == 0}" onclick="approveCampground(${camp.id})">승인</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<h1>자유 게시판 관리</h1>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>제목</th>
-        <th>내용</th>
-        <th>작성 시간</th>
-        <th>수정 시간</th>
-<!--        <th>작성자 ID</th>-->
-        <th>작업</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="freeboard : ${freeboard}">
-        <td th:text="${freeboard.id}"></td>
-        <td th:text="${freeboard.title}"></td>
-        <td th:text="${freeboard.content}"></td>
-        <td th:text="${freeboard.createdAt}"></td>
-        <td th:text="${freeboard.updatedAt}"></td>
-<!--        <td th:text="${freeboard.memberId}"></td>-->
-        <td>
-            <form th:action="@{/admin/freeboard/delete/{id}(id=${freeboard.id})}" method="post" onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
-                <input type="hidden" name="_method" value="delete"> <!-- HTTP 메서드 오버라이드 -->
-                <button type="submit">삭제</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <hr>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const deleteButtons = document.querySelectorAll('.delete-btn');
+    <h1>자유 게시판 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성 시간</th>
+            <th>수정 시간</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="freeboard : ${freeboard}">
+            <td th:text="${freeboard.id}"></td>
+            <td>
+                <a th:href="@{/freeboard/freeBoardView(id=${freeboard.id})}" target="_blank" th:text="${freeboard.title}"></a>
+            </td>
+            <td th:text="${freeboard.content}"></td>
+            <td th:text="${freeboard.createdAt}"></td>
+            <td th:text="${freeboard.updatedAt}"></td>
+            <td>
+                <form th:action="@{/admin/freeboard/delete/{id}(id=${freeboard.id})}" method="post" onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id'); // data-id 속성에서 ID 가져오기
-                if (confirm('정말로 이 게시글을 삭제하시겠습니까?')) {
-                    fetch(`/freeboard/freeBoardDelete/${id}`, { // URL 수정
-                        method: 'GET', // 현재 컨트롤러에 맞게 GET 메서드 사용
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                alert('게시글이 삭제되었습니다.');
-                                location.reload(); // 삭제 후 페이지 새로고침
-                            } else {
-                                alert('게시글 삭제에 실패했습니다.'); // 에러 처리
-                            }
-                        })
-                        .catch(error => {
-                            alert('게시글 삭제에 실패했습니다.'); // 에러 처리
-                            console.error('Error:', error);
-                        });
-                }
-            });
-        });
-    });
-</script>
+    <hr>
 
-<hr>
-
-<h1>댓글 목록</h1>
-
+    <h1>댓글 목록</h1>
+    <!-- 댓글 목록 내용 추가 -->
+</div>
 </body>
 </html>
