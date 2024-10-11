@@ -109,12 +109,20 @@ body {
 
 .reply-btn {
   font-size: 12px;
-  color: #ff7f50; /* 답글 버튼 색상 */
-  text-decoration: none;
+  color: #ff7f50 !important; /* 주황빛 색상 */
+  text-decoration: none !important;
+  background-color: transparent !important; /* 배경 투명 */
+  border: none !important; /* 테두리 제거 */
+  padding: 5px 10px !important; /* 패딩 추가 */
+  border-radius: 20px !important; /* 버튼 모서리 둥글게 */
+  cursor: pointer !important; /* 마우스 커서 변경 */
+  transition: background-color 0.3s ease !important; /* 부드러운 배경색 전환 */
 }
 
 .reply-btn:hover {
-  text-decoration: underline;
+  background-color: #e06e43 !important; /* 호버 시 배경색 주황빛 진하게 */
+  color: white !important; /* 호버 시 글자 색상 변경 */
+  text-decoration: none !important; /* 호버 시 밑줄 제거 */
 }
 
 /* 댓글 입력 폼 */
@@ -202,5 +210,9 @@ form textarea {
 .carousel-item img {
     height: 100%; /* 부모 요소의 높이를 가득 채우도록 설정 */
     object-fit: cover; /* 이미지 비율 유지하며 잘림 */
+}
+.reply-indented {
+    padding-left: 20px; /* 대댓글의 들여쓰기 값 조정 */
+    border-left: 1px solid #ccc; /* 선택적으로 왼쪽에 경계선 추가 */
 }
 
