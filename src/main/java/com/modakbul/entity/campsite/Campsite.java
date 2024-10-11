@@ -25,7 +25,6 @@ public class Campsite {
     @JoinColumn(name = "campground_id")
     private Campground campground;
 
-    private int campsitePrice;
     private String campsiteName;
     private String campsiteDescription;
     private int headCount;
