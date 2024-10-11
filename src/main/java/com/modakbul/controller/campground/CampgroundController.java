@@ -29,7 +29,10 @@ public class CampgroundController {
 //    }
 
     @GetMapping("/{id}")
-    public String showCampgroundDetail(@PathVariable Long id, Model model) {
+    public String showCampgroundDetail(@PathVariable Long id,
+                                       @RequestParam(value = "query", required = false) String query,
+                                       Model model) {
+
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsiteService.findByCampgroundId(id));
         return "campground/campgroundDetail";
@@ -50,8 +53,7 @@ public class CampgroundController {
     }
 
     @GetMapping
-    public String searchCampgrounds(
-            @RequestParam(value = "query", required = false) String query, Model model) {
+    public String searchCampgrounds(){
         return "campground/campgroundSearch";
     }
 

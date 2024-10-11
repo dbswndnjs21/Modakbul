@@ -171,10 +171,27 @@
     <tr th:each="campground : ${campgrounds}">
         <td th:text="${campground.id}">1</td>
         <td th:text="${campground.campgroundName}">Camp Name</td>
-        <td><a th:href="@{/campgrounds/{id}(id=${campground.id})}">Details</a></td>
+        <td>
+            <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link">Details</a>
+        </td>
     </tr>
     </tbody>
 </table>
+<script>
+    document.querySelectorAll('.details-link').forEach(link => {
+        link.addEventListener('click', function(event) {
+            // 체크인 및 체크아웃 날짜 가져오기
+            const checkInDate = document.getElementById('checkInDate').value;
+            const checkOutDate = document.getElementById('checkOutDate').value;
 
+            // 링크의 href를 가져와서 수정
+            let href = link.getAttribute('href');
+            href += `?checkInDate=${encodeURIComponent(checkInDate)}&checkOutDate=${encodeURIComponent(checkOutDate)}`;
+
+            // 수정된 href를 링크에 설정
+            link.setAttribute('href', href);
+        });
+    });
+</script>
 </body>
 </html>
