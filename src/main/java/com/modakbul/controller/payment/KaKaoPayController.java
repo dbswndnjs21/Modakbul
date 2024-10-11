@@ -60,11 +60,24 @@ public class KaKaoPayController {
 
         return "kakaopay/ordercompleted";
     }
+// 결제 취소 후 마이페이지의 예약내역으로가기
+//    @PostMapping("/pay/cancel")
+//    public ResponseEntity<String> payCancel(@RequestParam("orderNumber") Long orderNumber) {
+//        System.out.println("orderNumber : " + orderNumber);
+//        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.KakaoPayCancel(orderNumber);
+//        String url = "/mypage/reservations";
+//        return new ResponseEntity<>(url, HttpStatus.OK);
+//    }
 
+    // 결제 취소 후 버튼이있던 곳에 취소 내역 뿌리기
     @PostMapping("/pay/cancel")
     public ResponseEntity<KaKaoPayCancelDto> payCancel(@RequestParam("orderNumber") Long orderNumber) {
         System.out.println("orderNumber : " + orderNumber);
+
+        // 결제 취소 로직 수행
         KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.KakaoPayCancel(orderNumber);
+
         return new ResponseEntity<>(kaKaoPayCancelDto, HttpStatus.OK);
     }
+
 }

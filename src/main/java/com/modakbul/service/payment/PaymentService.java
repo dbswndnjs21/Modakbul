@@ -5,6 +5,8 @@ import com.modakbul.dto.payment.KaKaoPayCancelDto;
 import com.modakbul.dto.payment.ReadyResponse;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Payment;
+import com.modakbul.entity.payment.PaymentCancel;
+import com.modakbul.repository.payment.PaymentCancelRepository;
 import com.modakbul.repository.payment.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -19,6 +21,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -30,6 +33,8 @@ public class PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private PaymentCancelRepository paymentCancelRepository;
 
 
     // 카카오페이 결제창 연결
@@ -120,12 +125,12 @@ public class PaymentService {
         log.info("결제승인 응답객체: " + approveResponse);
 
         Payment payment = Payment.builder()
-                .member(member)                                    // 결제한 회원
-                .orderNumber(Long.parseLong(orderNumber))      // 주문번호 설정
-                .amount(approveResponse.getAmount().getTotal())    // 총 결제 금액
-                .productName(approveResponse.getItem_name())     // 승인 응답에서 받은 상품명
-                .paymentMethod("KakaoPay")                         // 결제 방식
-                .paymentStatus("paid")                                  // 결제 상태 (예: 1 = 승인됨)
+                .member(member)                                          // 결제한 회원
+                .orderNumber(Long.parseLong(orderNumber))                // 주문번호 설정
+                .amount(approveResponse.getAmount().getTotal())          // 총 결제 금액
+                .productName(approveResponse.getItem_name())             // 승인 응답에서 받은 상품명
+                .paymentMethod("KakaoPay")                               // 결제 방식
+                .paymentStatus("paid")                                   // 결제 상태 (예: 1 = 승인됨)
                 .paymentDate(LocalDateTime.parse(approveResponse.getCreated_at()))                  // 결제 날짜
                 .approveDate(LocalDateTime.parse(approveResponse.getApproved_at()))                  // 승인 날짜
                 .paymentTid(tid)
@@ -186,8 +191,8 @@ public class PaymentService {
         System.out.println(paymentTid);
         Map<String, Object> payParams = new HashMap<>();
         payParams.put("cid", "TC0ONETIME");                     //가맹점코드
-        payParams.put("tid", paymentTid);                     //결제고유번호
-        payParams.put("cancel_amount", amount);                 //취소금액
+        payParams.put("tid", paymentTid);                       //결제고유번호
+        payParams.put("cancel_amount", amount);                  //취소금액(전체 취소로함)
         payParams.put("cancel_tax_free_amount", 0);             //취소비과세금액
 
         //카카오페이 결제요청 api 요청
@@ -203,6 +208,15 @@ public class PaymentService {
 
         findTidPayment.setPaymentStatus(res.getStatus());
         paymentRepository.save(findTidPayment);
+
+        // 결제 취소 테이블에도 취소 내역 저장
+        PaymentCancel paymentCancel = PaymentCancel.builder()
+                .paymentTid(res.getTid())
+                .payment(findTidPayment)
+                .refundAmount(res.getApproved_cancel_amount().getTotal())
+                .canceledAt(LocalDateTime.parse(res.getCanceled_at()))
+                .build();
+        paymentCancelRepository.save(paymentCancel);
 
         return res;
     }
