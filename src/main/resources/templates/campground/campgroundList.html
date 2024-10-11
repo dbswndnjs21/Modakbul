@@ -14,6 +14,7 @@
         #calendar {
             max-width: 600px;
             margin: 20px auto;
+            display: block; /* 기본적으로 보이게 설정 */
         }
         .selected {
             background-color: rgba(0, 255, 0, 0.3); /* 연한 초록색 */
@@ -24,19 +25,32 @@
 <form action="/campgrounds/search" method="get" onsubmit="return validateForm();">
     <!-- Search input for campground name or location -->
     <input type="text" name="query" placeholder="Search Campgrounds" required style="width: 300px; margin-bottom: 20px;">
-
+    <button type="submit" style="margin-top: 20px;">Search Campgrounds</button>
     <!-- Hidden inputs to hold selected dates -->
     <input type="hidden" id="checkInDate" name="checkInDate">
     <input type="hidden" id="checkOutDate" name="checkOutDate">
-
     <div class="date-display">
         <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
         <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
     </div>
-
-    <div id='calendar'></div>
-    <button type="submit" style="margin-top: 20px;">Search Campgrounds</button>
 </form>
+<button id="toggleButton">숨기기</button>
+<div id='calendar'></div>
+
+<script>
+    const calendarDiv = document.getElementById('calendar');
+    const toggleButton = document.getElementById('toggleButton');
+
+    toggleButton.addEventListener('click', function() {
+        if (calendarDiv.style.display === 'none') {
+            calendarDiv.style.display = 'block';
+            toggleButton.textContent = '숨기기'; // 버튼 텍스트 변경
+        } else {
+            calendarDiv.style.display = 'none';
+            toggleButton.textContent = '보이기'; // 버튼 텍스트 변경
+        }
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
