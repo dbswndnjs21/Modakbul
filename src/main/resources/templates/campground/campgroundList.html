@@ -14,7 +14,7 @@
         #calendar {
             max-width: 600px;
             margin: 20px auto;
-            display: block; /* 기본적으로 보이게 설정 */
+            display: none; /* 기본적으로 숨김 설정 */
         }
         .selected {
             background-color: rgba(0, 255, 0, 0.3); /* 연한 초록색 */
@@ -34,42 +34,26 @@
         <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
     </div>
 </form>
-<button id="toggleButton">숨기기</button>
+<button id="toggleButton">보이기</button>
 <div id='calendar'></div>
 
 <script>
     const calendarDiv = document.getElementById('calendar');
     const toggleButton = document.getElementById('toggleButton');
 
-    toggleButton.addEventListener('click', function() {
-        if (calendarDiv.style.display === 'none') {
-            calendarDiv.style.display = 'block';
-            toggleButton.textContent = '숨기기'; // 버튼 텍스트 변경
-        } else {
-            calendarDiv.style.display = 'none';
-            toggleButton.textContent = '보이기'; // 버튼 텍스트 변경
-        }
-    });
-</script>
+    let calendar;
+    let checkInDate = '';
+    let checkOutDate = '';
+    let isCheckInSelected = false;
+    let isCheckOutSelected = false;
 
-<script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
 
         // URL에서 체크인, 체크아웃 날짜 가져오기
         const urlParams = new URLSearchParams(window.location.search);
-        var checkInDate = urlParams.get('checkInDate');
-        var checkOutDate = urlParams.get('checkOutDate');
-
-        // 체크인, 체크아웃 날짜가 없는 경우 기본값 설정 (오늘 + 내일)
-        var today = new Date();
-        var todayStr = today.toISOString().slice(0, 10); // 오늘 날짜
-        var tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        var tomorrowStr = tomorrow.toISOString().slice(0, 10); // 내일 날짜
-
-        if (!checkInDate) checkInDate = todayStr;
-        if (!checkOutDate) checkOutDate = tomorrowStr;
+        checkInDate = urlParams.get('checkInDate') || new Date().toISOString().slice(0, 10); // 오늘 날짜
+        checkOutDate = urlParams.get('checkOutDate') || new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10); // 내일 날짜
 
         // 날짜를 input 요소에 설정
         document.getElementById('checkInDate').value = checkInDate;
@@ -79,11 +63,7 @@
         document.getElementById('checkInDisplay').innerText = checkInDate;
         document.getElementById('checkOutDisplay').innerText = checkOutDate;
 
-        var isCheckInSelected = false; // 체크인 날짜가 선택된 상태인지 확인
-        var isCheckOutSelected = false; // 체크아웃 날짜가 선택된 상태인지 확인
-
-        // FullCalendar 초기화
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             selectable: true,
             select: function(info) {
@@ -91,7 +71,6 @@
 
                 // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
                 if (isCheckOutSelected) {
-                    // 새로운 체크인 날짜로 설정하고, 체크아웃 초기화
                     checkInDate = startDate;
                     checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
                     isCheckOutSelected = false;
@@ -124,7 +103,7 @@
                     // 체크인 날짜 표시
                     calendar.addEvent({
                         start: checkInDate,
-                        end: checkOutDate ? new Date(new Date(checkOutDate).setDate(new Date(checkOutDate).getDate() + 1)).toISOString().slice(0, 10) : new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10),
+                        end: new Date(new Date(checkOutDate).setDate(new Date(checkOutDate).getDate() + 1)).toISOString().slice(0, 10),
                         display: 'background',
                         classNames: ['selected']
                     });
@@ -163,6 +142,17 @@
         calendar.render();
     });
 
+    toggleButton.addEventListener('click', function() {
+        if (calendarDiv.style.display === 'none') {
+            calendarDiv.style.display = 'block';
+            calendar.render(); // FullCalendar를 다시 렌더링
+            toggleButton.textContent = '숨기기'; // 버튼 텍스트 변경
+        } else {
+            calendarDiv.style.display = 'none';
+            toggleButton.textContent = '보이기'; // 버튼 텍스트 변경
+        }
+    });
+
     function validateForm() {
         return true; // 폼을 제출할 수 있도록 true 반환
     }
@@ -181,7 +171,6 @@
     <tr th:each="campground : ${campgrounds}">
         <td th:text="${campground.id}">1</td>
         <td th:text="${campground.campgroundName}">Camp Name</td>
-<!--        <td th:text="${campground.location}">Location</td>-->
         <td><a th:href="@{/campgrounds/{id}(id=${campground.id})}">Details</a></td>
     </tr>
     </tbody>
