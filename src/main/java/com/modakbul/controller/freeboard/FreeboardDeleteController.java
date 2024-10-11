@@ -1,8 +1,6 @@
 package com.modakbul.controller.freeboard;
 
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -13,9 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.freeboard.FreeboardService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class FreeboardDeleteController {
-	@Autowired FreeboardService freeboardService;
+	private final FreeboardService freeboardService;
 	@Value("${file.path}")
 	private String filePath;
 	

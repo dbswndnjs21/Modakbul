@@ -27,11 +27,12 @@ import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.freeboard.FreeboardService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class FreeboardWriteController {
-	@Autowired 
-    FreeboardService freeboardService;
+	private final FreeboardService freeboardService;
 	
 	@Value("${file.path}")
 	private String filePath;

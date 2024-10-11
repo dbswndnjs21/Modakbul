@@ -2,7 +2,6 @@ package com.modakbul.controller.freeboard;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +13,12 @@ import com.modakbul.entity.freeboard.Freeboard;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.freeboard.FreeboardService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class FreeboardListController {
-	@Autowired
-	FreeboardService freeboardService;
+	private final FreeboardService freeboardService;
 
 	@GetMapping("/freeboard/freeBoardList")
 	public String board(@AuthenticationPrincipal CustomUserDetails member, Model model) {

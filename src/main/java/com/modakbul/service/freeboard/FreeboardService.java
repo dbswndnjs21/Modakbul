@@ -27,12 +27,14 @@ import com.modakbul.repository.freeboard.FreeboardRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class FreeboardService {
-	@Autowired FreeboardRepository freeboardRepository;
-	@Autowired FreeboardImageRepository freeboardImageRepository;
+	private final FreeboardRepository freeboardRepository;
+	private final FreeboardImageRepository freeboardImageRepository;
 	
 	public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
 	        // Freeboard 엔티티 생성
