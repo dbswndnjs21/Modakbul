@@ -1,8 +1,12 @@
 package com.modakbul.entity.member;
 
+import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.freeboard.FreeboardComment;
 import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +25,7 @@ public class Host {
     private String bankName;
     private String account;
     private String account_holder;  // 호스트의 추가 정보
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Campground> campgrounds;
 }

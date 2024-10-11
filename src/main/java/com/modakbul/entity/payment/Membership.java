@@ -1,13 +1,14 @@
 package com.modakbul.entity.payment;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.modakbul.entity.chat.ChatMessage;
+import com.modakbul.entity.member.Member;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +22,10 @@ public class Membership {
     private String membershipName;
     private int discountRate;
     private int validPeriod;
+
+    @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
+    private List<Payment> payments;
+
+    @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
+    private List<Member> members;
 }

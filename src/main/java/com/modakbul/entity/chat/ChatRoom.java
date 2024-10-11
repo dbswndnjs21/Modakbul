@@ -2,6 +2,7 @@ package com.modakbul.entity.chat;
 
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campground.CampgroundOption;
+import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,5 +37,8 @@ public class ChatRoom {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages;
 
 }

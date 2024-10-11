@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -19,4 +21,7 @@ public class LocationDetail {
     @JoinColumn(name = "location_id")
     private Location location;
     private String locationName;
+
+    @OneToMany(mappedBy = "locationDetail", cascade = CascadeType.ALL)
+    private List<Campground> campgrounds;
 }

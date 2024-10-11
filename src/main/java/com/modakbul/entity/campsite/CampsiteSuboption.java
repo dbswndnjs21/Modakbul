@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -21,4 +23,7 @@ public class CampsiteSuboption {
     private CampsiteOption campsiteOption;
 
     private String optionName;
+
+    @OneToMany(mappedBy = "campsiteSuboption", cascade = CascadeType.ALL)
+    private List<CampsiteOptionLink> campsiteOptionLinks;
 }

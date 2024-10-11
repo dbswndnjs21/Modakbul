@@ -1,11 +1,15 @@
 package com.modakbul.entity.campsite;
 
+import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.image.CampsiteImage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,14 +22,22 @@ public class Campsite {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "campsite_category_id")
-    private CampsiteCategory campsiteCategory;
-
-    @ManyToOne
     @JoinColumn(name = "campground_id")
     private Campground campground;
 
     private String campsiteName;
     private String campsiteDescription;
     private int headCount;
+
+    @OneToMany(mappedBy = "campsite", cascade = CascadeType.ALL)
+    private List<CampsitePrice> campsitePrices;
+
+    @OneToMany(mappedBy = "campsite", cascade = CascadeType.ALL)
+    private List<CampsiteOptionLink> campsiteOptionLinks;
+
+    @OneToMany(mappedBy = "campsite", cascade = CascadeType.ALL)
+    private List<CampsiteImage> campsiteImages;
+
+    @OneToMany(mappedBy = "campsite", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 }
