@@ -1,38 +1,34 @@
 package com.modakbul.entity.campsite;
 
 import jakarta.persistence.Embeddable;
+import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Embeddable
+@Data
 public class CampsitePriceId {
     private Long campsiteId;
     private LocalDate priceDate;
 
-    public CampsitePriceId() {
-    }
-
-    public CampsitePriceId(Long campsiteId, LocalDate priceDate) {
-        this.campsiteId = campsiteId;
-        this.priceDate = priceDate;
-    }
-
-    //두 객체가 동일한지 비교
+    // 두 객체가 동일한지 비교
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CampsitePriceId) {
-            CampsitePriceId other = (CampsitePriceId) obj;
-            return this.campsiteId.equals(other.campsiteId) && this.priceDate.equals(other.priceDate);
+        if (!(obj instanceof CampsitePriceId)) {
+            return false;
         }
-        return false;
+        CampsitePriceId other = (CampsitePriceId) obj;
+        return Objects.equals(campsiteId, other.campsiteId) &&
+                Objects.equals(priceDate, other.priceDate);
     }
 
-    //객체 해시코드 계산
+    // 객체 해시코드 계산
     @Override
     public int hashCode() {
-        return 31 * campsiteId.hashCode() + priceDate.hashCode();
+        return Objects.hash(campsiteId, priceDate);
     }
 }

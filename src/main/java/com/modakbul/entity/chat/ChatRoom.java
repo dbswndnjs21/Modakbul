@@ -23,16 +23,15 @@ import java.util.List;
 @Entity
 @Builder
 public class ChatRoom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private ChatRoomId id;  // 복합 키로 사용될 ID 클래스
 
     @ManyToOne
     @JoinColumn(name = "campground_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
     private Campground campground;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
+    @JoinColumn(name = "member_id", insertable = false, updatable = false) // 외래 키 설정
     private Member member;
 
     @CreationTimestamp
