@@ -4,6 +4,9 @@ import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -24,5 +27,6 @@ public class PaymentCancel {
     private boolean isCancel;
     private int cancellationFee;
     private int refundAmount;
-    private int isRefund;
+    private LocalDateTime canceledAt;
+    private String paymentTid;
 }
