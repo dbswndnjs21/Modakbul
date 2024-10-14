@@ -14,7 +14,7 @@
 
 /* 네비게이션 바 스타일 */
 .navbar {
-  background-color: rgba(255, 127, 80, 0.8); /* 주황빛 배경, 약간의 투명도 추가 */
+  background-color: white; /* 주황빛 배경, 약간의 투명도 추가 */
   z-index: 1000; /* 다른 요소보다 위에 표시 */
   position: absolute; /* 배경 이미지 위에 위치 */
   top: 0;
@@ -22,7 +22,35 @@
 }
 
 .navbar a {
-  color: #ffffff;
+  color: black;
+}
+.nav-link {
+  position: relative;
+  color: black;
+  text-decoration: none; /* 기본 밑줄 제거 */
+  transition: color 0.3s ease; /* 글씨색 변환 애니메이션 */
+}
+
+.nav-link:hover {
+  color: black; /* 커서 올렸을 때도 글씨는 검정으로 유지 */
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px; /* 글씨와 밑줄 사이 간격 조정 */
+  height: 3px; /* 밑줄 두께 */
+  background-color: orange; /* 밑줄 색상 */
+  transform: scaleX(0); /* 처음에는 안 보이게 설정 */
+  transform-origin: right; /* 오른쪽에서 왼쪽으로 나타나게 설정 */
+  transition: transform 0.3s ease; /* 애니메이션 설정 */
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1); /* hover 시에 밑줄 표시 */
+  transform-origin: left; /* 왼쪽에서 오른쪽으로 나타나게 설정 */
 }
 
 .header-bg h1 {
