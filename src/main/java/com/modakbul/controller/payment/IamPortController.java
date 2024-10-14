@@ -2,6 +2,7 @@ package com.modakbul.controller.payment;
 
 import com.modakbul.service.payment.PaymentService;
 import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.request.CancelData;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 
 @Controller
@@ -40,6 +43,7 @@ public class IamPortController {
     @ResponseBody
     @PostMapping("/verify/{imp_uid}")
     public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid){
+        System.out.println("imp_uid: " + imp_uid);
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
         if (payment != null && payment.getResponse() != null) {
             log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse().getMerchantUid());
@@ -59,4 +63,34 @@ public class IamPortController {
         }
         return payment;
     }
+
+    @PostMapping("/iamport/cancel")
+    @ResponseBody
+    public IamportResponse<Payment> cancelPayment(@RequestParam("imp_uid") String imp_uid, @RequestParam("amount") int cancelAmount) {
+
+        System.out.println("취소 주문번호 : " + imp_uid);
+        System.out.println("취소 금액 : + " + cancelAmount);
+        // 결제 취소 요청 데이터
+        CancelData cancelData = new CancelData(imp_uid, true, BigDecimal.valueOf(cancelAmount)); // imp_uid와 취소할 금액 설정
+        System.out.println("cancelData = " + cancelData);
+        try {
+            // 결제 취소 API 호출
+            IamportResponse<Payment> cancelResponse = iamportClient.cancelPaymentByImpUid(cancelData);
+            System.out.println("취소 객체 : " + cancelResponse);
+            System.out.println("취소객체 2 : " + cancelResponse.getResponse());
+
+            if (cancelResponse != null && cancelResponse.getResponse() != null) {
+                log.info("결제 취소 성공: {}", cancelResponse.getResponse().toString());
+                Long orderNumber = Long.valueOf(cancelResponse.getResponse().getMerchantUid());
+                paymentService.iamportCancel(orderNumber, cancelResponse.getResponse());
+            } else {
+                log.error("결제 취소 실패: 응답 없음");
+            }
+            return cancelResponse;
+        } catch (Exception e) {
+            log.error("결제 취소 중 오류 발생", e);
+            return null;
+        }
+    }
+
 }
