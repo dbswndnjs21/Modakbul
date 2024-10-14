@@ -82,14 +82,12 @@
 
 		<!-- 목록 버튼 추가 -->
 		<div class="text-center my-4">
-			<a th:href="@{/freeboard/freeBoardList}" class="btn btn-primary">게시글
-				리스트</a>
+			<a th:href="@{/freeboard/freeBoardList}" class="btn btn-primary">게시글 리스트</a>
 		</div>
 
 		<!-- 댓글 보기 버튼 추가 -->
 		<div class="text-center my-4">
-			<button class="btn btn-primary" id="toggle-comments-btn">댓글
-				보기</button>
+			<button class="btn btn-primary" id="toggle-comments-btn">댓글 보기</button>
 		</div>
 
 		<!-- 댓글 영역 -->
@@ -98,54 +96,17 @@
 
 			<!-- 댓글 입력 -->
 			<form th:action="@{/freeboard/freeboardCommentWrite}" method="post">
-				<input type="hidden" name="freeboardId" th:value="${board.id}" /> <input
-					type="hidden" name="memberId" th:value="${member.id}" />
+				<input type="hidden" name="freeboardId" th:value="${board.id}" /> 
+				<input type="hidden" name="memberId" th:value="${member.id}" />
 				<div class="mb-3">
 					<textarea class="form-control" name="content" rows="3"
 						placeholder="댓글을 입력하세요"></textarea>
-					<!-- 수정된 부분 -->
 				</div>
 				<button type="submit" class="btn btn-primary">댓글 작성</button>
 			</form>
 
 			<!-- 댓글 목록 -->
-			<div class="comment-section mt-4">
-				<div class="comment mb-3" th:each="comment : ${comments}">
-					<strong th:text="${comment.member.userId}">작성자명</strong> <span
-						th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd')}">2024-10-01</span>
-					<p th:text="${comment.content}">댓글 내용</p>
-					<button class="btn btn-sm btn-link reply-btn"
-						data-comment-id="${comment.id}">답글</button>
-
-					<div class="reply ms-4" style="display: none;">
-						<form th:action="@{/freeboard/freeboardCommentWrite}"
-							method="post" class="reply-form mt-2 ms-4">
-							<input type="hidden" name="parentId" th:value="${comment.parent != null ? comment.parent.id : comment.id}">
-							<input type="hidden" name="freeboardId" th:value="${board.id}" />
-							<input type="hidden" name="memberId" th:value="${member.id}" />
-							<!-- 부모 댓글 ID -->
-							<div class="mb-2">
-								<textarea class="form-control" name="content" rows="2"
-									placeholder="답글을 입력하세요"></textarea>
-								<!-- 수정된 부분 -->
-							</div>
-							<button type="submit" class="btn btn-sm btn-primary">답글
-								작성</button>
-						</form>
-					</div>
-
-					<!-- 대댓글 영역 -->
-					<div class="children-comments ms-4">
-						<th:block th:each="child : ${comment.children}">
-							<div class="reply mb-2">
-								<strong th:text="${child.member.userId}">대댓글 작성자명</strong> <span
-									th:text="${#temporals.format(child.createdAt, 'yyyy-MM-dd')}">2024-10-01</span>
-								<p th:text="${child.content}">대댓글 내용</p>
-							</div>
-						</th:block>
-					</div>
-				</div>
-			</div>
+			<div class="comment-section mt-4"></div>
 		</div>
 	</section>
 
@@ -154,42 +115,58 @@
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
-    $(document).ready(function () {
-        const boardId = /*[[${board.id}]]*/ null;
-        const memberId = /*[[${member.id}]]*/ null;
-        
-        // 댓글 보기 버튼 클릭 이벤트
-        $("#toggle-comments-btn").click(function () {
-            const commentSection = $("#comment-section");
-            if (commentSection.is(':hidden')) {
-                commentSection.show();
-                loadComments(); // 댓글을 불러오는 함수 호출
-            } else {
-                commentSection.hide();
-            }
-        });
+$(document).ready(function () {
+    const boardId = /*[[${board.id}]]*/ null;
+    const memberId = /*[[${member.id}]]*/ null;
 
-        function loadComments() {
-            $.ajax({
-                url: `/freeboard/freeboardCommentList/${boardId}`,
-                method: 'GET',
-                success: function (comments) {
-                    const commentSection = $('.comment-section');
-                    commentSection.empty(); // 기존 댓글 제거
+    // 댓글 보기 버튼 클릭 이벤트
+    $("#toggle-comments-btn").click(function () {
+        const commentSection = $("#comment-section");
+        if (commentSection.is(':hidden')) {
+            commentSection.show();
+            loadComments(); // 댓글을 불러오는 함수 호출
+        } else {
+            commentSection.hide();
+        }
+    });
 
-                    comments.forEach(comment => {
-                        // Date 객체 생성 후 '년-월-일 시:분' 형식으로 포맷
+    function loadComments() {
+        $.ajax({
+            url: `/freeboard/freeboardCommentList/${boardId}`,
+            method: 'GET',
+            success: function (comments) {
+                const commentSection = $('.comment-section');
+                commentSection.empty(); // 기존 댓글 제거
+
+                // 댓글을 깊이에 따라 구조화
+                const commentMap = {};
+                comments.forEach(comment => {
+                    commentMap[comment.id] = comment; // 댓글 ID로 매핑
+                    commentMap[comment.id].children = []; // 자식 대댓글 배열 초기화
+                });
+
+                // 자식 대댓글을 부모 댓글에 추가
+                comments.forEach(comment => {
+                    if (comment.parentId) {
+                        commentMap[comment.parentId].children.push(commentMap[comment.id]);
+                    }
+                });
+
+                // 댓글을 출력하는 재귀 함수
+                function renderComments(commentList, depth = 0) {
+                    commentList.forEach(comment => {
                         const date = new Date(comment.createdAt);
                         const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
+                        // 댓글 요소 생성
                         const commentElement = $(`
-                            <div class="comment mb-3" style="margin-left: ${comment.depth * 20}px;"> <!-- 깊이에 따라 들여쓰기 -->
+                            <div class="comment mb-3" style="margin-left: ${depth * 20}px;" data-comment-id="${comment.id}"> <!-- 깊이에 따라 들여쓰기 -->
                                 <strong>${comment.userId}</strong> <span>${formattedDate}</span>
                                 <p>${comment.content}</p>
                                 <button class="btn btn-sm btn-link reply-btn" data-comment-id="${comment.id}">답글</button>
                                 <div class="reply ms-4" style="display: none;">
                                     <form class="reply-form mt-2 ms-4">
-                                    <input type="hidden" name="parentId" th:value="${comment.parent != null ? comment.parent.id : ''}" /> 
+                                        <input type="hidden" name="parentId" value="${comment.id}" /> <!-- parentId가 comment.id로 설정 -->
                                         <input type="hidden" name="freeboardId" value="${boardId}" />
                                         <input type="hidden" name="memberId" value="${memberId}" />
                                         <div class="mb-2">
@@ -200,41 +177,53 @@
                                 </div>
                             </div>
                         `);
-                        commentSection.append(commentElement);
-                    });
-                    
-                    // 새로운 답글 버튼 클릭 이벤트 추가
-                    $('.reply-btn').click(function () {
-                        const replyForm = $(this).siblings('.reply');
-                        replyForm.toggle(); // 답글 폼을 보여주거나 숨김
-                    });
-                    
-                    // 답글 폼 제출 이벤트 처리
-                    $('.reply-form').submit(function (e) {
-                        e.preventDefault(); // 기본 제출 방지
-                        const formData = $(this).serialize(); // formData 확인
 
-                        console.log(formData); // 추가: 전송되는 데이터 확인
+                        commentSection.append(commentElement); // 댓글 추가
 
-                        $.ajax({
-                            url: '/freeboard/freeboardCommentWrite',
-                            method: 'POST',
-                            data: formData,
-                            success: function (response) {
-                                loadComments(); // 댓글 다시 로드
-                            },
-                            error: function (error) {
-                                console.error('댓글 작성 오류:', error);
-                            }
-                        });
+                        // 대댓글이 있을 경우, 재귀적으로 호출
+                        if (comment.children.length > 0) {
+                            renderComments(comment.children, depth + 1); // depth 증가
+                        }
                     });
-                },
-                error: function (error) {
-                    console.error('댓글 로드 오류:', error);
                 }
-            });
-        }
-    });
+
+                // 루트 댓글 렌더링
+                renderComments(Object.values(commentMap).filter(comment => !comment.parentId));
+
+                // 답글 버튼 클릭 이벤트
+                $('.reply-btn').click(function () {
+                    const replyForm = $(this).siblings('.reply');
+                    const parentId = $(this).data('comment-id'); // reply-btn에서 parentId 가져오기
+                    
+                    // parentId를 reply-form 안의 hidden input에 설정
+                    replyForm.find('input[name="parentId"]').val(parentId);
+                    replyForm.toggle(); // 답글 폼을 보여주거나 숨김
+                });
+
+                // 답글 폼 제출 이벤트 처리
+                $('.reply-form').submit(function (e) {
+                    e.preventDefault(); // 기본 제출 방지
+                    const formData = $(this).serialize();
+
+                    $.ajax({
+                        url: '/freeboard/freeboardCommentWrite',
+                        method: 'POST',
+                        data: formData,
+                        success: function () {
+                            loadComments(); // 댓글을 다시 로드하여 새 댓글 표시
+                        },
+                        error: function () {
+                            alert('댓글 작성 중 오류가 발생했습니다.');
+                        }
+                    });
+                });
+            },
+            error: function () {
+                alert('댓글을 불러오는 중 오류가 발생했습니다.');
+            }
+        });
+    }
+});
 </script>
 </body>
 </html>
