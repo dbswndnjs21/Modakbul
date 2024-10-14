@@ -48,7 +48,7 @@
             <th>캠핑장 객실</th>
             <th>설명</th>
             <th>최대 인원</th>
-            <th>Price</th>
+<!--            <th>Price</th>-->
         </tr>
         </thead>
         <tbody>
@@ -57,7 +57,7 @@
             <td th:text="${campsite.campsiteName}">Campsite Name</td>
             <td th:text="${campsite.campsiteDescription}">Description</td>
             <td th:text="${campsite.headCount}">4</td>
-            <td th:text="${campsite.campsitePrice}">100,000</td>
+<!--            <td th:text="${campsite.campsitePrice}">100,000</td>-->
             <td>
                 <button type="button" th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
             </td>

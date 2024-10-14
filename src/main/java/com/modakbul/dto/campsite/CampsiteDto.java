@@ -13,7 +13,6 @@ public class CampsiteDto {
     private Long id;
     private int campsiteCategoryId;
     private Long campgroundId;
-    private int campsitePrice;
     private String campsiteName;
     private String campsiteDescription;
     private int headCount;

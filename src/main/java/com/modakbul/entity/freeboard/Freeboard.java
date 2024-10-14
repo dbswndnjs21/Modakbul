@@ -1,5 +1,6 @@
 package com.modakbul.entity.freeboard;
 
+import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
@@ -37,12 +38,9 @@ public class Freeboard {
     @Transient // JPA에 의해 관리되지 않도록 함
     private List<FreeboardImage> images;
 
-    // Getter와 Setter
-    public List<FreeboardImage> getImages() {
-        return images;
-    }
+    @OneToMany(mappedBy = "freeboard", cascade = CascadeType.ALL)
+    private List<FreeboardImage> freeboardImages;
 
-    public void setImages(List<FreeboardImage> images) {
-        this.images = images;
-    }
+    @OneToMany(mappedBy = "freeboard", cascade = CascadeType.ALL)
+    private List<FreeboardComment> freeboardComments;
 }

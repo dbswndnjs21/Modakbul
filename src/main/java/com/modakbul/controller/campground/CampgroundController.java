@@ -22,14 +22,17 @@ public class CampgroundController {
         this.campsiteService = campsiteService;
     }
 
-    @GetMapping
-    public String showCampgroundList(Model model) {
-        model.addAttribute("campgrounds", campgroundService.getAllCampgrounds());
-        return "campground/campgroundList";
-    }
+//    @GetMapping
+//    public String showCampgroundList(Model model) {
+//        model.addAttribute("campgrounds", campgroundService.getAllCampgrounds());
+//        return "campground/campgroundList";
+//    }
 
     @GetMapping("/{id}")
-    public String showCampgroundDetail(@PathVariable Long id, Model model) {
+    public String showCampgroundDetail(@PathVariable Long id,
+                                       @RequestParam(value = "query", required = false) String query,
+                                       Model model) {
+
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsiteService.findByCampgroundId(id));
         return "campground/campgroundDetail";
@@ -49,8 +52,13 @@ public class CampgroundController {
         return "redirect:/campground/campgrounds";
     }
 
-    @GetMapping("/search")
-    public String searchCampgrounds(
+    @GetMapping
+    public String searchCampgrounds(){
+        return "campground/campgroundSearch";
+    }
+
+    @GetMapping("/list")
+    public String getCampgroundList(
             @RequestParam(value = "query", required = false) String query,
             Model model) {
 

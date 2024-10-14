@@ -1,13 +1,12 @@
 package com.modakbul.entity.campground;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,4 +18,8 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String locationName;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    private List<LocationDetail> locationDetails;
+
 }

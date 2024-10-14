@@ -1,8 +1,10 @@
 package com.modakbul.entity.coupon;
 
 import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.chat.ChatRoom;
 import com.modakbul.entity.member.Member;
+import com.modakbul.entity.payment.Payment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +34,7 @@ public class MemberCoupon {
 
     private boolean isUsed;
     private LocalDateTime usedAt;
+
+    @OneToMany(mappedBy = "memberCoupon", cascade = CascadeType.ALL)
+    private List<Payment> payments;
 }
