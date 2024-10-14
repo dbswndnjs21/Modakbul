@@ -19,8 +19,7 @@ body {
 }
 
 h1 {
-    color: #ff7f50; /* 파란색 텍스트 */
-    font-size: 2.5em; /* 크게 표시 */
+    font-size: 2em; /* 크게 표시 */
     margin-bottom: 20px; /* 아래쪽 여백 */
 }
 
