@@ -75,7 +75,7 @@ public class KaKaoPayController {
         System.out.println("orderNumber : " + orderNumber);
 
         // 결제 취소 로직 수행
-        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.KakaoPayCancel(orderNumber);
+        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.kakaoPayCancel(orderNumber);
 
         return new ResponseEntity<>(kaKaoPayCancelDto, HttpStatus.OK);
     }

@@ -169,22 +169,30 @@ public class PaymentService {
         // 여기부터 다시 봐야함
         paymentEntity.setOrderNumber(Long.valueOf(paymentData.getMerchantUid()));
 //        paymentEntity.setPaymentDate(paymentData.);  결재 준비 또는 승인 시작 시간
+        paymentEntity.setPaymentTid(paymentData.getImpUid());
         paymentEntity.setMember(member);
 
-
-        /// 쭉 DB에 담고
-//        System.out.println("결제 금액: " + paymentData.getAmount());
-//            System.out.println("결제 상태: " + paymentData.getStatus());
-//            System.out.println("결제 메소드: " + paymentData.getPayMethod());
-//            System.out.println("결제 승인 시간: " + paymentData.getPaidAt());
-//            System.out.println("주문명: " + paymentData.getName());
-//            System.out.println("결제 카드사: " + paymentData.getCardName());
-
         paymentRepository.save(paymentEntity);
+    }
+
+    public void iamportCancel (Long orderNumber, com.siot.IamportRestClient.response.Payment res) {
+        Payment paymentEntity = paymentRepository.findByOrderNumber(orderNumber);
+
+        paymentEntity.setPaymentStatus(res.getStatus());
+        paymentRepository.save(paymentEntity);
+
+        PaymentCancel paymentCancel = PaymentCancel.builder()
+                .payment(paymentEntity)
+                .paymentTid(res.getImpUid())
+                .refundAmount(res.getCancelAmount().intValue())
+                .canceledAt(res.getCancelledAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
+                .build();
+        paymentCancelRepository.save(paymentCancel);
+
 
     }
 
-    public KaKaoPayCancelDto KakaoPayCancel(Long orderNumber){
+    public KaKaoPayCancelDto kakaoPayCancel(Long orderNumber){
         Payment findTidPayment = paymentRepository.findByOrderNumber(orderNumber);
         String paymentTid = findTidPayment.getPaymentTid();
         int amount = findTidPayment.getAmount();
