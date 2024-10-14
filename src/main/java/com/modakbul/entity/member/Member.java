@@ -8,6 +8,7 @@ import com.modakbul.entity.chat.ChatRoom;
 import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.freeboard.Freeboard;
 import com.modakbul.entity.freeboard.FreeboardComment;
+import com.modakbul.entity.payment.Membership;
 import com.modakbul.entity.payment.Payment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -66,4 +67,8 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<FreeboardComment> freeboardComments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "membership_id") // 외래 키로 사용할 membership_id
+    private Membership membership; // Membership 엔티티와의 관계 설정
 }
