@@ -47,7 +47,7 @@ public class FreeboardListController {
 	    for (Freeboard post : posts) {
 	        System.out.println("Post ID: " + post.getId() + ", Title: " + post.getTitle()); // 로드된 게시글 로그
 	    }
-	    	
+	    
 	    return posts;
 	}
 }
