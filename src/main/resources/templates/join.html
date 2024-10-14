@@ -21,28 +21,32 @@
     <button id="join2">관리자가입</button>
 
     <div id="memberjoin">
-        <h1>회원 가입</h1>
+        <h1>가입</h1>
         <form id="memberJoinForm" th:action="@{/join}" method="post">
             <div class="form-group">
-                <label for="userName1">이름:</label>
-                <input type="text" id="userName1" name="userName" required>
+                <label for="userName1">이름*</label>
+                <input type="text" id="userName1" name="userName" required placeholder="이름을 입력해 주세요.">
             </div>
             <div class="form-group">
-                <label for="userId1">사용자 ID:</label>
-                <input type="text" id="userId1" name="userId" required>
+                <label for="userId1">ID*</label>
+                <input type="text" id="userId1" name="userId" required  placeholder="ID를 입력해 주세요.">
                 <span id="userIdCheckMessage" class="validation-message"></span>
             </div>
             <div class="form-group">
-                <label for="password1">비밀번호:</label>
-                <input type="password" id="password1" name="password" required>
+                <label for="password1">비밀번호*</label>
+                <input type="password" id="password1" name="password" required  placeholder="비밀번호를 입력해 주세요.(8자리 이상)">
             </div>
             <div class="form-group">
-                <label for="phone1">전화번호:</label>
-                <input type="text" id="phone1" name="phone" required>
+                <label for="password1">비밀번호 확인*</label>
+                <input type="password" id="password2" name="password" required  placeholder="비밀번호를 입력해 주세요.">
             </div>
             <div class="form-group">
-                <label for="mail1">이메일:</label>
-                <input type="email" id="mail1" name="mail" required>
+                <label for="phone1">전화번호*</label>
+                <input type="text" id="phone1" name="phone" required  placeholder="전화번호를 입력해 주세요.">
+            </div>
+            <div class="form-group">
+                <label for="mail1">이메일*</label>
+                <input type="email" id="mail1" name="mail" required  placeholder="이메일을 입력해 주세요.">
                 <button type="button" id="sendAuthCode">인증 코드 발송</button>
                 <span id="emailCheckMessage" class="validation-message"></span>
             </div>

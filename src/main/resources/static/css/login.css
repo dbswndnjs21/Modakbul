@@ -22,6 +22,7 @@ h2 {
 }
 
 .input-group {
+    width: 278px;
     margin-bottom: 15px;
 }
 
@@ -46,10 +47,31 @@ input {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    font-size: 16px; /* 폰트 크기 조정 (필요에 따라) */
 }
 
 .login-button:hover {
     background-color: #ff6347; /* 버튼 호버 색상 */
+}
+
+.join-button {
+    border: black;
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+}
+
+.sns-login-box {
+    border: 1px solid #ccc; /* 테두리 추가 */
+    border-radius: 5px; /* 테두리 모서리 둥글게 */
+    padding: 10px; /* 내부 여백 */
+    margin-top: 20px; /* 로그인 폼과 간격 추가 */
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .social-login {
@@ -57,20 +79,28 @@ input {
     justify-content: space-around; /* 아이템들 사이에 균등한 간격 추가 */
     list-style-type: none;
     padding: 0;
-    margin: 20px 0;
+    margin: 10px 0; /* 위 아래 여백 추가 */
 }
 
 .social-login li {
     margin: 0;
-    width: 50px; /* 버튼의 고정된 너비 */
-    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
-.social-login a {
-    color: #007bff;
-    text-decoration: none;
+.social-icon {
+    display: inline-block;
+    width: 50px; /* 아이콘 크기 */
+    height: 50px; /* 아이콘 크기 */
+    border-radius: 50%; /* 원형 */
+    background-color: #f0f2f5; /* 배경색 (필요에 따라 조정) */
+    padding: 10px;
+    transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
 }
 
-.social-login a:hover {
-    text-decoration: underline;
+.social-icon:hover {
+    background-color: #e0e0e0; /* 호버 시 배경색 변화 */
+}
+
+.social-icon img {
+    width: 100%; /* 아이콘 이미지 크기 */
+    height: auto; /* 비율 유지 */
 }
