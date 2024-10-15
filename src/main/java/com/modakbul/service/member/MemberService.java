@@ -44,11 +44,11 @@ public class MemberService {
     }
 
     public Member findByMail(String mail) { // 추가된 메서드
-        return memberRepository.findByMail(mail);
+        return memberRepository.findByMail(mail.toLowerCase().trim());
     }
 
     public Member findByUserNameAndMail(String userName, String mail) { // 이름과 이메일로 아이디 찾기 메서드 추가
-        return memberRepository.findByUserNameAndMail(userName, mail);
+        return memberRepository.findByUserNameAndMail(userName, mail.toLowerCase().trim());
     }
 
     public List<Member> findAllMembers() {

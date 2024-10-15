@@ -26,6 +26,7 @@ public class PwdSearchController {
     public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String newPassword) {
         // 이메일로 회원 조회
         Member member = memberService.findByMail(email);
+        System.out.println(member);
         if (member == null) {
             return ResponseEntity.badRequest().body("이메일이 존재하지 않습니다.");
         }
