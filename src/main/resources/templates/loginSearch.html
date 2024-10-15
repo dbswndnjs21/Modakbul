@@ -4,89 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>계정 찾기</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" th:href="@{/css/loginSearch.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
-
-    .container {
-        background-color: white;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        width: 400px; /* 너비 조정 */
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .tabs {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 20px;
-    }
-
-    .tab {
-        background: none;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 10px 20px;
-        transition: background-color 0.3s;
-    }
-
-    .tab.active {
-        font-weight: bold;
-        border-bottom: 2px solid #ff7f50; /* 활성화된 탭 강조 */
-    }
-
-    .tab:hover {
-        background-color: #f0f0f0; /* 호버 효과 */
-    }
-
-    label {
-        display: block;
-        text-align: left;
-        margin: 10px 0 5px;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        color: white;
-        background-color: #ff7f50; /* 버튼 색상 */
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .submit-btn:hover {
-        background-color: #ff6347; /* 호버 시 색상 변경 */
-    }
 
 </style>
 <body>
@@ -144,26 +65,27 @@
             $(this).addClass('active');
         });
 
-        // Handle the ID form submission
-        $(document).on('submit', '#idForm', function(event) {
-            event.preventDefault(); // Prevent the default form submission
+        // Handle the password form submission
+        $(document).on('submit', '#passwordForm', function(event) {
+            event.preventDefault(); // 기본 제출 방지
+            const email = $('#email').val(); // 이메일 주소 가져오기
 
-            const username = $('#name').val(); // Get the name
-            const mail = $('#phone').val(); // Get the email
-
-            // Send AJAX request to the controller
+            // AJAX 요청
             $.ajax({
                 type: 'POST',
-                url: '/login/search',
-                data: { username: username, mail: mail },
+                url: '/searchPassword', // 요청 URL
+                contentType: 'application/json', // JSON 형식으로 전송
+                data: JSON.stringify({ email: email }), // JSON 문자열로 변환
                 success: function(response) {
-                    alert(response); // Show the response in an alert
+                    alert(response); // 성공 시 응답 표시
                 },
-                error: function() {
-                    alert('에러가 발생했습니다.'); // Handle error case
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON : '존재하지 않는 이메일입니다.'; // 오류 메시지 처리
+                    alert(errorMessage); // 오류 메시지 표시
                 }
             });
         });
+
     });
 </script>
 </body>

@@ -191,10 +191,10 @@
 
         // 회원가입 버튼 클릭
         $("#joinButton").click(function () {
-            if (!isEmailVerified) {
-                alert("이메일 인증이 필요합니다. 인증 코드를 확인해 주세요.");
-                return; // 이메일 인증이 완료되지 않았으면 가입 진행하지 않음
-            }
+            // if (!isEmailVerified) {
+            //     alert("이메일 인증이 필요합니다. 인증 코드를 확인해 주세요.");
+            //     return; // 이메일 인증이 완료되지 않았으면 가입 진행하지 않음
+            // }
 
             const email = $("#mail1").val();
             const authCode = $("#authCode").val();

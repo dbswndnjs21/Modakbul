@@ -93,7 +93,7 @@ public class MailService {
     }
     @Async
     public void sendResetPasswordEmail(String recipientEmail) throws MessagingException {
-        String resetLink = "http://yourwebsite.com/reset-password?email=" + recipientEmail; // 비밀번호 재설정 링크
+        String resetLink = "http://localhost:8080/resetPassword?email=" + recipientEmail; // 비밀번호 재설정 링크
         MimeMessage message = createResetPasswordMail(recipientEmail, resetLink);
 
         try {
