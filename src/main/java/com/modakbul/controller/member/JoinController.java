@@ -14,6 +14,11 @@ public class JoinController {
     @Autowired
     private MemberService memberService;
 
+    @GetMapping("/joinCheck")
+    public String joinCheck() {
+        return "joinCheck";
+    }
+
     @GetMapping("/join")
     public String join() {
         return "join";
