@@ -13,6 +13,9 @@
         .validation-message {
             color: red;
         }
+        .valid-message {
+            color: green;
+        }
     </style>
 </head>
 <body>
@@ -29,24 +32,26 @@
             </div>
             <div class="form-group">
                 <label for="userId1">ID*</label>
-                <input type="text" id="userId1" name="userId" required  placeholder="ID를 입력해 주세요.">
+                <input type="text" id="userId1" name="userId" required placeholder="ID를 입력해 주세요.">
                 <span id="userIdCheckMessage" class="validation-message"></span>
             </div>
             <div class="form-group">
                 <label for="password1">비밀번호*</label>
-                <input type="password" id="password1" name="password" required  placeholder="비밀번호를 입력해 주세요.(8자리 이상)">
+                <input type="password" id="password1" name="password" required placeholder="비밀번호를 입력해 주세요.(8자리 이상 20자리 미만)">
+                <span id="passwordValidationMessage" class="validation-message"></span>
             </div>
             <div class="form-group">
-                <label for="password1">비밀번호 확인*</label>
-                <input type="password" id="password2" name="password" required  placeholder="비밀번호를 입력해 주세요.">
+                <label for="password2">비밀번호 확인*</label>
+                <input type="password" id="password2" name="passwordConfirm" required placeholder="비밀번호를 다시 입력해 주세요.">
+                <span id="passwordMatchMessage" class="validation-message"></span>
             </div>
             <div class="form-group">
                 <label for="phone1">전화번호*</label>
-                <input type="text" id="phone1" name="phone" required  placeholder="전화번호를 입력해 주세요.">
+                <input type="text" id="phone1" name="phone" required placeholder="전화번호를 입력해 주세요.">
             </div>
             <div class="form-group">
                 <label for="mail1">이메일*</label>
-                <input type="email" id="mail1" name="mail" required  placeholder="이메일을 입력해 주세요.">
+                <input type="email" id="mail1" name="mail" required placeholder="이메일을 입력해 주세요.">
                 <button type="button" id="sendAuthCode">인증 코드 발송</button>
                 <span id="emailCheckMessage" class="validation-message"></span>
             </div>
@@ -64,6 +69,7 @@
 <script type="text/javascript">
     let timerInterval; // 타이머 인터벌 변수
     let timeLeft = 180; // 3분 (180초)
+    let isEmailVerified = false; // 이메일 인증 여부
 
     $(function () {
         // 사용자 ID 중복 체크
@@ -113,6 +119,23 @@
                 });
             } else {
                 $("#emailCheckMessage").text(""); // 입력이 비어있을 경우 메시지 초기화
+            }
+        });
+
+        // 비밀번호 유효성 검사 및 일치 여부 체크
+        $("#password1, #password2").on("input", function () {
+            const password = $("#password1").val();
+            const passwordConfirm = $("#password2").val();
+            if (password.length < 8 || password.length > 20) {
+                $("#passwordValidationMessage").text("비밀번호는 8자리 이상 20자리 미만이어야 합니다.");
+            } else {
+                $("#passwordValidationMessage").text("");
+            }
+
+            if (password !== passwordConfirm) {
+                $("#passwordMatchMessage").text("비밀번호가 일치하지 않습니다.");
+            } else {
+                $("#passwordMatchMessage").text("비밀번호가 일치합니다.").css("color", "green");
             }
         });
 
@@ -168,6 +191,11 @@
 
         // 회원가입 버튼 클릭
         $("#joinButton").click(function () {
+            if (!isEmailVerified) {
+                alert("이메일 인증이 필요합니다. 인증 코드를 확인해 주세요.");
+                return; // 이메일 인증이 완료되지 않았으면 가입 진행하지 않음
+            }
+
             const email = $("#mail1").val();
             const authCode = $("#authCode").val();
 
@@ -179,17 +207,27 @@
                     data: JSON.stringify({ email: email, authCode: authCode }),
                     success: function (response) {
                         if (response === "인증 성공") {
-                            $("#memberJoinForm").submit();
+                            isEmailVerified = true; // 이메일 인증 완료
+                            $("#memberJoinForm").submit(); // 가입 폼 제출
                         } else {
-                            alert("인증 코드가 틀렸습니다. 다시 확인해 주세요.");
+                            alert("인증 코드가 잘못되었습니다. 다시 확인해 주세요.");
                         }
                     },
                     error: function () {
-                        alert('인증 코드 검증 중 오류가 발생했습니다.');
+                        alert("인증 확인 중 오류가 발생했습니다.");
                     }
                 });
             } else {
-                alert('정확한 이메일 주소와 인증 코드를 입력해 주세요.');
+                alert("유효하지 않은 이메일 또는 인증 코드입니다.");
+            }
+        });
+
+        // 인증 코드 입력란 변화 감지
+        $("#authCode").on("input", function () {
+            if ($(this).val()) {
+                $("#joinButton").prop("disabled", false); // 인증 코드가 입력되면 가입 버튼 활성화
+            } else {
+                $("#joinButton").prop("disabled", true); // 인증 코드가 비어 있으면 가입 버튼 비활성화
             }
         });
     });
