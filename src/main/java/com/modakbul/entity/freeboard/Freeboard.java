@@ -1,5 +1,7 @@
 package com.modakbul.entity.freeboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.image.FreeboardImage;
 import com.modakbul.entity.member.Member;
@@ -23,8 +25,8 @@ public class Freeboard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
     private Member member;
 
@@ -39,8 +41,10 @@ public class Freeboard {
     private List<FreeboardImage> images;
 
     @OneToMany(mappedBy = "freeboard", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<FreeboardImage> freeboardImages;
 
     @OneToMany(mappedBy = "freeboard", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<FreeboardComment> freeboardComments;
 }

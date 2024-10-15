@@ -79,24 +79,41 @@ public class FreeboardService {
 	        return "파일 업로드 성공"; // 성공 메시지 반환
 	    }
 	 
-	public List<Freeboard> findWithImagesPaged(int page, int size) {
-	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt")); // 최신 글이 위로 오게 정렬
+	public List<FreeboardDto> findWithImagesPaged(int page, int size) {
+	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
 	    Page<Freeboard> freeboardPage = freeboardRepository.findAll(pageable);
 
-	    List<Freeboard> freeboards = freeboardPage.getContent();  // 해당 페이지의 데이터만 가져옴
-	    
+	    List<Freeboard> freeboards = freeboardPage.getContent();
+
 	    System.out.println("Page: " + page + ", Loaded Posts: " + freeboards.size());
 
-	    // 이미지 데이터 추가 로직
-	    for (Freeboard freeboard : freeboards) {
+	    // 엔티티에서 DTO로 변환하여 반환
+	    List<FreeboardDto> freeboardDtos = freeboards.stream().map(freeboard -> {
 	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardIdOrderByImageOrderAsc(freeboard.getId());
-	        freeboard.setImages(images); // 이미지 설정
 
-	        // 각 게시글의 정보 출력 (확인용)
-	        System.out.println("Post ID: " + freeboard.getId() + ", Title: " + freeboard.getTitle());
-	    }
+	        // FreeboardImage 엔티티를 FreeboardImageDto로 변환
+	        List<FreeboardImageDto> imageDtos = images.stream().map(image -> FreeboardImageDto.builder()
+	                .id(image.getId())
+	                .freeboardId(image.getFreeboard().getId())
+	                .fileName(image.getFileName())
+	                .saveFileName(image.getSaveFileName())
+	                .imagePath(image.getImagePath())
+	                .imageOrder(image.getImageOrder())
+	                .build()).toList();
 
-	    return freeboards;
+	        // Freeboard 엔티티를 FreeboardDto로 변환
+	        return FreeboardDto.builder()
+	                .id(freeboard.getId())
+	                .memberId(freeboard.getMember().getId())
+	                .title(freeboard.getTitle())
+	                .content(freeboard.getContent())
+	                .createdAt(freeboard.getCreatedAt())
+	                .updatedAt(freeboard.getUpdatedAt())
+	                .images(imageDtos)  // 변환된 이미지 DTO 설정
+	                .build();
+	    }).toList();
+
+	    return freeboardDtos;
 	}
 	 
 	 // 게시글과 이미지 조회
