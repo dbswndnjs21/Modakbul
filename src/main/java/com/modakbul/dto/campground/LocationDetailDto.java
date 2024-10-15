@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class LocationDetailDto {
     private int id;
     private int locationId;
-    private String locationName;
+    private String sigungu;
 }

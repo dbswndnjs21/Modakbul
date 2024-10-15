@@ -50,7 +50,7 @@ public class CampgroundController {
     public String addCampground(@ModelAttribute("campground") Campground campground,
                                 @RequestParam("images")MultipartFile[] images) {
         campgroundService.createCampground(campground);
-        return "redirect:/campground/campgrounds";
+        return "redirect:/campground/campgroundList";
     }
 
     @GetMapping

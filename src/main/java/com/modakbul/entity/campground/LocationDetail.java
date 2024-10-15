@@ -20,7 +20,7 @@ public class LocationDetail {
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
-    private String locationName;
+    private String sigungu;
 
     @OneToMany(mappedBy = "locationDetail", cascade = CascadeType.ALL)
     private List<Campground> campgrounds;
