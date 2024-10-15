@@ -54,7 +54,7 @@
     window.addEventListener('scroll', () => {
         if (debounceTimer) clearTimeout(debounceTimer);  // 이전 타이머 취소
         debounceTimer = setTimeout(() => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight-100) {
                 loadMorePosts();
             }
         }, 200);  // 200ms 동안 추가 스크롤 이벤트가 없으면 로딩

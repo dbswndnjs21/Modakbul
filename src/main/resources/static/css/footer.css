@@ -1,17 +1,5 @@
-@charset "UTF-8";
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-.content {
-  min-height: calc(100vh - 60px); /* 100vh에서 푸터의 높이를 뺀 값 (예: 60px) */
-}
-
 footer {
-  height: 60px; /* 푸터 높이를 여기서 설정 */
-  background-color: #ff7f50; /* 배경색 (필요시 조정) */
+  background-color: #ff7f50; /* 주황빛 푸터 */
   color: white;
   padding: 20px 0;
 }
