@@ -50,7 +50,7 @@
 
     .tab.active {
         font-weight: bold;
-        border-bottom: 2px solid #007bff; /* 활성화된 탭 강조 */
+        border-bottom: 2px solid #ff7f50; /* 활성화된 탭 강조 */
     }
 
     .tab:hover {
@@ -77,7 +77,7 @@
         padding: 10px;
         font-size: 16px;
         color: white;
-        background-color: #007bff; /* 버튼 색상 */
+        background-color: #ff7f50; /* 버튼 색상 */
         border: none;
         border-radius: 5px;
         cursor: pointer;
@@ -85,7 +85,7 @@
     }
 
     .submit-btn:hover {
-        background-color: #0056b3; /* 호버 시 색상 변경 */
+        background-color: #ff6347; /* 호버 시 색상 변경 */
     }
 
 </style>
@@ -97,15 +97,15 @@
         <button class="tab" id="findPassword">비밀번호 찾기</button>
     </div>
     <div id="content">
-        <p>본인인증 받은 정보를 입력해 주세요.<br>휴대폰 번호로 아이디(이메일 주소)를 보내드려요.</p>
+        <p>가입시 정보를 입력해 주세요<br></p>
         <form id="idForm">
             <label for="name">이름</label>
             <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
 
-            <label for="phone">휴대폰 번호</label>
-            <input type="text" id="phone" placeholder="휴대폰 번호를 입력해 주세요." required>
+            <label for="phone">이메일</label>
+            <input type="text" id="phone" placeholder="이메일을 입력해 주세요." required>
 
-            <button type="submit" class="submit-btn">아이디(이메일 주소) 받기</button>
+            <button type="submit" class="submit-btn">찾기</button>
         </form>
     </div>
 </div>
@@ -115,13 +115,13 @@
         $('#findPassword').click(function() {
             // AJAX로 비밀번호 찾기 내용으로 변경
             $('#content').html(`
-                    <p>가입 시 등록한 이메일 주소를 입력해 주세요.<br>비밀번호 재설정 링크를 보내드려요.</p>
-                    <form id="passwordForm">
-                        <label for="email">이메일 주소</label>
-                        <input type="email" id="email" placeholder="이메일을 입력해 주세요." required>
-                        <button type="submit" class="submit-btn">비밀번호 재설정 링크 받기</button>
-                    </form>
-                `);
+                <p>가입 시 등록한 이메일 주소를 입력해 주세요.<br>비밀번호 재설정 링크를 보내드려요.</p>
+                <form id="passwordForm">
+                    <label for="email">이메일 주소</label>
+                    <input type="email" id="email" placeholder="이메일을 입력해 주세요." required>
+                    <button type="submit" class="submit-btn">비밀번호 재설정 링크 받기</button>
+                </form>
+            `);
             $('.tab').removeClass('active');
             $(this).addClass('active');
         });
@@ -129,19 +129,40 @@
         $('#findId').click(function() {
             // AJAX로 아이디 찾기 내용으로 변경
             $('#content').html(`
-                    <p>본인인증 받은 정보를 입력해 주세요.<br>휴대폰 번호로 아이디(이메일 주소)를 보내드려요.</p>
-                    <form id="idForm">
-                        <label for="name">이름</label>
-                        <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
+                <p>본인인증 받은 정보를 입력해 주세요.<br>휴대폰 번호로 아이디(이메일 주소)를 보내드려요.</p>
+                <form id="idForm">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
 
-                        <label for="phone">휴대폰 번호</label>
-                        <input type="text" id="phone" placeholder="휴대폰 번호를 입력해 주세요." required>
+                    <label for="phone">휴대폰 번호</label>
+                    <input type="text" id="phone" placeholder="휴대폰 번호를 입력해 주세요." required>
 
-                        <button type="submit" class="submit-btn">아이디(이메일 주소) 받기</button>
-                    </form>
-                `);
+                    <button type="submit" class="submit-btn">아이디(이메일 주소) 받기</button>
+                </form>
+            `);
             $('.tab').removeClass('active');
             $(this).addClass('active');
+        });
+
+        // Handle the ID form submission
+        $(document).on('submit', '#idForm', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const username = $('#name').val(); // Get the name
+            const mail = $('#phone').val(); // Get the email
+
+            // Send AJAX request to the controller
+            $.ajax({
+                type: 'POST',
+                url: '/login/search',
+                data: { username: username, mail: mail },
+                success: function(response) {
+                    alert(response); // Show the response in an alert
+                },
+                error: function() {
+                    alert('에러가 발생했습니다.'); // Handle error case
+                }
+            });
         });
     });
 </script>

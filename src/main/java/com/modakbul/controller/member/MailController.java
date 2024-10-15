@@ -43,4 +43,14 @@ public class MailController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증 코드가 유효하지 않거나 만료되었습니다.");
         }
     }
+    @ResponseBody
+    @PostMapping("/resetPassword")
+    public ResponseEntity<String> resetPassword(@RequestBody MailDto mailDTO) {
+        try {
+            mailService.sendResetPasswordEmail(mailDTO.getEmail()); // 비밀번호 재설정 메일 발송
+            return ResponseEntity.ok("비밀번호 재설정 이메일이 발송되었습니다.");
+        } catch (MessagingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("비밀번호 재설정 메일 발송 중 오류가 발생했습니다.");
+        }
+    }
 }

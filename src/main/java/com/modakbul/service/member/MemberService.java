@@ -15,6 +15,7 @@ public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -24,6 +25,7 @@ public class MemberService {
         member.setPassword(encodePassword);
         memberRepository.save(member);
     }
+
     // 사용자 정보 업데이트 메서드 추가
     public void updateMemberInfo(Member member, String username, String password) {
         member.setUserName(username);
@@ -40,8 +42,13 @@ public class MemberService {
     public Member findByUserId(String userId) {
         return memberRepository.findByUserId(userId);
     }
+
     public Member findByMail(String mail) { // 추가된 메서드
         return memberRepository.findByMail(mail);
+    }
+
+    public Member findByUserNameAndMail(String userName, String mail) { // 이름과 이메일로 아이디 찾기 메서드 추가
+        return memberRepository.findByUserNameAndMail(userName, mail);
     }
 
     public List<Member> findAllMembers() {
