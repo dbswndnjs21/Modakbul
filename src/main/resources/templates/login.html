@@ -19,12 +19,22 @@
             font-size: 18px; /* 아이콘 크기 조절 */
         }
     </style>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc0yWEqAAAAAAAE7SptQSwGfetMv_vXBmpVb-IP"></script>
+    <script>
+        function reCapt() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Lc0yWEqAAAAAAAE7SptQSwGfetMv_vXBmpVb-IP', {action: 'submit'}).then(function(token) {
+                    $('#token').val(token);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
 <div class="login-container">
     <h2>모닥불</h2>
 
-    <form th:action="@{/login}" method="post">
+    <form th:action="@{/login}" method="post" onsubmit="reCapt()">
         <div class="input-group">
             <label for="userId"></label>
             <input type="text" id="userId" name="userId" required placeholder="아이디를 입력해주세요.">
@@ -35,6 +45,7 @@
             <span id="togglePassword" class="toggle-password" title="비밀번호 보기"
                   onclick="togglePasswordVisibility()">👁️</span>
         </div>
+        <input type="hidden" id="token" name="token" value="">
         <button type="submit" class="login-button">로그인</button>
     </form>
 
@@ -79,8 +90,6 @@
             icon.textContent = "👁️"; // 아이콘 변경 (보기)
         }
     }
-
-
 </script>
 </body>
 </html>
