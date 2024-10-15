@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계정 찾기</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        background-color: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 400px; /* 너비 조정 */
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .tabs {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 10px 20px;
+        transition: background-color 0.3s;
+    }
+
+    .tab.active {
+        font-weight: bold;
+        border-bottom: 2px solid #007bff; /* 활성화된 탭 강조 */
+    }
+
+    .tab:hover {
+        background-color: #f0f0f0; /* 호버 효과 */
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        margin: 10px 0 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        color: white;
+        background-color: #007bff; /* 버튼 색상 */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #0056b3; /* 호버 시 색상 변경 */
+    }
+
+</style>
+<body>
+<div class="container">
+    <h1>계정 찾기</h1>
+    <div class="tabs">
+        <button class="tab active" id="findId">아이디 찾기</button>
+        <button class="tab" id="findPassword">비밀번호 찾기</button>
+    </div>
+    <div id="content">
+        <p>본인인증 받은 정보를 입력해 주세요.<br>휴대폰 번호로 아이디(이메일 주소)를 보내드려요.</p>
+        <form id="idForm">
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
+
+            <label for="phone">휴대폰 번호</label>
+            <input type="text" id="phone" placeholder="휴대폰 번호를 입력해 주세요." required>
+
+            <button type="submit" class="submit-btn">아이디(이메일 주소) 받기</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#findPassword').click(function() {
+            // AJAX로 비밀번호 찾기 내용으로 변경
+            $('#content').html(`
+                    <p>가입 시 등록한 이메일 주소를 입력해 주세요.<br>비밀번호 재설정 링크를 보내드려요.</p>
+                    <form id="passwordForm">
+                        <label for="email">이메일 주소</label>
+                        <input type="email" id="email" placeholder="이메일을 입력해 주세요." required>
+                        <button type="submit" class="submit-btn">비밀번호 재설정 링크 받기</button>
+                    </form>
+                `);
+            $('.tab').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        $('#findId').click(function() {
+            // AJAX로 아이디 찾기 내용으로 변경
+            $('#content').html(`
+                    <p>본인인증 받은 정보를 입력해 주세요.<br>휴대폰 번호로 아이디(이메일 주소)를 보내드려요.</p>
+                    <form id="idForm">
+                        <label for="name">이름</label>
+                        <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
+
+                        <label for="phone">휴대폰 번호</label>
+                        <input type="text" id="phone" placeholder="휴대폰 번호를 입력해 주세요." required>
+
+                        <button type="submit" class="submit-btn">아이디(이메일 주소) 받기</button>
+                    </form>
+                `);
+            $('.tab').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>
+</body>
+</html>

@@ -104,3 +104,13 @@ input {
     width: 100%; /* 아이콘 이미지 크기 */
     height: auto; /* 비율 유지 */
 }
+
+.search {
+    text-align: right;
+    color: black; /* 기본 색상 */
+    text-decoration: none; /* 밑줄 제거 */
+    font-size: 12px;
+    font-weight: bold;
+}
+
+

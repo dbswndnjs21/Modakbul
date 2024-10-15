@@ -1,0 +1,13 @@
+package com.modakbul.controller.member;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class LoginSearchController {
+    @GetMapping("/login/search")
+    public String search() {
+        return "search";
+    }
+
+}
