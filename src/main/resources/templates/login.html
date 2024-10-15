@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <title>모닥불</title>
     <link rel="stylesheet" th:href="@{/css/login.css}">
+    <style>
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px; /* 아이콘 크기 조절 */
+        }
+    </style>
 </head>
 <body>
 <div class="login-container">
     <h2>모닥불</h2>
+
     <form th:action="@{/login}" method="post">
         <div class="input-group">
             <label for="userId"></label>
@@ -16,14 +32,16 @@
         <div class="input-group">
             <label for="password"></label>
             <input type="password" id="password" name="password" required placeholder="비밀번호를 입력해주세요.">
+            <span id="togglePassword" class="toggle-password" title="비밀번호 보기"
+                  onclick="togglePasswordVisibility()">👁️</span>
         </div>
         <button type="submit" class="login-button">로그인</button>
     </form>
-    <button type="button" class="join-button" th:attr="data-href=@{/join}" onclick="location.href=this.getAttribute('data-href')">회원가입</button>
+
+    <button type="button" class="join-button" th:attr="data-href=@{/join}"
+            onclick="location.href=this.getAttribute('data-href')">회원가입
+    </button>
     <a th:href="@{/login/search}" class="search">아이디/비밀번호 찾기</a>
-
-
-
 
     <div class="sns-login-box">
         <h3>SNS 간편 로그인</h3>
@@ -46,5 +64,23 @@
         </ul>
     </div>
 </div>
+
+<script>
+    // 비밀번호 표시/숨기기 기능
+    function togglePasswordVisibility() {
+        const inputField = document.getElementById('password');
+        const icon = document.getElementById('togglePassword');
+
+        if (inputField.type === "password") {
+            inputField.type = "text"; // 비밀번호 표시
+            icon.textContent = "🙈"; // 아이콘 변경 (숨기기)
+        } else {
+            inputField.type = "password"; // 비밀번호 숨기기
+            icon.textContent = "👁️"; // 아이콘 변경 (보기)
+        }
+    }
+
+
+</script>
 </body>
 </html>

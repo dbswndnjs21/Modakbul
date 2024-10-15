@@ -16,6 +16,16 @@
         .valid-message {
             color: green;
         }
+        .eye-icon {
+            cursor: pointer; /* 포인터 커서로 변경 */
+            position: absolute; /* 절대 위치로 설정 */
+            right: 10px; /* 오른쪽 여백 */
+            top: 50%; /* 중앙 정렬 */
+            transform: translateY(-50%); /* 세로 중앙 정렬 */
+        }
+        .form-group {
+            position: relative; /* 자식 요소의 절대 위치를 위해 설정 */
+        }
     </style>
 </head>
 <body>
@@ -39,11 +49,13 @@
                 <label for="password1">비밀번호*</label>
                 <input type="password" id="password1" name="password" required placeholder="비밀번호를 입력해 주세요.(8자리 이상 20자리 미만)">
                 <span id="passwordValidationMessage" class="validation-message"></span>
+                <span class="eye-icon" id="togglePassword1" title="비밀번호 보기">👁️</span>
             </div>
             <div class="form-group">
                 <label for="password2">비밀번호 확인*</label>
                 <input type="password" id="password2" name="passwordConfirm" required placeholder="비밀번호를 다시 입력해 주세요.">
                 <span id="passwordMatchMessage" class="validation-message"></span>
+                <span class="eye-icon" id="togglePassword2" title="비밀번호 보기">👁️</span>
             </div>
             <div class="form-group">
                 <label for="phone1">전화번호*</label>
@@ -191,44 +203,28 @@
 
         // 회원가입 버튼 클릭
         $("#joinButton").click(function () {
-            // if (!isEmailVerified) {
-            //     alert("이메일 인증이 필요합니다. 인증 코드를 확인해 주세요.");
-            //     return; // 이메일 인증이 완료되지 않았으면 가입 진행하지 않음
-            // }
-
-            const email = $("#mail1").val();
-            const authCode = $("#authCode").val();
-
-            if (validateEmail(email) && authCode) {
-                $.ajax({
-                    url: '/verifyAuthCode',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ email: email, authCode: authCode }),
-                    success: function (response) {
-                        if (response === "인증 성공") {
-                            isEmailVerified = true; // 이메일 인증 완료
-                            $("#memberJoinForm").submit(); // 가입 폼 제출
-                        } else {
-                            alert("인증 코드가 잘못되었습니다. 다시 확인해 주세요.");
-                        }
-                    },
-                    error: function () {
-                        alert("인증 확인 중 오류가 발생했습니다.");
-                    }
-                });
-            } else {
-                alert("유효하지 않은 이메일 또는 인증 코드입니다.");
+            if (!isEmailVerified) {
+                alert("이메일 인증이 필요합니다.");
+                return;
             }
+
+            // 폼 제출
+            $("#memberJoinForm").submit();
         });
 
-        // 인증 코드 입력란 변화 감지
-        $("#authCode").on("input", function () {
-            if ($(this).val()) {
-                $("#joinButton").prop("disabled", false); // 인증 코드가 입력되면 가입 버튼 활성화
-            } else {
-                $("#joinButton").prop("disabled", true); // 인증 코드가 비어 있으면 가입 버튼 비활성화
-            }
+        // 비밀번호 표시/숨기기
+        $("#togglePassword1").click(function () {
+            const passwordField = $("#password1");
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+            $(this).text(type === "password" ? "👁️" : "🙈");
+        });
+
+        $("#togglePassword2").click(function () {
+            const passwordField = $("#password2");
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+            $(this).text(type === "password" ? "👁️" : "🙈");
         });
     });
 </script>
