@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계정 찾기</title>
+    <link rel="stylesheet" th:href="@{/css/loginSearch.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>계정 찾기</h1>
+    <div class="tabs">
+        <button class="tab active" id="findId">아이디 찾기</button>
+        <button class="tab" id="findPassword">비밀번호 찾기</button>
+    </div>
+    <div id="content">
+        <p>가입시 정보를 입력해 주세요<br></p>
+        <form id="idForm">
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
+
+            <label for="email">이메일</label>
+            <input type="text" id="email" placeholder="이메일을 입력해 주세요." required>
+
+            <button type="submit" class="submit-btn">아이디 받기</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#findPassword').click(function() {
+            $('#content').html(`
+                <p>가입 시 등록한 이메일 주소를 입력해 주세요.<br>비밀번호 재설정 링크를 보내드려요.</p>
+                <form id="passwordForm">
+                    <label for="email">이메일 주소</label>
+                    <input type="email" id="email" placeholder="이메일을 입력해 주세요." required>
+                    <button type="submit" class="submit-btn">비밀번호 재설정 링크 받기</button>
+                </form>
+            `);
+            $('.tab').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        $('#findId').click(function() {
+            $('#content').html(`
+               <p>가입시 정보를 입력해 주세요<br></p>
+        <form id="idForm">
+            <label for="name">이름</label>
+            <input type="text" id="name" placeholder="이름을 입력해 주세요." required>
+
+            <label for="email">이메일</label>
+            <input type="text" id="email" placeholder="이메일을 입력해 주세요." required>
+
+            <button type="submit" class="submit-btn">아이디 받기</button>
+        </form>
+            `);
+            $('.tab').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // Handle the ID form submission
+        $(document).on('submit', '#idForm', function(event) {
+            event.preventDefault(); // 기본 제출 방지
+            const name = $('#name').val(); // 이름 가져오기
+            const email = $('#email').val(); // 이메일 주소 가져오기
+            console.log("name:", name);
+            console.log("email:", email); // 이메일 확인 로그 추가
+
+            // AJAX 요청
+            $.ajax({
+                type: 'POST',
+                url: '/login/search', // 요청 URL
+                contentType: 'application/json', // JSON 형식으로 전송
+                data: JSON.stringify({ userName: name, mail: email }), // JSON 문자열로 변환
+                success: function(response) {
+                    alert(response); // 성공 시 응답 표시
+                },
+                error: function(xhr) {
+                    // 오류 처리
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON : '사용자 정보를 찾을 수 없습니다.'; // 오류 메시지 처리
+                    alert(errorMessage); // 오류 메시지 표시
+                }
+            });
+        });
+
+
+        // Handle the password form submission
+        $(document).on('submit', '#passwordForm', function(event) {
+            event.preventDefault(); // 기본 제출 방지
+            const email = $('#email').val(); // 이메일 주소 가져오기
+
+            // AJAX 요청
+            $.ajax({
+                type: 'POST',
+                url: '/searchPassword', // 요청 URL
+                contentType: 'application/json', // JSON 형식으로 전송
+                data: JSON.stringify({ email: email }), // JSON 문자열로 변환
+                success: function(response) {
+                    alert(response); // 성공 시 응답 표시
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON ? xhr.responseJSON : '존재하지 않는 이메일입니다.'; // 오류 메시지 처리
+                    alert(errorMessage); // 오류 메시지 표시
+                }
+            });
+        });
+
+    });
+</script>
+</body>
+</html>

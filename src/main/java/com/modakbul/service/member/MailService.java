@@ -91,6 +91,44 @@ public class MailService {
 
         return message;
     }
+    @Async
+    public void sendResetPasswordEmail(String recipientEmail) throws MessagingException {
+        String resetLink = "http://localhost:8080/resetPassword?email=" + recipientEmail; // 비밀번호 재설정 링크
+        MimeMessage message = createResetPasswordMail(recipientEmail, resetLink);
+
+        try {
+            javaMailSender.send(message);
+        } catch (MailException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("비밀번호 재설정 메일 발송 중 오류가 발생했습니다.");
+        }
+    }
+
+    // 비밀번호 재설정 메일 내용 생성
+    private MimeMessage createResetPasswordMail(String recipientEmail, String resetLink) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+
+        message.setFrom(senderEmail);
+        message.setRecipients(MimeMessage.RecipientType.TO, recipientEmail);
+        message.setSubject("[모닥불] 비밀번호 재설정 안내");
+
+        String body = "<html>" +
+                "<body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;'>" +
+                "<div style='max-width: 600px; margin: auto; background-color: white; padding: 30px; border: 1px solid #e1e1e1; border-radius: 8px;'>" +
+                "<h2 style='color: #4a4a4a;'>비밀번호 재설정 안내</h2>" +
+                "<p>안녕하세요, 회원님</p>" +
+                "<p>비밀번호 재설정을 원하신다면 아래의 링크를 클릭해주세요:</p>" +
+                "<a href='" + resetLink + "' style='display: block; text-align: center; margin: 20px 0; padding: 10px; background-color: #0072c6; color: white; text-decoration: none; border-radius: 5px;'>비밀번호 재설정하기</a>" +
+                "<p>위 링크는 10분 이내에 사용해야 하며, 만료되면 다시 요청해주세요.</p>" +
+                "<p>이 메일은 자동으로 발송된 메일입니다. 회신하지 마세요.</p>" +
+                "</div>" +
+                "</body>" +
+                "</html>";
+
+        message.setContent(body, "text/html; charset=UTF-8");
+
+        return message;
+    }
 
     @Async
     public void sendSimpleMessageAsync(String sendEmail) throws MessagingException {
