@@ -54,4 +54,8 @@ public class FreeboardCommentService {
 	            ))
 	            .collect(Collectors.toList());
 	}
+	
+	public void deleteComment(long id) {
+		freeboardCommentRepository.deleteById(id);
+	} 
 }

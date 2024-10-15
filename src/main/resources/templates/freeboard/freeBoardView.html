@@ -118,8 +118,9 @@
 $(document).ready(function () {
     const boardId = /*[[${board.id}]]*/ null;
     const memberId = /*[[${member.id}]]*/ null;
-
-    // 댓글 보기 버튼 클릭 이벤트
+    const userId = /*[[${userId}]]*/ null; 
+    
+ // 댓글 보기 버튼 클릭 이벤트
     $("#toggle-comments-btn").click(function () {
         const commentSection = $("#comment-section");
         if (commentSection.is(':hidden')) {
@@ -152,23 +153,29 @@ $(document).ready(function () {
                     }
                 });
 
-                // 댓글을 출력하는 재귀 함수
                 function renderComments(commentList, depth = 0) {
                     commentList.forEach(comment => {
                         const date = new Date(comment.createdAt);
                         const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
-                        // 댓글 요소 생성
+                        // comment.userId와 userId가 일치하는지 확인 (작성자와 로그인한 사용자 비교)
+                        const isOwner = comment.userId === userId;
+
+                        // 댓글 요소에 수정/삭제 버튼을 조건부로 추가
                         const commentElement = $(`
-                            <div class="comment mb-3" style="margin-left: ${depth * 20}px;" data-comment-id="${comment.id}"> <!-- 깊이에 따라 들여쓰기 -->
+                            <div class="comment mb-3" style="margin-left: ${depth * 20}px;" data-comment-id="${comment.id}">
                                 <strong>${comment.userId}</strong> <span>${formattedDate}</span>
-                                <p>${comment.content}</p>
+                                <p class="comment-content">${comment.content}</p>
+                                ${isOwner ? `
+                                    <button class="btn btn-sm btn-outline-warning edit-btn" data-comment-id="${comment.id}">수정</button>
+                                    <button class="btn btn-sm btn-outline-danger delete-btn" data-comment-id="${comment.id}">삭제</button>
+                                ` : ''}
                                 <button class="btn btn-sm btn-link reply-btn" data-comment-id="${comment.id}">답글</button>
                                 <div class="reply ms-4" style="display: none;">
                                     <form class="reply-form mt-2 ms-4">
-                                        <input type="hidden" name="parentId" value="${comment.id}" /> <!-- parentId가 comment.id로 설정 -->
+                                        <input type="hidden" name="parentId" value="${comment.id}" />
                                         <input type="hidden" name="freeboardId" value="${boardId}" />
-                                        <input type="hidden" name="memberId" value="${memberId}" />
+                                        <input type="hidden" name="memberId" value="${memberId}" /> <!-- 여기도 userId 사용 -->
                                         <div class="mb-2">
                                             <textarea class="form-control" name="content" rows="2" placeholder="답글을 입력하세요"></textarea>
                                         </div>
@@ -178,11 +185,11 @@ $(document).ready(function () {
                             </div>
                         `);
 
-                        commentSection.append(commentElement); // 댓글 추가
+                        commentSection.append(commentElement);
 
-                        // 대댓글이 있을 경우, 재귀적으로 호출
+                        // 대댓글이 있을 경우 재귀적으로 렌더링
                         if (comment.children.length > 0) {
-                            renderComments(comment.children, depth + 1); // depth 증가
+                            renderComments(comment.children, depth + 1);
                         }
                     });
                 }
@@ -198,6 +205,67 @@ $(document).ready(function () {
                     // parentId를 reply-form 안의 hidden input에 설정
                     replyForm.find('input[name="parentId"]').val(parentId);
                     replyForm.toggle(); // 답글 폼을 보여주거나 숨김
+                });
+
+                // 수정 버튼 클릭 이벤트
+                $('.edit-btn').click(function () {
+                    const commentId = $(this).data('comment-id'); // 수정하려는 댓글 ID
+                    const commentDiv = $(this).closest('.comment'); // 해당 댓글의 div
+                    const currentContent = commentDiv.find('.comment-content').text(); // 현재 댓글 내용
+
+                    // 수정 폼으로 전환
+                    const editForm = $(`
+                        <form class="edit-form mt-2">
+                            <textarea class="form-control mb-2" rows="3">${currentContent}</textarea>
+                            <button type="submit" class="btn btn-sm btn-outline-warning">수정 완료</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger cancel-btn">취소</button>
+                        </form>
+                    `);
+					
+                    // 기존 댓글 내용을 수정 폼으로 교체
+                    commentDiv.find('.comment-content').replaceWith(editForm);
+
+                    // 수정 취소 버튼 클릭 이벤트
+                    editForm.find('.cancel-btn').click(function () {
+                        editForm.replaceWith(`<p class="comment-content">${currentContent}</p>`); // 기존 내용으로 복원
+                    });
+
+                    // 수정 완료 폼 제출 이벤트
+                    editForm.submit(function (e) {
+                        e.preventDefault();
+                        const newContent = editForm.find('textarea').val(); // 수정된 댓글 내용
+
+                        $.ajax({
+                            url: `/freeboard/freeboardCommentUpdate/${commentId}`,
+                            method: 'POST',
+                            data: { content: newContent },
+                            success: function () {
+                                loadComments(); // 댓글을 다시 로드하여 새 댓글 표시
+                            },
+                            error: function () {
+                                alert('댓글 수정 중 오류가 발생했습니다.');
+                            }
+                        });
+                    });
+                });
+
+                // 삭제 버튼 클릭 이벤트
+                $('.delete-btn').click(function () {
+                    const commentId = $(this).data('comment-id'); // 삭제하려는 댓글 ID
+                    
+                    if (confirm('정말로 이 댓글을 삭제하시겠습니까?')) {
+                        $.ajax({
+                            url: `/freeboard/freeboardCommentDelete/${commentId}`,
+                            method: 'DELETE',
+                            success: function () {
+                                loadComments(); // 댓글 목록을 새로고침
+                                alert('댓글 삭제 완료!'); // 삭제 완료 알림
+                            },
+                            error: function () {
+                                alert('댓글 삭제 중 오류가 발생했습니다.');
+                            }
+                        });
+                    }
                 });
 
                 // 답글 폼 제출 이벤트 처리
