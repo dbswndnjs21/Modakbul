@@ -61,14 +61,14 @@
             <input type="text" id="campgroundName" th:field="*{campgroundName}" class="form-control" required/>
         </div>
 
-        <input type="text" id="postcode" placeholder="우편번호">
+        <input type="text" id="postcode" th:field="*{postcode}" placeholder="우편번호">
         <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
-        <input type="text" id="address" placeholder="주소"><br>
-        <input type="text" id="detailAddress" placeholder="상세주소">
-        <input type="text" id="extraAddress" placeholder="참고항목">
+        <input type="text" id="address" th:field="*{address}" placeholder="주소"><br>
+        <input type="text" id="detailAddress" th:field="*{detailAddress}" placeholder="상세주소">
+        <input type="text" id="extraAddress" th:field="*{extraAddress}" placeholder="참고항목">
 
-        <input type="text" id="sido" placeholder="시도">
-        <input type="text" id="sigungu" placeholder="시군구">
+        <input type="text" id="sido" th:field="*{locationDetail.location.locationName}" placeholder="시도">
+        <input type="text" id="sigungu" th:field="*{locationDetail.locationName}" placeholder="시군구">
 
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script>
@@ -124,14 +124,14 @@
                 }).open();
             }
         </script>
-        <div class="mb-3">
-            <label for="campgroundAddress" class="form-label">주소:</label>
-            <input type="text" id="campgroundAddress" th:field="*{campgroundAddress}" class="form-control" required/>
-        </div>
-        <div class="mb-3">
-            <label for="addressDetail" class="form-label">주소 상세:</label>
-            <input type="text" id="addressDetail" th:field="*{addressDetail}" class="form-control" required/>
-        </div>
+<!--        <div class="mb-3">-->
+<!--            <label for="campgroundAddress" class="form-label">주소:</label>-->
+<!--            <input type="text" id="campgroundAddress" th:field="*{campgroundAddress}" class="form-control" required/>-->
+<!--        </div>-->
+<!--        <div class="mb-3">-->
+<!--            <label for="addressDetail" class="form-label">주소 상세:</label>-->
+<!--            <input type="text" id="addressDetail" th:field="*{addressDetail}" class="form-control" required/>-->
+<!--        </div>-->
         <div class="mb-3">
             <label for="phone" class="form-label">전화번호:</label>
             <input type="text" id="phone" th:field="*{phone}" class="form-control" required/>
