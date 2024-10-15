@@ -22,7 +22,7 @@ public class BookingService {
     }
 
     public Booking createBooking(Long campsiteId, String checkInDate, String checkOutDate, Member member) {
-        Campsite campsite = campsiteService.findById(campsiteId);
+        Campsite campsite = campsiteService.findCampsiteById(campsiteId);
 
         Booking booking = new Booking();
         booking.setCampsite(campsite);
