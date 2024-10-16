@@ -13,8 +13,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -49,11 +52,11 @@ public class BookingController {
 
 
     @PostMapping("/booking/submit")
-    public String createBooking(
+    @ResponseBody  // AJAX 요청에 대한 JSON 응답
+    public Map<String, Object> createBooking(
             @RequestParam("campsiteId") Long campsiteId,
             @RequestParam("checkInDate") String checkInDate,
-            @RequestParam("checkOutDate") String checkOutDate,
-            RedirectAttributes redirectAttributes) {
+            @RequestParam("checkOutDate") String checkOutDate) {
 
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -65,8 +68,12 @@ public class BookingController {
         // 예약 생성
         Booking booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
 
-        // 예약 성공 메시지 및 상세 페이지로 리다이렉트
-        redirectAttributes.addFlashAttribute("message", "예약이 성공적으로 완료되었습니다.");
-        return "redirect:/mypage/reservations";
+        // 응답 데이터 생성
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "예약이 성공적으로 완료되었습니다.");
+        response.put("bookingId", booking.getId());  // 필요시 예약 ID나 기타 정보 포함
+
+        return response;  // JSON 형식으로 응답
     }
+
 }
