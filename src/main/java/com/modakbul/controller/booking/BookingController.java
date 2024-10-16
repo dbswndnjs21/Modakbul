@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
@@ -42,6 +43,9 @@ public class BookingController {
         // 체크인/체크아웃 날짜 모델에 추가
         model.addAttribute("checkInDate", checkInDate);
         model.addAttribute("checkOutDate", checkOutDate);
+
+        int totalPrice = campsiteService.calculateTotalPrice(campsiteId, LocalDate.parse(checkInDate),LocalDate.parse(checkOutDate));
+        model.addAttribute("totalPrice",totalPrice);
 
         // 예약 폼 페이지로 이동
         return "booking/bookingForm";
