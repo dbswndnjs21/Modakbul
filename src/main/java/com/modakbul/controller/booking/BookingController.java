@@ -48,7 +48,7 @@ public class BookingController {
     }
 
 
-    @PostMapping("/booking/create")
+    @PostMapping("/booking/submit")
     public String createBooking(
             @RequestParam("campsiteId") Long campsiteId,
             @RequestParam("checkInDate") String checkInDate,
@@ -67,6 +67,6 @@ public class BookingController {
 
         // 예약 성공 메시지 및 상세 페이지로 리다이렉트
         redirectAttributes.addFlashAttribute("message", "예약이 성공적으로 완료되었습니다.");
-        return "redirect:/booking/" + booking.getId();
+        return "redirect:/mypage/reservations";
     }
 }
