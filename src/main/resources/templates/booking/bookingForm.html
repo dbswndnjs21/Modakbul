@@ -18,7 +18,7 @@
   <input type="hidden" name="checkOutDate" th:value="${checkOutDate}">
   <input type="hidden" id="campgroundName" name="campgroundName" th:value="${campsite.campground.getCampgroundName()}">
   <input type="hidden" id="campsiteName" name="campsiteName" th:value="${campsite.campsiteName}">
-
+  <input type="text" id="totalPrice" name="totalPrice" th:value="${totalPrice}">
   <button id="btn-submit" type="button">예약 확정 및 결제</button>
 </form>
 
@@ -50,11 +50,12 @@
         // 주문번호 생성
         const orderNumber = createOrderNum();
         const campgroundName = document.getElementById("campgroundName").value;
+        const totalPrice = document.getElementById("totalPrice").value;
         const bookingId = response.bookingId;
 
         let data = {
           name: campgroundName,    // 카카오페이에 보낼 대표 상품명
-          totalPrice: 10000,        // 총 결제금액
+          totalPrice: totalPrice,        // 총 결제금액
           orderNumber: orderNumber,  // 생성한 주문번호 추가
           bookingId : bookingId
         };
