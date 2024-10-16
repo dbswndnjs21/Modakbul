@@ -1,6 +1,7 @@
 package com.modakbul.controller.campground;
 
 import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,8 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/campgrounds")
@@ -31,10 +35,24 @@ public class CampgroundController {
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable Long id,
                                        @RequestParam(value = "query", required = false) String query,
+                                       @RequestParam(value = "checkInDate") LocalDate checkInDate,
+                                       @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
                                        Model model) {
+        // 캠프사이트 정보
+        List<Campsite> campsites = campsiteService.findByCampgroundId(id);
 
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
-        model.addAttribute("campsites", campsiteService.findByCampgroundId(id));
+        model.addAttribute("campsites", campsites);
+
+        Map<Long, Integer> totalPrices = new HashMap<>();
+
+        // 각 캠프사이트에 대한 총 가격 계산
+        for (Campsite campsite : campsites) {
+            int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
+            System.out.println("total가격 : "+ totalPrice);
+            totalPrices.put(campsite.getId(), totalPrice);
+        }
+        model.addAttribute("totalPrices", totalPrices);
         return "campground/campgroundDetail";
     }
 

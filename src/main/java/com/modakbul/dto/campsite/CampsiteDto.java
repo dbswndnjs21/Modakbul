@@ -16,4 +16,6 @@ public class CampsiteDto {
     private String campsiteName;
     private String campsiteDescription;
     private int headCount;
+    private int weekdayPrice;
+    private int weekendPrice;
 }
