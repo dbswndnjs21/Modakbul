@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HelpController {
     @GetMapping("/help")
     public String help() {
-        return "help/helpd";
+        return "help/help";
     }
 }
