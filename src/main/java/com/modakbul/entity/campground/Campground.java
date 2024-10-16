@@ -34,8 +34,11 @@ public class Campground {
     private Host host;
 
     private String campgroundName;
-    private String campgroundAddress;
-    private String addressDetail;
+
+    private String postcode; //우편번호
+    private String address;  //주소
+    private String detailAddress; //상세주소
+    private String extraAddress;  //참고항목
     private String phone;
     private int approve;
 

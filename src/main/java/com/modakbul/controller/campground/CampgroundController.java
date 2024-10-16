@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +28,6 @@ public class CampgroundController {
 //        model.addAttribute("campgrounds", campgroundService.getAllCampgrounds());
 //        return "campground/campgroundList";
 //    }
-
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable Long id,
                                        @RequestParam(value = "query", required = false) String query,
@@ -47,9 +47,10 @@ public class CampgroundController {
 
     // 폼에서 입력된 캠핑장 정보를 저장
     @PostMapping("/add")
-    public String addCampground(@ModelAttribute("campground") Campground campground) {
+    public String addCampground(@ModelAttribute("campground") Campground campground,
+                                @RequestParam("images")MultipartFile[] images) {
         campgroundService.createCampground(campground);
-        return "redirect:/campground/campgrounds";
+        return "redirect:/campsite/add?campgroundId=" + campground.getId();
     }
 
     @GetMapping

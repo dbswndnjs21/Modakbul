@@ -17,7 +17,7 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String locationName;
+    private String sido;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<LocationDetail> locationDetails;

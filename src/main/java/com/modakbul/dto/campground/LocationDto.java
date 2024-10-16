@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LocationDto {
     private int id;
-    private String locationName;
+    private String sido;
 }

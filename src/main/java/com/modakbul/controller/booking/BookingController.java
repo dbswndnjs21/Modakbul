@@ -7,7 +7,6 @@ import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @Controller
 public class BookingController {
@@ -35,7 +36,7 @@ public class BookingController {
             Model model) {
 
         // 캠프사이트 정보 가져오기
-        Campsite campsite = campsiteService.findById(campsiteId);
+        Campsite campsite = campsiteService.findCampsiteById(campsiteId);
         model.addAttribute("campsite", campsite);
 
         // 체크인/체크아웃 날짜 모델에 추가
@@ -47,7 +48,7 @@ public class BookingController {
     }
 
 
-    @PostMapping("/booking/create")
+    @PostMapping("/booking/submit")
     public String createBooking(
             @RequestParam("campsiteId") Long campsiteId,
             @RequestParam("checkInDate") String checkInDate,
@@ -66,6 +67,6 @@ public class BookingController {
 
         // 예약 성공 메시지 및 상세 페이지로 리다이렉트
         redirectAttributes.addFlashAttribute("message", "예약이 성공적으로 완료되었습니다.");
-        return "redirect:/booking/" + booking.getId();
+        return "redirect:/mypage/reservations";
     }
 }
