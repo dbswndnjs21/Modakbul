@@ -31,18 +31,15 @@ public class BookingService {
         LocalDate checkOutDateParsed = LocalDate.parse(checkOutDate, formatter);
 
         Campsite campsite = campsiteService.findCampsiteById(campsiteId);
-        System.out.println("체크인 날짜: " + checkInDate);
-        System.out.println("체크아웃 날짜: " + checkOutDate);
-
         Booking booking = new Booking();
         booking.setCampsite(campsite);
-
+        booking.setCampground(campsite.getCampground());
         // LocalDate를 LocalDateTime으로 변환 (시작 시간은 00:00:00으로 설정)
         booking.setCheckInDate(checkInDateParsed.atStartOfDay()); // 체크인 날짜
         booking.setCheckOutDate(checkOutDateParsed.atStartOfDay()); // 체크아웃 날짜
 
         booking.setMember(member);
-        booking.setBookingStatus(1);  // 예약 완료 상태를 나타내는 값
+        booking.setBookingStatus(0);  // 예약 완료 상태를 나타내는 값
 
         return bookingRepository.save(booking);
     }
