@@ -57,7 +57,9 @@
             <td th:text="${campsite.campsiteName}">Campsite Name</td>
             <td th:text="${campsite.campsiteDescription}">Description</td>
             <td th:text="${campsite.headCount}">4</td>
-<!--            <td th:text="${campsite.campsitePrice}">100,000</td>-->
+            <td th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
+
+
             <td>
                 <button type="button" th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
             </td>
