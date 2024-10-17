@@ -15,4 +15,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     // 예약상태가 완료된(status가 0인) 것만 체크
     int countByMemberAndBookingStatusAndCheckOutDateBefore(Member member, int bookingStatus, LocalDateTime checkOutDate);
+
+    List<Booking> findAllByMemberId(Long memberId);
 }

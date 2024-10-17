@@ -1,5 +1,6 @@
 package com.modakbul.service.booking;
 
+import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Member;
@@ -44,4 +45,9 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+
+    public List<Booking> bookingList(Long id) {
+        List<Booking> allById = bookingRepository.findAllByMemberId(id);
+        return allById;
+    }
 }
