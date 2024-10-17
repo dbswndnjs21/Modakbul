@@ -72,9 +72,4 @@ public class CampsiteService {
                 .mapToInt(CampsitePrice::getPrice)  // 각 가격을 추출
                 .sum();  // 총합 계산
     }
-
-    public int getLowestTotalPrice(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate){
-        return 0;
-    }
-
 }
