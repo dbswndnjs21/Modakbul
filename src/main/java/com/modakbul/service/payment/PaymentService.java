@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -158,13 +159,15 @@ public class PaymentService {
         return headers;
     }
 
-    public void saveIamPortPayment(IamportResponse<com.siot.IamportRestClient.response.Payment> paymentResponse){
+    public void saveIamPortPayment(IamportResponse<com.siot.IamportRestClient.response.Payment> paymentResponse, Long bookingId){
         com.siot.IamportRestClient.response.Payment paymentData = paymentResponse.getResponse();
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
         CustomUserDetails userDetails = (CustomUserDetails) principal;
         Member member = userDetails.getMember();
+
+        Optional<Booking> byId = bookingRepository.findById(bookingId);
+        Booking booking = byId.get();
 
         Payment paymentEntity = new Payment();
         paymentEntity.setProductName(paymentData.getName());
@@ -179,6 +182,7 @@ public class PaymentService {
 //        paymentEntity.setPaymentDate(paymentData.);  결재 준비 또는 승인 시작 시간
         paymentEntity.setPaymentTid(paymentData.getImpUid());
         paymentEntity.setMember(member);
+        paymentEntity.setBooking(booking);
 
         paymentRepository.save(paymentEntity);
     }

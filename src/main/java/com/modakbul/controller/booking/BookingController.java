@@ -6,6 +6,7 @@ import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.campsite.CampsiteService;
+import com.modakbul.service.member.MemberService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,12 @@ public class BookingController {
 
     private final CampsiteService campsiteService;
     private final BookingService bookingService;
+    private final MemberService memberService;
 
-    public BookingController(CampsiteService campsiteService, BookingService bookingService) {
+    public BookingController(CampsiteService campsiteService, BookingService bookingService, MemberService memberService) {
         this.campsiteService = campsiteService;
         this.bookingService = bookingService;
+        this.memberService = memberService;
     }
 
     @GetMapping("/booking/new")
@@ -72,10 +75,16 @@ public class BookingController {
         // 예약 생성
         Booking booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
 
+        Member member1 = memberService.findById(booking.getMember().getId());
+        String memberEmail = member1.getMail();
+        String memberUserName = member1.getUserName();
+
         // 응답 데이터 생성
         Map<String, Object> response = new HashMap<>();
         response.put("message", "예약이 성공적으로 완료되었습니다.");
         response.put("bookingId", booking.getId());  // 필요시 예약 ID나 기타 정보 포함
+        response.put("memberEmail", memberEmail);
+        response.put("memberUserName", memberUserName);
 
         return response;  // JSON 형식으로 응답
     }
