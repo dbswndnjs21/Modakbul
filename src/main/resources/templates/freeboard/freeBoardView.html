@@ -126,6 +126,7 @@ $(document).ready(function () {
     const userId = /*[[${userId}]]*/ null; 
     let currentPage = 1; // 현재 페이지 번호
     const pageSize = 10; // 페이지 당 댓글 수
+    let lastParentId = 0; // parentId 관리 변수
     const commentSection = $('.comment-section');
 	
     // 댓글 보기 버튼 클릭 이벤트
@@ -147,7 +148,7 @@ $(document).ready(function () {
                 console.log("댓글 응답:", response);
                 const { comments, totalPages } = response; // 페이지네이션 정보 포함
                 commentSection.empty(); // 기존 댓글 제거
-				
+                
                 // 부모 댓글만 걸러내어 렌더링
                 const parentComments = comments.filter(comment => !comment.parentId);
 
@@ -185,14 +186,14 @@ $(document).ready(function () {
 
             const isOwner = comment.userId === userId;
 
-            const commentElement = $(` 
+            const commentElement = $(`
                 <div class="comment mb-3" style="margin-left: ${depth * 20}px;" data-comment-id="${comment.id}">
                     <strong>${comment.userId}</strong> <span>${formattedDate}</span>
                     <p class="comment-content">${comment.content}</p>
-                    ${isOwner ? ` 
-                        <button class="btn btn-sm btn-outline-warning edit-btn" data-comment-id="${comment.id}">수정</button> 
-                        <button class="btn btn-sm btn-outline-danger delete-btn" data-comment-id="${comment.id}">삭제</button>
-                    ` : ''}
+                    ${isOwner ?  
+                        `<button class="btn btn-sm btn-outline-warning edit-btn" data-comment-id="${comment.id}">수정</button> 
+                        <button class="btn btn-sm btn-outline-danger delete-btn" data-comment-id="${comment.id}">삭제</button>` 
+                    : ''}
                     <button class="btn btn-sm btn-link reply-btn">답글</button>
                     <div class="reply" style="display: none;">
                         <form class="reply-form mt-2">
@@ -217,16 +218,21 @@ $(document).ready(function () {
         });
     }
 
+// 답글 버튼 클릭 이벤트
+$(document).on('click', '.reply-btn', function () {
+    $(this).next('.reply').toggle(); // 답글 폼 토글
+});
+
     // 페이지네이션 생성 함수
     function createPagination(totalPages) {
         const pagination = $('.pagination');
         pagination.empty();
         for (let i = 1; i <= totalPages; i++) {
-            const pageItem = $(` 
-                <li class="page-item ${i === currentPage ? 'active' : ''}"> 
+            const pageItem = $( 
+                `<li class="page-item ${i === currentPage ? 'active' : ''}"> 
                     <a class="page-link" href="#">${i}</a>
-                </li>
-            `);
+                </li>`
+            );
             pagination.append(pageItem);
         }
 
@@ -241,73 +247,37 @@ $(document).ready(function () {
         });
     }
 
-    // 댓글 수정
-    $(document).on('click', '.edit-btn', function () {
-        const commentId = $(this).data('comment-id');
-        const commentElement = $(`.comment[data-comment-id="${commentId}"]`);
-        const content = commentElement.find('.comment-content').text();
-        const editForm = $(` 
-            <form class="edit-form mt-2">
-                <input type="hidden" name="commentId" value="${commentId}" />
-                <div class="mb-2">
-                    <textarea class="form-control" name="content" rows="2">${content}</textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">수정 완료</button>
-                <button type="button" class="btn btn-secondary cancel-edit-btn">취소</button>
-            </form>
-        `);
-        commentElement.append(editForm);
-        $(this).hide(); // 수정 버튼 숨기기
-    });
-
-    // 댓글 수정 취소
-    $(document).on('click', '.cancel-edit-btn', function () {
-        const commentElement = $(this).closest('.comment');
-        commentElement.find('.edit-btn').show(); // 수정 버튼 다시 보이기
-        $(this).closest('.edit-form').remove(); // 수정 폼 제거
-    });
-
-    // 수정 폼 제출
-    $(document).on('submit', '.edit-form', function (e) {
-        e.preventDefault();
-        const formData = $(this).serialize();
-        $.ajax({
-            url: '/freeboard/freeboardCommentUpdate',
-            method: 'POST',
-            data: formData,
-            success: function () {
-                loadComments(currentPage); // 댓글 목록 다시 불러오기
-            }
-        });
-    });
-
-    // 댓글 삭제
-    $(document).on('click', '.delete-btn', function () {
-        const commentId = $(this).data('comment-id');
-        $.ajax({
-            url: `/freeboard/freeboardCommentDelete/${commentId}`,
-            method: 'DELETE',
-            success: function () {
-                loadComments(currentPage); // 댓글 목록 다시 불러오기
-            }
-        });
-    });
-
-    // 답글 버튼 클릭 이벤트
-    $(document).on('click', '.reply-btn', function () {
-        $(this).siblings('.reply').toggle(); // 답글 폼 토글
-    });
-
-    // 답글 작성 폼 제출
     $(document).on('submit', '.reply-form', function (e) {
         e.preventDefault();
-        const formData = $(this).serialize();
+        const form = $(this);
+        const parentIdInput = form.find('input[name="parentId"]');
+        let parentId = parentIdInput.val();
+
+        // 부모 댓글의 ID를 가져오기 위해 부모 댓글의 data-comment-id를 가져온다.
+        const commentElement = $(this).closest('.comment'); 
+        const commentId = commentElement.data('comment-id');
+
+        // 최상위 댓글일 경우 parentId가 없으므로 parentId를 null로 설정
+        if (!commentElement.length || !commentId) {
+            parentId = null; // 최상위 댓글
+        } else {
+            parentId = commentId; // 답글일 경우 부모 댓글의 ID를 parentId로 설정
+        }
+
+        // hidden input 필드에 parentId를 적용
+        parentIdInput.val(parentId || ''); // 최상위 댓글일 경우 빈 값으로 설정
+
+        // AJAX 요청 전송
+        const formData = form.serialize();
         $.ajax({
             url: '/freeboard/freeboardCommentWrite',
             method: 'POST',
-            data: formData,
+            data: formData, // formData에 parentId 포함됨
             success: function () {
                 loadComments(currentPage); // 댓글 목록 다시 불러오기
+            },
+            error: function (xhr, status, error) {
+                console.error("댓글 작성 오류:", error);
             }
         });
     });
