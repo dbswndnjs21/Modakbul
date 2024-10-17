@@ -25,8 +25,8 @@
         <tbody>
         <tr th:each="camp, iterStat : ${camp}" th:if="${iterStat.index < 10}">
             <td th:text="${camp.id}"></td>
-            <td th:text="${camp.campGroundName}"></td>
-            <td th:text="${camp.campGroundAddress}"></td>
+<!--            <td th:text="${camp.campGroundName}"></td>-->
+<!--            <td th:text="${camp.campGroundAddress}"></td>-->
             <td th:text="${camp.phone}"></td>
             <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
             <td>
