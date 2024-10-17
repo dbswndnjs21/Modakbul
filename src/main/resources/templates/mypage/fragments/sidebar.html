@@ -4,8 +4,12 @@
         <a href="/" class="profile-button">
             <img src="/images/1.png" alt="프로필 이미지">
         </a>
-        <h2 th:text="${member.userName}">사용자 이름</h2>
-        <h2>회원님은 GOLD 등급 입니다.</h2>
+        <h2 th:text="${member.userName}"></h2>
+        <h2 th:text="'회원님의 등급은' + ${membership}  +'입니다. '" ></h2>
+
+
+
+
     </div>
     <nav class="menu">
         <ul>
