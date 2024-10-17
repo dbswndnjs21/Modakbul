@@ -1,9 +1,11 @@
 package com.modakbul.controller.member;
 
+import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.coupon.Coupon;
 import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
+import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.coupon.CouponService;
 import com.modakbul.service.coupon.MemberCouponService;
 import com.modakbul.service.member.MemberService;
@@ -13,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/mypage")
@@ -25,6 +29,8 @@ public class MyPageController {
     private CouponService couponService;
     @Autowired
     private MemberCouponService memberCouponService;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
@@ -52,7 +58,14 @@ public class MyPageController {
     @GetMapping("/reservations")
     public String reservations(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
+
+            Long memberId = member.getId();
+            List<Booking> bookings = bookingService.bookingList(memberId);
+            Member membership = memberService.findMembership(member.getUsername());
+            model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
+            model.addAttribute("bookings", bookings);
+            // 예약 내역 가져오기
         } else {
             System.out.println("No valid authentication found.");
         }
