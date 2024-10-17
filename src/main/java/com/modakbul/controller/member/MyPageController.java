@@ -21,6 +21,8 @@ public class MyPageController {
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
+            Member membership = memberService.findMembership(member.getUsername());
+            model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
         } else {
             System.out.println("No valid authentication found.");
