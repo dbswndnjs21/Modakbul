@@ -49,7 +49,7 @@
         <button type="submit" class="login-button">로그인</button>
     </form>
 
-    <button type="button" class="join-button" th:attr="data-href=@{/join}"
+    <button type="button" class="join-button" th:attr="data-href=@{/joinCheck}"
             onclick="location.href=this.getAttribute('data-href')">회원가입
     </button>
     <a th:href="@{/login/search}" class="search">아이디/비밀번호 찾기</a>

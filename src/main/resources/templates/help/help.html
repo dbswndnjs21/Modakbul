@@ -125,6 +125,7 @@
         ],
         usage: [
             { question: "[이용] 예약 방법을 알고 싶어요.", answer: "예약은 홈페이지나 모바일 앱을 통해 가능합니다." },
+            { question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다." },
             { question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다." }
         ],
         payment: [
@@ -132,24 +133,32 @@
             { question: "[결제] 영수증을 받고 싶어요.", answer: "영수증은 결제 후 마이페이지에서 발급 가능합니다." }
         ],
         coupon: [
+            { question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다." },
             { question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다." }
         ],
         domestic: [
+            { question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다." },
             { question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다." }
         ],
         overseas: [
+            { question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다." },
             { question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다." }
         ],
         rental: [
+            { question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다." },
             { question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다." }
         ],
         leisure: [
+            { question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요." },
             { question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요." }
         ]
     };
 
     // 카테고리 버튼 클릭 이벤트
     $('#faqCategories button').click(function () {
+        // 현재 스크롤 위치 저장
+        const scrollPosition = $(window).scrollTop();
+
         // 모든 버튼을 기본 상태로 리셋
         $('#faqCategories button').removeClass('active');
         $(this).addClass('active');
@@ -164,7 +173,15 @@
         selectedFaqs.forEach(function (faq) {
             $faqList.append(`<li class="list-group-item" data-answer="${faq.answer}">${faq.question}</li>`);
         });
+
+        // 스크롤 위치 복구 (내용이 짧더라도 위치 유지)
+        setTimeout(function () {
+            if ($(document).height() > $(window).height()) {
+                $(window).scrollTop(scrollPosition); // 스크롤 가능한 경우에만 유지
+            }
+        }, 100);
     });
+
 
     // 질문 클릭 시 답변 표시 (부드럽게 열림)
     $(document).on('click', '.faq-list li', function () {
