@@ -61,4 +61,8 @@ public class MemberService {
     public boolean emailExists(String email) {
         return memberRepository.findByMail(email) != null; // 이메일이 존재하면 true 반환
     }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).get();
+    }
 }
