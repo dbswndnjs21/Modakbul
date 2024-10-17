@@ -1,21 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <head>
   <title>Booking Form</title>
 </head>
 <body>
 <h1>예약 폼</h1>
+<p>캠핑장: <span th:text="${campsite.campground.getCampgroundName()}">Campground Name</span></p>
 <p>캠프사이트: <span th:text="${campsite.campsiteName}">Campsite Name</span></p>
 <p>체크인 날짜: <span th:text="${checkInDate}">체크인 날짜</span></p>
 <p>체크아웃 날짜: <span th:text="${checkOutDate}">체크아웃 날짜</span></p>
 
 <!-- 예약 정보 입력 폼 -->
-<form action="/booking/submit" method="post">
+<form id="bookingForm" action="/booking/submit" method="post">
   <input type="hidden" name="campsiteId" th:value="${campsite.id}">
   <input type="hidden" name="checkInDate" th:value="${checkInDate}">
   <input type="hidden" name="checkOutDate" th:value="${checkOutDate}">
-<!-- 결제하기로 넣어야함-->
-  <button type="submit">예약 확정</button>
+  <input type="hidden" id="campgroundName" name="campgroundName" th:value="${campsite.campground.getCampgroundName()}">
+  <input type="hidden" id="campsiteName" name="campsiteName" th:value="${campsite.campsiteName}">
+  <input type="text" id="totalPrice" name="totalPrice" th:value="${totalPrice}">
+  <button id="btn-submit" type="button">예약 확정 및 결제</button>
 </form>
+
+<script>
+    $(function() {
+      // '예약 확정' 버튼 클릭 시
+      $("#btn-submit").click(function (e) {
+        e.preventDefault(); // 기본 폼 제출 동작 막기
+
+        // 첫 번째 AJAX 요청: 예약 정보 전송
+        $.ajax({
+          type: 'POST',
+          url: '/booking/submit',  // 폼 데이터를 보낼 엔드포인트
+          data: $("#bookingForm").serialize(), // 폼 데이터를 직렬화하여 전송
+          success: function (response) {
+            console.log('예약이 성공적으로 완료되었습니다.');
+            console.log("성공 된 res : " + response)
+            // 예약 완료 후 결제 준비 시작
+            payReady(response);
+          },
+          error: function (error) {
+            console.error('예약 중 오류가 발생했습니다:', error);
+          }
+        });
+      });
+
+      // 두 번째 AJAX 요청: 결제 준비
+      function payReady(response) {
+        // 주문번호 생성
+        const orderNumber = createOrderNum();
+        const campgroundName = document.getElementById("campgroundName").value;
+        const totalPrice = document.getElementById("totalPrice").value;
+        const bookingId = response.bookingId;
+
+        let data = {
+          name: campgroundName,    // 카카오페이에 보낼 대표 상품명
+          totalPrice: totalPrice,        // 총 결제금액
+          orderNumber: orderNumber,  // 생성한 주문번호 추가
+          bookingId : bookingId
+        };
+
+        // 카카오페이 결제 준비 API 호출
+        $.ajax({
+          type: 'POST',
+          url: '/order/pay/ready',
+          data: JSON.stringify(data),
+          contentType: 'application/json',
+          success: function(response) {
+            console.log('결제 준비 완료. 결제 페이지로 이동합니다.');
+            location.href = response.next_redirect_pc_url; // 카카오페이 결제 페이지로 리디렉션
+          },
+          error: function(error) {
+            console.error('결제 준비 중 오류가 발생했습니다:', error);
+          }
+        });
+      }
+
+      // 주문번호 생성 함수
+      function createOrderNum() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 두 자리 포맷
+        const day = String(date.getDate()).padStart(2, '0'); // 두 자리 포맷
+        let orderNum = `${year}${month}${day}`;
+
+        for (let i = 0; i < 5; i++) {
+          orderNum += Math.floor(Math.random() * 10); // 0부터 9까지 랜덤 숫자 추가
+        }
+
+        return orderNum;
+      }
+    });
+</script>
 </body>
 </html>
