@@ -1,9 +1,13 @@
 package com.modakbul.controller.member;
 
 import com.modakbul.entity.booking.Booking;
+import com.modakbul.entity.coupon.Coupon;
+import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
+import com.modakbul.service.coupon.CouponService;
+import com.modakbul.service.coupon.MemberCouponService;
 import com.modakbul.service.member.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,12 +26,26 @@ public class MyPageController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
+    private CouponService couponService;
+    @Autowired
+    private MemberCouponService memberCouponService;
+    @Autowired
     private BookingService bookingService;
 
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
             Member membership = memberService.findMembership(member.getUsername());
+
+
+            // 멤버 정보를 사용하여 쿠폰 ID를 가져옴
+            Integer couponId = memberCouponService.findCouponIdByMember(membership);
+            if (couponId != null) {
+                Coupon coupon = couponService.findCoupons(couponId);
+                model.addAttribute("coupon", coupon.getCouponName());
+            }
+
+
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
         } else {
@@ -40,6 +58,7 @@ public class MyPageController {
     @GetMapping("/reservations")
     public String reservations(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
+
             Long memberId = member.getId();
             List<Booking> bookings = bookingService.bookingList(memberId);
             Member membership = memberService.findMembership(member.getUsername());

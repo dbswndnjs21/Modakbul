@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CouponDto {
     private int id;
+    private String couponName;
     private String couponCode;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
