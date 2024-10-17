@@ -146,3 +146,10 @@ body {
 .status-cancelled {
     color: #e74c3c;
 }
+
+.bookingStatus {
+    float: right; /* 오른쪽으로 밀기 */
+    margin-left: 17px; /* 버튼과의 간격 조정 */
+    font-size: 16px; /* 글자 크기 조정 (필요시) */
+    color: #333; /* 글자 색상 (필요시) */
+}
