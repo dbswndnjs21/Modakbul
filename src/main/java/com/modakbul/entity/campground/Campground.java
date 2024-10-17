@@ -6,16 +6,14 @@ import com.modakbul.entity.chat.ChatRoom;
 import com.modakbul.entity.image.CampgroundImage;
 import com.modakbul.entity.member.Host;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class Campground {

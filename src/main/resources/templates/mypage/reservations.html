@@ -11,7 +11,8 @@
 
 <div class="container">
     <!-- 사이드바 -->
-    <div th:insert="mypage/fragments/sidebar :: sidebar"></div>
+    <div th:insert="~{mypage/fragments/sidebar :: sidebar}"></div>
+
 
 
     <!-- 메인 콘텐츠 -->
@@ -27,33 +28,27 @@
             <tr>
                 <th>예약 번호</th>
                 <th>캠핑장 이름</th>
-                <th>예약 날짜</th>
+                <th>체크인 날짜</th>
+                <th>체크아웃 날짜</th>
                 <th>상태</th>
                 <th>취소</th>
             </tr>
             </thead>
             <tbody>
-            <!-- 서버에서 예약 데이터를 반복 출력 -->
-            <tr>
-                <td>#12345</td>
-                <td>힐링 캠핑장</td>
-                <td>2024-10-01</td>
-                <td><span class="status-complete">완료</span></td>
-                <td><button class="btn-cancel">취소</button></td>
-            </tr>
-            <tr>
-                <td>#12346</td>
-                <td>휴식 캠핑장</td>
-                <td>2024-10-05</td>
-                <td><span class="status-pending">대기 중</span></td>
-                <td><button class="btn-cancel">취소</button></td>
-            </tr>
-            <tr>
-                <td>#12347</td>
-                <td>자연 캠핑장</td>
-                <td>2024-09-25</td>
-                <td><span class="status-cancelled">취소됨</span></td>
-                <td></td> <!-- 취소된 예약은 취소 버튼 비활성화 -->
+            <!-- bookings 리스트를 반복하여 출력 -->
+            <tr th:each="booking : ${bookings}">
+                <td th:text="'' + ${booking.id}"></td>
+                <td th:text="${booking.campground.getCampgroundName()}"></td>
+                <td th:text="${booking.checkInDate}"></td>
+                <td th:text="${booking.checkOutDate}"></td>
+                <td>
+                    <span th:if="${booking.bookingStatus == 0}" class="status-complete">완료</span>
+<!--                    <span th:if="${booking.bookingStatus == 1}" class="status-pending">대기 중</span>-->
+                    <span th:if="${booking.bookingStatus == 1}" class="status-cancelled">취소됨</span>
+                </td>
+                <td>
+                    <button th:if="${booking.bookingStatus != 0}" class="btn-cancel" th:onclick="'cancelBooking(' + ${booking.id} + ')'">취소</button>
+                </td>
             </tr>
             </tbody>
         </table>
