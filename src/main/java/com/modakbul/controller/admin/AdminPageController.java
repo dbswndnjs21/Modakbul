@@ -69,7 +69,4 @@ public class AdminPageController {
         freeboardService.deleteBoard(id,null); // Freeboard 삭제 서비스 호출
         return "redirect:/admin"; // 삭제 후 관리자 페이지로 리디렉션
     }
-
-
-
 }
