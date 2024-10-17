@@ -4,16 +4,14 @@ import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.image.CampsiteImage;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class Campsite {

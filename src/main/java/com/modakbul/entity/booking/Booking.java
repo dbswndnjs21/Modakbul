@@ -6,17 +6,15 @@ import com.modakbul.entity.member.Host;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Payment;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class Booking {
@@ -46,6 +44,5 @@ public class Booking {
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     private Review review;
-
 
 }
