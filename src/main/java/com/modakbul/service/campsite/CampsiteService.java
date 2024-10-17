@@ -6,6 +6,7 @@ import com.modakbul.entity.campsite.CampsitePriceId;
 import com.modakbul.repository.campsite.CampsitePriceRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -64,11 +65,16 @@ public class CampsiteService {
         return campsitePriceRepository.findByCampsiteIdAndIdPriceDateBetween(campsiteId, checkInDate, checkOutDate.minusDays(1));
     }
 
-    public  int calculateTotalPrice(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate){
+    public int calculateTotalPrice(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate){
         List<CampsitePrice> prices = findPricesByCampgroundIdAndDateRange(campsiteId, checkInDate, checkOutDate);
 
         return prices.stream()
                 .mapToInt(CampsitePrice::getPrice)  // 각 가격을 추출
                 .sum();  // 총합 계산
     }
+
+    public int getLowestTotalPrice(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate){
+        return 0;
+    }
+
 }
