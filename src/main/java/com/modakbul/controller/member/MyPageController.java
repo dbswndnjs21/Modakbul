@@ -32,11 +32,10 @@ public class MyPageController {
     @Autowired
     private BookingService bookingService;
 
-    @GetMapping("")
-    public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+    @ModelAttribute
+    public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
             Member membership = memberService.findMembership(member.getUsername());
-
 
             // 멤버 정보를 사용하여 쿠폰 ID를 가져옴
             Integer couponId = memberCouponService.findCouponIdByMember(membership);
@@ -48,12 +47,18 @@ public class MyPageController {
 
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
-        } else {
+        }
+    }
+
+    @GetMapping("")
+    public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        if (member == null) {
             System.out.println("No valid authentication found.");
             return "redirect:/login";
         }
         return "mypage/myPage";
     }
+
 
     @GetMapping("/reservations")
     public String reservations(@AuthenticationPrincipal CustomUserDetails member, Model model) {
@@ -104,6 +109,7 @@ public class MyPageController {
         }
         return "redirect:/login";
     }
+
     @PostMapping("/checkPassword")
     @ResponseBody
     public String checkPassword(@AuthenticationPrincipal CustomUserDetails member,
@@ -120,6 +126,7 @@ public class MyPageController {
         }
         return "failure"; // 인증되지 않은 경우
     }
+
     @GetMapping("/checkPasswordPage")
     public String checkPasswordPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {
@@ -136,6 +143,7 @@ public class MyPageController {
         }
         return "mypage/reviews";
     }
+
     @GetMapping("/payments")
     public String payments(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {

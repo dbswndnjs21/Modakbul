@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public class HostController {
     private HostService hostService;
     @Autowired
     private PaymentService paymentService;
-    @GetMapping
-    public String host(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+    @ModelAttribute
+    public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         model.addAttribute("member", member);
         Host hostId = hostService.findById(member.getId());
         List<Campground> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
@@ -52,9 +53,14 @@ public class HostController {
                 paymentAmount += payment.getAmount();  // 결제 금액 합산
             }
         }
+        model.addAttribute("paymentAmount", paymentAmount);
+    }
 
 // 모든 예약에 대한 결제 금액이 합산된 후 모델에 추가
-        model.addAttribute("paymentAmount", paymentAmount);
+
+    @GetMapping
+    public String host(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+
         return "host/hostPage";
     }
     @GetMapping("/amount")
