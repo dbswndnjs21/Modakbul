@@ -31,7 +31,7 @@ public class MembershipService {
     @Autowired
     private MemberCouponRepository memberCouponRepository;
 
-    @Scheduled(cron = "*/10 * * * * ?")
+//    @Scheduled(cron = "*/10 * * * * ?")
     @Transactional
     public void updateMembershipAndDistributeCoupons() {
         LocalDateTime now = LocalDateTime.now();

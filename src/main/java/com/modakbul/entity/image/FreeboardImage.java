@@ -3,14 +3,12 @@ package com.modakbul.entity.image;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.modakbul.entity.freeboard.Freeboard;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class FreeboardImage {

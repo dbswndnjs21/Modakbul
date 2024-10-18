@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .usernameParameter("userId") //
                         .loginProcessingUrl("/login")//
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logoutConfig -> logoutConfig.logoutSuccessUrl("/"))
