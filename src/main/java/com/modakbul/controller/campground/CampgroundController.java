@@ -79,6 +79,8 @@ public class CampgroundController {
     @GetMapping("/list")
     public String getCampgroundList(
             @RequestParam(value = "query", required = false) String query,
+            @RequestParam LocalDate checkInDate,
+            @RequestParam LocalDate checkOutDate,
             Model model) {
 
         List<Campground> filteredCampgrounds;
@@ -89,6 +91,19 @@ public class CampgroundController {
         } else {
             filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
         }
+
+        Map<Long, Integer> totalLowestPrices = new HashMap<>();
+
+        // 각 캠프사이트에 대한 총 가격 계산
+        for (Campground campground : filteredCampgrounds) {
+            int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
+            totalLowestPrices.put(campground.getId(), totalLowestPrice);
+//            int totalLowestPrice = campsiteService.calculateTotalPrice()
+//            int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
+//            System.out.println("total가격 : "+ totalPrice);
+//            totalPrices.put(campsite.getId(), totalPrice);
+        }
+        model.addAttribute("totalLowestPrices", totalLowestPrices);
 
         model.addAttribute("campgrounds", filteredCampgrounds);
         return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
