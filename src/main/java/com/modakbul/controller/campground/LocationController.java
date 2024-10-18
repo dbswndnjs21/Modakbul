@@ -1,5 +1,6 @@
 package com.modakbul.controller.campground;
 
+import com.modakbul.entity.campground.Location;
 import com.modakbul.entity.campground.LocationDetail;
 import com.modakbul.service.campground.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,24 @@ public class LocationController {
             details.add(map);
         }
         return ResponseEntity.ok(details);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Map<String, Object>>> getLocations() {
+        List<Location> locations;
+        locations = locationService.findAll();
+        // 요청한 지역 ID에 대한 세부 지역이 없을 경우
+        if (locations == null) {
+            return ResponseEntity.noContent().build();
+        }
+        List<Map<String, Object>> sidos = new ArrayList<>();
+
+        for (Location location : locations) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", location.getId());
+            map.put("sido", location.getSido());
+            sidos.add(map);
+        }
+        return ResponseEntity.ok(sidos);
     }
 }

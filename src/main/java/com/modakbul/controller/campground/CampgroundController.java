@@ -75,7 +75,6 @@ public class CampgroundController {
 
     @GetMapping
     public String searchCampgrounds(Model model){
-        model.addAttribute("locations", locationService.findAll());
         return "campground/campgroundSearch";
     }
 
