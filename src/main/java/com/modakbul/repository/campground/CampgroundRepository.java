@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CampgroundRepository extends JpaRepository<Campground, Long> {
     List<Campground> findByCampgroundNameContainingIgnoreCase(String query);
+    List<Campground> findIdByHostId(Long hostId);
 }

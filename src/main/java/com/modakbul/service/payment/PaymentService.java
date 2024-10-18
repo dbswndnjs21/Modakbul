@@ -240,5 +240,9 @@ public class PaymentService {
 
         return res;
     }
+    public Payment getPaymentByBookingId(Long bookingId) {
+        // 해당 bookingId로 결제 정보를 조회
+        return paymentRepository.findByBookingId(bookingId);
+    }
 
 }

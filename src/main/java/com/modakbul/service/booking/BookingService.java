@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,4 +51,14 @@ public class BookingService {
         List<Booking> allById = bookingRepository.findAllByMemberId(id);
         return allById;
     }
+    public List<Booking> bookingListByCampgroundId(List<Long> campgroundIds) {
+        List<Booking> bookings = new ArrayList<>();
+        for (Long id : campgroundIds) {
+            // 각 캠핑장 ID에 대한 예약을 추가
+            List<Booking> allById = bookingRepository.findAllByMemberId(id);
+            bookings.addAll(allById);
+        }
+        return bookings;
+    }
+
 }

@@ -69,4 +69,7 @@ public class CampgroundService {
         System.out.println("최저가!!!!!!!!!! "+lowestPrice  +"  캠핑장"+ campground.getCampgroundName());
         return lowestPrice;
     }
+    public List<Campground> getCampgroundsByHostId(Long hostId) {
+        return campgroundRepository.findIdByHostId(hostId);
+    }
 }

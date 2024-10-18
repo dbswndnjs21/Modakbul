@@ -17,4 +17,5 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     int countByMemberAndBookingStatusAndCheckOutDateBefore(Member member, int bookingStatus, LocalDateTime checkOutDate);
 
     List<Booking> findAllByMemberId(Long memberId);
+
 }
