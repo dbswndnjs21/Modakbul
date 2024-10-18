@@ -172,8 +172,9 @@
         <td th:text="${campground.id}">1</td>
         <td th:text="${campground.campgroundName}">Camp Name</td>
         <td>
-            <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link">Details</a>
+            <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link">객실정보</a>
         </td>
+        <td th:text="'총가격 : ' + ${(totalLowestPrices[campground.id])} + ' 원'">Total Price</td>
     </tr>
     </tbody>
 </table>
