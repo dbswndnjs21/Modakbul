@@ -1,16 +1,21 @@
 package com.modakbul.service.campground;
 
 import com.modakbul.dto.campground.CampgroundDto;
+import com.modakbul.dto.campground.LocationDetailDto;
+import com.modakbul.dto.campground.LocationDto;
+import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.Campground;
-import com.modakbul.entity.campground.Location;
 import com.modakbul.entity.campground.LocationDetail;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
+import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -51,20 +56,34 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu) {
+        // 현재 인증된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        MemberDto member = new MemberDto(principal.getMember());
+
         Host host = new Host();
-        LocationDetail locationDetail = new LocationDetail();
+        host.setId(member.getId());
 
-        Campground campground =campgroundDto.toEntity(locationDetail, host);
-        Location location = locationService.findOnCreateLocation(campground.getLocationDetail().getLocation().getSido());
-        locationDetail = locationDetailService.findOrCreateLocationDetail(campground.getLocationDetail().getSigungu(), location);
+        // Location 설정
+        LocationDto location = locationService.findOnCreateLocation(sido);
+        LocationDetailDto locationDetailDto = locationDetailService.findOrCreateLocationDetail(sigungu, location);
 
-        campground.getLocationDetail().setLocation(location);
+        // LocationDetail 생성 및 저장
+        LocationDetail locationDetail = locationDetailDto.toEntity(location.toEntity());
+
+        // Campground 엔티티 생성
+        Campground campground = campgroundDto.toEntity(locationDetail, host);
+
+        // LocationDetail을 Campground에 설정
         campground.setLocationDetail(locationDetail);
 
-        CampgroundDto savedCampground = new CampgroundDto(campgroundRepository.save(campground));
-        return savedCampground;
+        // Campground 저장
+        Campground savedCampground = campgroundRepository.save(campground);
+
+        return new CampgroundDto(savedCampground);
     }
+
 
     public List<CampgroundDto> searchCampgrounds(String query) {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링

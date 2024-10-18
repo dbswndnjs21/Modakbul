@@ -19,13 +19,15 @@ public class LocationService {
     @Autowired
     private LocationDetailRepository locationDetailRepository;
 
-    public Location findOnCreateLocation(String sido){
-        return locationRepository.findBySido(sido)
+    public LocationDto findOnCreateLocation(String sido){
+        Location location = locationRepository.findBySido(sido)
                 .orElseGet(()->{
                     Location newLocation = new Location();
                     newLocation.setSido(sido);
                     return locationRepository.save(newLocation);
                 });
+        LocationDto locationDto = new LocationDto(location);
+        return locationDto;
     }
 
     public List<LocationDetailDto> getLocationDetailsByLocationId(int locationId) {
@@ -45,5 +47,9 @@ public class LocationService {
                 .collect(Collectors.toList());
 
         return locationDtos;
+    }
+
+    public Location findById(int id) {
+        return locationRepository.findById(id);
     }
 }

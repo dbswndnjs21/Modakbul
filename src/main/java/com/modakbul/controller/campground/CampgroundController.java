@@ -65,8 +65,10 @@ public class CampgroundController {
     // 폼에서 입력된 캠핑장 정보를 저장
     @PostMapping("/add")
     public String addCampground(@ModelAttribute("campground") CampgroundDto campground,
-                                @RequestParam("images")MultipartFile[] images) {
-        campgroundService.createCampground(campground);
+                                @RequestParam("images")MultipartFile[] images,
+                                @RequestParam("sido") String sido,
+                                @RequestParam("sigungu") String sigungu) {
+        campgroundService.createCampground(campground, sido, sigungu);
         return "redirect:/campsite/add?campgroundId=" + campground.getId();
     }
 
