@@ -29,12 +29,7 @@ public class CampgroundController {
         this.campsiteService = campsiteService;
         this.locationService = locationService;
     }
-
-//    @GetMapping
-//    public String showCampgroundList(Model model) {
-//        model.addAttribute("campgrounds", campgroundService.getAllCampgrounds());
-//        return "campground/campgroundList";
-//    }
+    
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable Long id,
                                        @RequestParam(value = "query", required = false) String query,
