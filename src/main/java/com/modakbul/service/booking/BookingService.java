@@ -1,6 +1,7 @@
 package com.modakbul.service.booking;
 
 import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.booking.BookingReservationsDto;
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
@@ -47,10 +48,10 @@ public class BookingService {
     }
 
 
-    public List<Booking> bookingList(Long id) {
-        List<Booking> allById = bookingRepository.findAllByMemberId(id);
-        return allById;
-    }
+//    public List<Booking> bookingList(Long id) {
+//        List<Booking> allById = bookingRepository.findAllByMemberId(id);
+//        return allById;
+//    }
     public List<BookingDto> bookingListByCampgroundId(List<Long> campgroundIds) {
         List<Booking> bookings = new ArrayList<>();
         for (Long id : campgroundIds) {
@@ -63,5 +64,10 @@ public class BookingService {
                 .map(booking -> new BookingDto(booking))
                 .collect(Collectors.toList());
         return bookingDtos;
+    }
+    public List<BookingReservationsDto> bookingList(Long memberId) {
+        List<Booking> allById = bookingRepository.findAllByMemberId(memberId);
+        List<BookingReservationsDto> BookingReservationsDtoList = allById.stream().map(m -> new BookingReservationsDto(m)).toList();
+        return BookingReservationsDtoList;
     }
 }

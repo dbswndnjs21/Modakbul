@@ -41,7 +41,7 @@ public class HostController {
         List<Long> campgroundIds = new ArrayList<>();
         int paymentAmount = 0;
         Payment paymentSearch = null;
-        for (Campground campground : campgroundsByHostId) {
+        for (CampgroundDto campground : campgroundsByHostId) {
             System.out.println("campgroundㅋㅋㅋㅋ = " + campground);
         }
 
