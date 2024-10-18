@@ -25,7 +25,7 @@ public class Host {
 
     private String bankName;
     private String account;
-    private String account_holder;  // 호스트의 추가 정보
+    private String accountHolder;  // 호스트의 추가 정보
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
     private List<Campground> campgrounds;
