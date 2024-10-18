@@ -30,7 +30,7 @@ public class CouponDto {
                 .couponCode(this.couponCode)
                 .startDate(this.startDate)
                 .endDate(this.endDate)
-                .minimumOrderAmount(this.minimumOrderAmount)
+                .discountAmount(this.discountAmount)
                 .couponType(this.couponType)
                 .isActive(this.isActive)
                 .build();
@@ -43,7 +43,7 @@ public class CouponDto {
         this.couponCode = coupon.getCouponCode();
         this.startDate = coupon.getStartDate();
         this.endDate = coupon.getEndDate();
-        this.minimumOrderAmount = coupon.getMinimumOrderAmount();
+        this.discountAmount = coupon.getDiscountAmount();
         this.couponType = coupon.getCouponType();
         this.isActive = coupon.isActive();
     }

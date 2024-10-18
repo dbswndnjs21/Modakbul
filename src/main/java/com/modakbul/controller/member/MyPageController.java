@@ -1,5 +1,7 @@
 package com.modakbul.controller.member;
 
+import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.booking.BookingReservationsDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.coupon.Coupon;
 import com.modakbul.entity.coupon.MemberCoupon;
@@ -60,7 +62,7 @@ public class MyPageController {
         if (member != null) {
 
             Long memberId = member.getId();
-            List<Booking> bookings = bookingService.bookingList(memberId);
+            List<BookingReservationsDto> bookings = bookingService.bookingList(memberId);
             Member membership = memberService.findMembership(member.getUsername());
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
