@@ -3,16 +3,14 @@ package com.modakbul.entity.payment;
 import com.modakbul.entity.chat.ChatMessage;
 import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class Membership {
