@@ -1,5 +1,7 @@
 package com.modakbul.service.campsite;
 
+import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.campsite.CampsitePrice;
 import com.modakbul.entity.campsite.CampsitePriceId;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CampsiteService {
@@ -20,8 +23,11 @@ public class CampsiteService {
     @Autowired
     private CampsitePriceRepository campsitePriceRepository;
 
-    public List<Campsite> findByCampgroundId(Long CampgroundId) {
-        return campsiteRepository.findByCampgroundId(CampgroundId);
+    public List<CampsiteDto> findByCampgroundId(Long CampgroundId) {
+        List<Campsite> campsites = campsiteRepository.findByCampgroundId(CampgroundId);
+        return campsites.stream()
+                .map(CampsiteDto::new)
+                .collect(Collectors.toList());
     }
 
     // 특정 Campground의 Campsite 목록 조회
@@ -35,8 +41,10 @@ public class CampsiteService {
     }
 
     // Campsite 저장
-    public Campsite saveCampsite(Campsite campsite) {
-        Campsite savedCampsite = campsiteRepository.save(campsite);
+    public CampsiteDto saveCampsite(CampsiteDto campsite) {
+        Campground campground = new Campground();
+        campground.setId(campsite.getCampgroundId());
+        Campsite savedCampsite = campsiteRepository.save(campsite.toEntity(campground));
 
         // 평일 및 주말 가격 설정 (예시: 다음 30일)
         for (int i = 0; i < 93; i++) {
@@ -51,8 +59,8 @@ public class CampsiteService {
 
             campsitePriceRepository.save(campsitePrice); // 가격 정보 저장
         }
-
-        return savedCampsite;
+        CampsiteDto campsiteDto = new CampsiteDto(savedCampsite);
+        return campsiteDto;
     }
 
     // Campsite 삭제

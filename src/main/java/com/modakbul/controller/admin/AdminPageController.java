@@ -1,5 +1,6 @@
 package com.modakbul.controller.admin;
 
+import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.freeboard.Freeboard;
 import com.modakbul.entity.member.Member;
@@ -28,7 +29,7 @@ public class AdminPageController {
     @ModelAttribute
     public void addAttributes(Model model){
         List<Member> members = memberService.findAllMembers();
-        List<Campground> camp = campgroundService.getAllCampgrounds();
+        List<CampgroundDto> camp = campgroundService.getAllCampgrounds();
         List<Freeboard> freeboard = freeboardService.getAllPosts();
 
         model.addAttribute("members", members);

@@ -1,5 +1,8 @@
 package com.modakbul.controller.booking;
 
+import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Member;
@@ -43,8 +46,8 @@ public class BookingController {
             Model model) {
 
         // 캠프사이트 정보 가져오기
-        Campsite campsite = campsiteService.findCampsiteById(campsiteId);
-        model.addAttribute("campsite", campsite);
+        CampsiteDto campsiteDto = new CampsiteDto(campsiteService.findCampsiteById(campsiteId));
+        model.addAttribute("campsite", campsiteDto);
 
         // 체크인/체크아웃 날짜 모델에 추가
         model.addAttribute("checkInDate", checkInDate);
@@ -70,14 +73,13 @@ public class BookingController {
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
 
         // CustomUserDetails에서 Member 정보 가져오기
-        Member member = principal.getMember();
+        MemberDto member = new MemberDto(principal.getMember());
 
         // 예약 생성
-        Booking booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
+        BookingDto booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
 
-        Member member1 = memberService.findById(booking.getMember().getId());
-        String memberEmail = member1.getMail();
-        String memberUserName = member1.getUserName();
+        String memberEmail = member.getMail();
+        String memberUserName = member.getUserName();
 
         // 응답 데이터 생성
         Map<String, Object> response = new HashMap<>();

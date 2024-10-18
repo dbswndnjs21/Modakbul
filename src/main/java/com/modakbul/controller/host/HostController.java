@@ -1,5 +1,7 @@
 package com.modakbul.controller.host;
 
+import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.member.Host;
@@ -35,7 +37,7 @@ public class HostController {
     public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         model.addAttribute("member", member);
         Host hostId = hostService.findById(member.getId());
-        List<Campground> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
+        List<CampgroundDto> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
         List<Long> campgroundIds = new ArrayList<>();
         int paymentAmount = 0;
         Payment paymentSearch = null;
@@ -43,14 +45,13 @@ public class HostController {
             System.out.println("campgroundㅋㅋㅋㅋ = " + campground);
         }
 
-        for (Campground campground : campgroundsByHostId) {
+        for (CampgroundDto campground : campgroundsByHostId) {
             campgroundIds.add(campground.getId());
         }
 
-        List<Booking> bookings = bookingService.bookingListByCampgroundId(campgroundIds);
+        List<BookingDto> bookings = bookingService.bookingListByCampgroundId(campgroundIds);
 
-
-        for (Booking booking : bookings) {
+        for (BookingDto booking : bookings) {
             // 각 예약에 대한 결제 정보 조회
             Payment payment = paymentService.getPaymentByBookingId(booking.getId());
             if (payment != null) {

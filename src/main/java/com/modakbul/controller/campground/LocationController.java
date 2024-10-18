@@ -1,5 +1,7 @@
 package com.modakbul.controller.campground;
 
+import com.modakbul.dto.campground.LocationDetailDto;
+import com.modakbul.dto.campground.LocationDto;
 import com.modakbul.entity.campground.Location;
 import com.modakbul.entity.campground.LocationDetail;
 import com.modakbul.service.campground.LocationService;
@@ -17,7 +19,7 @@ public class LocationController {
 
     @GetMapping("/{locationId}/details")  // {locationId}를 URL 경로로 설정
     public ResponseEntity<List<Map<String, Object>>> getLocationDetailsByLocationId(@PathVariable int locationId) {
-        List<LocationDetail> locationDetails;
+        List<LocationDetailDto> locationDetails;
         locationDetails = locationService.getLocationDetailsByLocationId(locationId);
         // 요청한 지역 ID에 대한 세부 지역이 없을 경우
         if (locationDetails == null || locationDetails.isEmpty()) {
@@ -25,7 +27,7 @@ public class LocationController {
         }
         List<Map<String, Object>> details = new ArrayList<>();
 
-        for (LocationDetail locationDetail : locationDetails) {
+        for (LocationDetailDto locationDetail : locationDetails) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", locationDetail.getId());
             map.put("sigungu", locationDetail.getSigungu());
@@ -36,7 +38,7 @@ public class LocationController {
 
     @GetMapping
     public ResponseEntity<List<Map<String, Object>>> getLocations() {
-        List<Location> locations;
+        List<LocationDto> locations;
         locations = locationService.findAll();
         // 요청한 지역 ID에 대한 세부 지역이 없을 경우
         if (locations == null) {
@@ -44,7 +46,7 @@ public class LocationController {
         }
         List<Map<String, Object>> sidos = new ArrayList<>();
 
-        for (Location location : locations) {
+        for (LocationDto location : locations) {
             Map<String, Object> map = new HashMap<>();
             map.put("id", location.getId());
             map.put("sido", location.getSido());
