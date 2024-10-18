@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/member/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/host/**").hasAuthority("HOST")
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin
