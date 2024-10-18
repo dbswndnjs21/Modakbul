@@ -51,13 +51,15 @@
                     <span th:if="${booking.bookingStatus == 1}" class="status-cancelled">취소됨</span>
                 </td>
                 <td>
-                    <button th:if="${booking.bookingStatus != 0}" class="btn-cancel" th:onclick="'cancelBooking(' + ${booking.id} + ')'">취소</button>
+                    <button th:if="${booking.bookingStatus == 0}" class="btn-cancel" th:onclick="'cancelBooking(' + ${booking.id} + ')'">취소</button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script>
 
+</script>
 </body>
 </html>
