@@ -52,7 +52,6 @@ public class CampgroundController {
         // 각 캠프사이트에 대한 총 가격 계산
         for (Campsite campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-            System.out.println("total가격 : "+ totalPrice);
             totalPrices.put(campsite.getId(), totalPrice);
         }
         model.addAttribute("totalPrices", totalPrices);
