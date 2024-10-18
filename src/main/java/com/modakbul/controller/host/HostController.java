@@ -38,6 +38,10 @@ public class HostController {
         List<Campground> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
         List<Long> campgroundIds = new ArrayList<>();
         int paymentAmount = 0;
+        Payment paymentSearch = null;
+        for (Campground campground : campgroundsByHostId) {
+            System.out.println("campgroundㅋㅋㅋㅋ = " + campground);
+        }
 
         for (Campground campground : campgroundsByHostId) {
             campgroundIds.add(campground.getId());
@@ -45,15 +49,19 @@ public class HostController {
 
         List<Booking> bookings = bookingService.bookingListByCampgroundId(campgroundIds);
 
+
         for (Booking booking : bookings) {
             // 각 예약에 대한 결제 정보 조회
             Payment payment = paymentService.getPaymentByBookingId(booking.getId());
             if (payment != null) {
-                System.out.println("예약 ID: " + booking.getId() + ", 결제 금액: " + payment.getAmount());
                 paymentAmount += payment.getAmount();  // 결제 금액 합산
+                paymentSearch = paymentService.getPaymentByBookingId(booking.getId());
             }
         }
+        model.addAttribute("campground", campgroundsByHostId);
+        model.addAttribute("bookings", bookings);
         model.addAttribute("paymentAmount", paymentAmount);
+        model.addAttribute("paymentSearch", paymentSearch);
     }
 
 // 모든 예약에 대한 결제 금액이 합산된 후 모델에 추가

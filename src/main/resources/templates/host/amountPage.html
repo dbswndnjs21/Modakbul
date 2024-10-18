@@ -15,24 +15,16 @@
     <table border="1">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>날짜</th>
             <th>캠핑장 이름</th>
-            <th>주소</th>
-            <th>전화번호</th>
-            <th>승인 상태</th>
-            <th>작업</th>
+            <th>정산금액</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="camp : ${camp}">
-            <td th:text="${camp.id}"></td>
-            <!--            <td th:text="${camp.campGroundName}"></td>-->
-            <!--            <td th:text="${camp.campGroundAddress}"></td>-->
-            <td th:text="${camp.phone}"></td>
-            <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
-            <td>
-                <button th:if="${camp.approve == 0}" onclick="approveCampground(${camp.id})">승인</button>
-            </td>
+        <tr th:each="paymentSearch : ${paymentSearch}">
+            <td th:text="${paymentSearch.getApproveDate()}"></td>
+<!--            <td th:text="${}"></td>--><td>뭘 넣어야하지;;</td>
+            <td th:text="${paymentSearch.getAmount()}"></td>
         </tr>
         </tbody>
     </table>

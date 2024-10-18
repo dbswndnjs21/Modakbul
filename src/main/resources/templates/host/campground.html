@@ -23,10 +23,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="camp, iterStat : ${camp}" th:if="${iterStat.index < 10}">
+        <!-- campgroundsByHostId 리스트를 순회하며 각 캠핑장 정보를 출력 -->
+        <tr th:each="camp, iterStat : ${campground}" th:if="${iterStat.index < 10}">
             <td th:text="${camp.id}"></td>
-<!--            <td th:text="${camp.campGroundName}"></td>-->
-<!--            <td th:text="${camp.campGroundAddress}"></td>-->
+            <td th:text="${camp.campgroundName}"></td>
+            <td th:text="${camp.address}"></td>
             <td th:text="${camp.phone}"></td>
             <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
             <td>
