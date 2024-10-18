@@ -61,7 +61,6 @@ public class CampgroundService {
 
         for (Campsite campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-            System.out.println("가격 " +totalPrice + "캠핑장객실이름" + campsite.getCampsiteName());
             if(totalPrice <= lowestPrice){
                 lowestPrice = totalPrice;
             }
