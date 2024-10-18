@@ -1,16 +1,19 @@
 package com.modakbul.service.membership;
 
+import com.modakbul.entity.coupon.Coupon;
+import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Membership;
 import com.modakbul.repository.Membership.MembershipRepository;
 import com.modakbul.repository.booking.BookingRepository;
+import com.modakbul.repository.coupon.CouponRepository;
+import com.modakbul.repository.member.MemberCouponRepository;
 import com.modakbul.repository.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,14 +22,16 @@ public class MembershipService {
 
     @Autowired
     private BookingRepository bookingRepository;
-
     @Autowired
     private MemberRepository memberRepository;
-
     @Autowired
     private MembershipRepository membershipRepository;
+    @Autowired
+    private CouponRepository couponRepository;
+    @Autowired
+    private MemberCouponRepository memberCouponRepository;
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "*/10 * * * * ?")
     @Transactional
     public void updateMembershipAndDistributeCoupons() {
         LocalDateTime now = LocalDateTime.now();
@@ -43,6 +48,27 @@ public class MembershipService {
             if (membership != null) {
                 member.setMembership(membership); // 멤버의 membership 설정
                 memberRepository.save(member); // 멤버 업데이트
+
+                Long couponId = determineCouponIdByMembership(membershipId);
+                Coupon coupon = couponRepository.findById(couponId).orElse(null);
+
+                if (coupon != null) {
+                    // 중복 체크: 해당 멤버가 같은 쿠폰을 이미 가지고 있는지 확인
+                    boolean exists = memberCouponRepository.existsByMemberAndCoupon(member, coupon);
+                    if (!exists) {
+                        // MemberCoupon 엔티티 생성
+                        MemberCoupon memberCoupon = new MemberCoupon();
+                        memberCoupon.setMember(member);
+                        memberCoupon.setCoupon(coupon);
+
+                        // MemberCoupon 저장
+                        memberCouponRepository.save(memberCoupon);
+                    } else {
+                        System.out.println("Member already has the coupon with ID " + couponId);
+                    }
+                } else {
+                    System.out.println("Coupon with ID " + couponId + " not found.");
+                }
             } else {
                 System.out.println("Membership with ID " + membershipId + " not found.");
             }
@@ -60,6 +86,20 @@ public class MembershipService {
         } else {
             return 1; // WELCOME
         }
+    }
+
+    // 멤버십 등급에 따라 쿠폰 ID를 반환하는 로직
+    private Long determineCouponIdByMembership(Long membershipId) {
+        if (membershipId == 4) {
+            return 4L; // VVIP 쿠폰
+        } else if (membershipId == 3) {
+            return 3L; // VIP 쿠폰
+        } else if (membershipId == 2) {
+            return 2L; // GOLD 쿠폰
+        } else if (membershipId == 1) {
+            return 1L; // WELCOME 쿠폰
+        }
+        return null;
     }
 }
 
