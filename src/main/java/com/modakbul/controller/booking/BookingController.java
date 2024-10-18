@@ -1,6 +1,7 @@
 package com.modakbul.controller.booking;
 
 import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
@@ -8,6 +9,7 @@ import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
+import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campsite.CampsiteService;
 import com.modakbul.service.member.MemberService;
 import org.springframework.security.core.Authentication;
@@ -31,11 +33,13 @@ public class BookingController {
     private final CampsiteService campsiteService;
     private final BookingService bookingService;
     private final MemberService memberService;
+    private final CampgroundService campgroundService;
 
-    public BookingController(CampsiteService campsiteService, BookingService bookingService, MemberService memberService) {
+    public BookingController(CampsiteService campsiteService, BookingService bookingService, MemberService memberService, CampgroundService campgroundService) {
         this.campsiteService = campsiteService;
         this.bookingService = bookingService;
         this.memberService = memberService;
+        this.campgroundService = campgroundService;
     }
 
     @GetMapping("/booking/new")
@@ -49,6 +53,8 @@ public class BookingController {
         CampsiteDto campsiteDto = new CampsiteDto(campsiteService.findCampsiteById(campsiteId));
         model.addAttribute("campsite", campsiteDto);
 
+        CampgroundDto campgroundDto= campgroundService.getCampgroundById(campsiteDto.getCampgroundId());
+        model.addAttribute("campground", campgroundDto);
         // 체크인/체크아웃 날짜 모델에 추가
         model.addAttribute("checkInDate", checkInDate);
         model.addAttribute("checkOutDate", checkOutDate);

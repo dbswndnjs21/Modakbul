@@ -62,7 +62,13 @@ public class CampgroundDto {
     public CampgroundDto(Campground campground) {
         this.id = campground.getId();
         this.locationDetailId = campground.getLocationDetail().getId();
-        this.hostId = campground.getHost().getId();
+
+        if(campground.getHost() != null){
+            this.hostId = campground.getHost().getId();
+        }else{
+            this.hostId = null;
+        }
+//        this.hostId = campground.getHost().getId();
         this.campgroundName = campground.getCampgroundName();
         this.postcode = campground.getPostcode();
         this.address = campground.getAddress();
