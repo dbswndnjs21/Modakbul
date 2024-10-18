@@ -78,3 +78,19 @@ a {
 a:hover {
     text-decoration: underline; /* 호버 시 밑줄 추가 */
 }
+.validation-message {
+    color: red;
+}
+.valid-message {
+    color: green;
+}
+.eye-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.form-group {
+    position: relative;
+}
