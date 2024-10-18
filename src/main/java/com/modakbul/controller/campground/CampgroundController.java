@@ -3,6 +3,7 @@ package com.modakbul.controller.campground;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.service.campground.CampgroundService;
+import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
@@ -21,10 +22,12 @@ import java.util.Map;
 public class CampgroundController {
     private final CampgroundService campgroundService;
     private final CampsiteService campsiteService;
+    private final LocationService locationService;
 
-    public CampgroundController(CampgroundService campgroundService, CampsiteService campsiteService) {
+    public CampgroundController(CampgroundService campgroundService, CampsiteService campsiteService, LocationService locationService) {
         this.campgroundService = campgroundService;
         this.campsiteService = campsiteService;
+        this.locationService = locationService;
     }
 
 //    @GetMapping
@@ -49,7 +52,6 @@ public class CampgroundController {
         // 각 캠프사이트에 대한 총 가격 계산
         for (Campsite campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-            System.out.println("total가격 : "+ totalPrice);
             totalPrices.put(campsite.getId(), totalPrice);
         }
         model.addAttribute("totalPrices", totalPrices);
@@ -72,24 +74,32 @@ public class CampgroundController {
     }
 
     @GetMapping
-    public String searchCampgrounds(){
+    public String searchCampgrounds(Model model){
         return "campground/campgroundSearch";
     }
 
     @GetMapping("/list")
     public String getCampgroundList(
             @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "locationDetailId", required = false) Integer locationDetailId,
             @RequestParam LocalDate checkInDate,
             @RequestParam LocalDate checkOutDate,
             Model model) {
 
         List<Campground> filteredCampgrounds;
+        System.out.println("로케이션 아이디!~!!!!"+locationDetailId);
 
-        // query가 존재하면 이름이나 지역으로 검색
-        if (query != null && !query.isEmpty()) {
-            filteredCampgrounds = campgroundService.searchCampgrounds(query);
-        } else {
-            filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+        if(locationDetailId != null) {
+            filteredCampgrounds = campgroundService.searchCampgrounds(query, locationDetailId);
+        }else{
+            // query가 존재하면 이름이나 지역으로 검색
+            if (query != null && !query.isEmpty()) {
+                filteredCampgrounds = campgroundService.searchCampgrounds(query);
+
+            }
+            else{
+                filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+            }
         }
 
         Map<Long, Integer> totalLowestPrices = new HashMap<>();
@@ -98,10 +108,6 @@ public class CampgroundController {
         for (Campground campground : filteredCampgrounds) {
             int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
-//            int totalLowestPrice = campsiteService.calculateTotalPrice()
-//            int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-//            System.out.println("total가격 : "+ totalPrice);
-//            totalPrices.put(campsite.getId(), totalPrice);
         }
         model.addAttribute("totalLowestPrices", totalLowestPrices);
 

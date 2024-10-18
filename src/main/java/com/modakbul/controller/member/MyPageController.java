@@ -1,15 +1,22 @@
 package com.modakbul.controller.member;
 
+import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.booking.BookingReservationsDto;
+import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.coupon.Coupon;
 import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
+import com.modakbul.repository.payment.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.coupon.CouponService;
 import com.modakbul.service.coupon.MemberCouponService;
 import com.modakbul.service.member.MemberService;
+import com.modakbul.service.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -31,6 +38,8 @@ public class MyPageController {
     private MemberCouponService memberCouponService;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private PaymentService paymentService;
 
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
@@ -65,7 +74,8 @@ public class MyPageController {
         if (member != null) {
 
             Long memberId = member.getId();
-            List<Booking> bookings = bookingService.bookingList(memberId);
+            List<BookingReservationsDto> bookings = bookingService.bookingList(memberId);
+
             Member membership = memberService.findMembership(member.getUsername());
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
@@ -150,5 +160,12 @@ public class MyPageController {
             model.addAttribute("member", member);
         }
         return "mypage/payments";
+    }
+
+    @PostMapping("/findPayment")
+    @ResponseBody
+    public ResponseEntity<PaymentDTO> findPaymentMethod(@RequestParam Long bookingId) {
+        PaymentDTO paymentDTO = paymentService.findByBookingId(bookingId);
+        return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
     }
 }

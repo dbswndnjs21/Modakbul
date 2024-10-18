@@ -75,11 +75,11 @@ public class KaKaoPayController {
 
     // 결제 취소 후 버튼이있던 곳에 취소 내역 뿌리기
     @PostMapping("/pay/cancel")
-    public ResponseEntity<KaKaoPayCancelDto> payCancel(@RequestParam("orderNumber") Long orderNumber) {
-        System.out.println("orderNumber : " + orderNumber);
+    public ResponseEntity<KaKaoPayCancelDto> payCancel(@RequestParam("bookingId") Long bookingId) {
+        System.out.println("bookingId : " + bookingId);
 
         // 결제 취소 로직 수행
-        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.kakaoPayCancel(orderNumber);
+        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.kakaoPayCancel(bookingId);
 
         return new ResponseEntity<>(kaKaoPayCancelDto, HttpStatus.OK);
     }
