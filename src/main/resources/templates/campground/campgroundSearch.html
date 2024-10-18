@@ -4,6 +4,7 @@
   <title>Campground List</title>
   <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
     body {
       margin: 40px 10px;
@@ -22,6 +23,19 @@
   </style>
 </head>
 <body>
+<h1>Location 선택하기</h1>
+
+<select id="locationSelect">
+  <option value="">-- 선택하세요 --</option>
+<th:block th:each="location : ${locations}">
+  <option th:value="${location.id}" th:text="${location.sido}"></option>
+</th:block>
+</select>
+
+<select id="locationDetailSelect">
+  <option value="">세부 지역 선택</option>
+</select>
+
 <form action="/campgrounds/list" method="get" onsubmit="return validateForm();">
   <!-- Search input for campground name or location -->
   <input type="text" name="query" placeholder="Search Campgrounds" required style="width: 300px; margin-bottom: 20px;">
@@ -36,6 +50,41 @@
 </form>
 <button id="toggleButton">보이기</button>
 <div id='calendar'></div>
+<script>
+  $(document).ready(function() {
+    $('#locationSelect').change(function() {
+      const selectedLocationId = $(this).val();
+
+      // 선택된 지역 ID가 비어있지 않은 경우 AJAX 요청
+      if (selectedLocationId) {
+        $.ajax({
+          url: '/api/locations/' + selectedLocationId + '/details',  // 서버에서 세부 지역을 가져오는 URL
+          type: 'GET',
+          data: { locationId: selectedLocationId },  // 선택한 지역 ID 전송
+          success: function(data) {
+            console.log(data);
+
+            // 세부 지역 셀렉트 초기화
+            $('#locationDetailSelect').empty().append('<option value="">세부 지역 선택</option>');
+
+            // 받은 세부 지역 추가
+            $.each(data, function(index, locationDetail) {
+              $('#locationDetailSelect').append(
+                      $('<option></option>').val(locationDetail.id).text(locationDetail.sigungu)
+              );
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error('AJAX 요청 실패:', error);
+          }
+        });
+      } else {
+        // 지역 선택이 해제된 경우 세부 지역 초기화
+        $('#locationDetailSelect').empty().append('<option value="">세부 지역 선택</option>');
+      }
+    });
+  });
+</script>
 
 <script>
   const calendarDiv = document.getElementById('calendar');
