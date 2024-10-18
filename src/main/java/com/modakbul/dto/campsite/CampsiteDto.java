@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CampsiteDto {
     private Long id;
-    private Campground campground; // 변경: 외래키를 Campground 엔티티로 변경
+    private Long campgroundId; // 변경: 외래키를 Campground 엔티티로 변경
     private String campsiteName;
     private String campsiteDescription;
     private int headCount;
@@ -21,10 +21,10 @@ public class CampsiteDto {
     private int weekendPrice;
 
     // CampsiteDto를 Campsite 엔티티로 변환하는 메서드
-    public Campsite toEntity() {
+    public Campsite toEntity(Campground campground) {
         return Campsite.builder()
                 .id(this.id)
-                .campground(this.campground)
+                .campground(campground)
                 .campsiteName(this.campsiteName)
                 .campsiteDescription(this.campsiteDescription)
                 .headCount(this.headCount)
@@ -36,7 +36,7 @@ public class CampsiteDto {
     // Campsite 엔티티를 기반으로 DTO를 생성하는 생성자
     public CampsiteDto(Campsite campsite) {
         this.id = campsite.getId();
-        this.campground = campsite.getCampground();
+        this.campgroundId = campsite.getCampground().getId();
         this.campsiteName = campsite.getCampsiteName();
         this.campsiteDescription = campsite.getCampsiteDescription();
         this.headCount = campsite.getHeadCount();

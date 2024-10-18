@@ -1,9 +1,11 @@
 package com.modakbul.service.campground;
 
+import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campground.Location;
 import com.modakbul.entity.campground.LocationDetail;
 import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CampgroundService {
@@ -29,33 +32,60 @@ public class CampgroundService {
     @Autowired
     private CampsiteService campsiteService;
 
-    public List<Campground> getAllCampgrounds() {
-        return campgroundRepository.findAll();
+    public List<CampgroundDto> getAllCampgrounds() {
+        List<Campground> campgrounds = campgroundRepository.findAll();
+
+        List<CampgroundDto> campgroundDtos = campgrounds.stream()
+                .map(campground -> new CampgroundDto(campground))
+                .collect(Collectors.toList());
+        return campgroundDtos;
     }
 
-    public Campground getCampgroundById(Long id) {
-        return campgroundRepository.findById(id).orElse(null);
+    public CampgroundDto getCampgroundById(Long id) {
+        Campground campground = campgroundRepository.findById(id).orElse(null);
+
+        if(campground != null) {
+            return new CampgroundDto(campground);
+        }else {
+            return null;
+        }
     }
 
-    public Campground createCampground(Campground campground) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto) {
+        Host host = new Host();
+        LocationDetail locationDetail = new LocationDetail();
+
+        Campground campground =campgroundDto.toEntity(locationDetail, host);
         Location location = locationService.findOnCreateLocation(campground.getLocationDetail().getLocation().getSido());
-        LocationDetail locationDetail = locationDetailService.findOrCreateLocationDetail(campground.getLocationDetail().getSigungu(), location);
+        locationDetail = locationDetailService.findOrCreateLocationDetail(campground.getLocationDetail().getSigungu(), location);
 
         campground.getLocationDetail().setLocation(location);
         campground.setLocationDetail(locationDetail);
 
-        return campgroundRepository.save(campground);
+        CampgroundDto savedCampground = new CampgroundDto(campgroundRepository.save(campground));
+        return savedCampground;
     }
 
-    public List<Campground> searchCampgrounds(String query) {
+    public List<CampgroundDto> searchCampgrounds(String query) {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
-        return campgroundRepository.findByCampgroundNameContainingIgnoreCase(query);
+        List<Campground> campgrounds = campgroundRepository.findByCampgroundNameContainingIgnoreCase(query);
+
+        List<CampgroundDto> campgroundDtos = campgrounds.stream()
+                .map(campground -> new CampgroundDto(campground))
+                .collect(Collectors.toList());
+        return campgroundDtos;
+
     }
-    public List<Campground> searchCampgrounds(String query, Integer locationDetailId) {
-        return campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
+    public List<CampgroundDto> searchCampgrounds(String query, Integer locationDetailId) {
+        List<Campground> campgrounds =  campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
+
+        List<CampgroundDto> campgroundDtos = campgrounds.stream()
+                .map(campground -> new CampgroundDto(campground))
+                .collect(Collectors.toList());
+        return campgroundDtos;
     }
 
-    public int getLowestPrice(Campground campground, LocalDate checkInDate, LocalDate checkOutDate) {
+    public int getLowestPrice(CampgroundDto campground, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Campsite> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
         if(campsites.isEmpty()){
             return 0;
@@ -70,7 +100,12 @@ public class CampgroundService {
         }
         return lowestPrice;
     }
-    public List<Campground> getCampgroundsByHostId(Long hostId) {
-        return campgroundRepository.findIdByHostId(hostId);
+    public List<CampgroundDto> getCampgroundsByHostId(Long hostId) {
+        List<Campground> campgrounds = campgroundRepository.findIdByHostId(hostId);
+
+        List<CampgroundDto> campgroundDtos = campgrounds.stream()
+                .map(campground -> new CampgroundDto(campground))
+                .collect(Collectors.toList());
+        return campgroundDtos;
     }
 }

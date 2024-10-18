@@ -1,19 +1,19 @@
 package com.modakbul.service.booking;
 
 import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.campground.CampgroundDto;
+import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
-import com.modakbul.entity.member.Member;
 import com.modakbul.repository.booking.BookingRepository;
-import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
@@ -25,7 +25,7 @@ public class BookingService {
         this.campsiteService = campsiteService;
     }
 
-    public Booking createBooking(Long campsiteId, String checkInDate, String checkOutDate, Member member) {
+    public BookingDto createBooking(Long campsiteId, String checkInDate, String checkOutDate, MemberDto member) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // LocalDate로 변경
@@ -40,10 +40,10 @@ public class BookingService {
         booking.setCheckInDate(checkInDateParsed.atStartOfDay()); // 체크인 날짜
         booking.setCheckOutDate(checkOutDateParsed.atStartOfDay()); // 체크아웃 날짜
 
-        booking.setMember(member);
+        booking.setMember(member.toEntity());
         booking.setBookingStatus(0);  // 예약 완료 상태를 나타내는 값
-
-        return bookingRepository.save(booking);
+        booking = bookingRepository.save(booking);
+        return new BookingDto(booking);
     }
 
 
@@ -51,14 +51,17 @@ public class BookingService {
         List<Booking> allById = bookingRepository.findAllByMemberId(id);
         return allById;
     }
-    public List<Booking> bookingListByCampgroundId(List<Long> campgroundIds) {
+    public List<BookingDto> bookingListByCampgroundId(List<Long> campgroundIds) {
         List<Booking> bookings = new ArrayList<>();
         for (Long id : campgroundIds) {
             // 각 캠핑장 ID에 대한 예약을 추가
             List<Booking> allById = bookingRepository.findAllByMemberId(id);
             bookings.addAll(allById);
         }
-        return bookings;
-    }
 
+        List<BookingDto> bookingDtos = bookings.stream()
+                .map(booking -> new BookingDto(booking))
+                .collect(Collectors.toList());
+        return bookingDtos;
+    }
 }

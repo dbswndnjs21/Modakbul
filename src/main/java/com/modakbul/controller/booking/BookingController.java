@@ -73,14 +73,13 @@ public class BookingController {
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
 
         // CustomUserDetails에서 Member 정보 가져오기
-        Member member = principal.getMember();
+        MemberDto member = new MemberDto(principal.getMember());
 
         // 예약 생성
-        Booking booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
+        BookingDto booking = bookingService.createBooking(campsiteId, checkInDate, checkOutDate, member);
 
-        Member member1 = memberService.findById(booking.getMember().getId());
-        String memberEmail = member1.getMail();
-        String memberUserName = member1.getUserName();
+        String memberEmail = member.getMail();
+        String memberUserName = member.getUserName();
 
         // 응답 데이터 생성
         Map<String, Object> response = new HashMap<>();

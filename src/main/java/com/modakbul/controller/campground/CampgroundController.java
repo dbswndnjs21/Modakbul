@@ -1,5 +1,7 @@
 package com.modakbul.controller.campground;
 
+import com.modakbul.dto.campground.CampgroundDto;
+import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.service.campground.CampgroundService;
@@ -37,7 +39,7 @@ public class CampgroundController {
                                        @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
                                        Model model) {
         // 캠프사이트 정보
-        List<Campsite> campsites = campsiteService.findByCampgroundId(id);
+        List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
 
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
@@ -45,7 +47,7 @@ public class CampgroundController {
         Map<Long, Integer> totalPrices = new HashMap<>();
 
         // 각 캠프사이트에 대한 총 가격 계산
-        for (Campsite campsite : campsites) {
+        for (CampsiteDto campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
             totalPrices.put(campsite.getId(), totalPrice);
         }
@@ -56,13 +58,13 @@ public class CampgroundController {
     // 캠핑장 추가 폼 페이지로 이동
     @GetMapping("/add")
     public String showAddCampgroundForm(Model model) {
-        model.addAttribute("campground", new Campground());
+        model.addAttribute("campground", new CampgroundDto());
         return "campground/campgroundForm";
     }
 
     // 폼에서 입력된 캠핑장 정보를 저장
     @PostMapping("/add")
-    public String addCampground(@ModelAttribute("campground") Campground campground,
+    public String addCampground(@ModelAttribute("campground") CampgroundDto campground,
                                 @RequestParam("images")MultipartFile[] images) {
         campgroundService.createCampground(campground);
         return "redirect:/campsite/add?campgroundId=" + campground.getId();
@@ -81,8 +83,7 @@ public class CampgroundController {
             @RequestParam LocalDate checkOutDate,
             Model model) {
 
-        List<Campground> filteredCampgrounds;
-        System.out.println("로케이션 아이디!~!!!!"+locationDetailId);
+        List<CampgroundDto> filteredCampgrounds;
 
         if(locationDetailId != null) {
             filteredCampgrounds = campgroundService.searchCampgrounds(query, locationDetailId);
@@ -100,7 +101,7 @@ public class CampgroundController {
         Map<Long, Integer> totalLowestPrices = new HashMap<>();
 
         // 각 캠프사이트에 대한 총 가격 계산
-        for (Campground campground : filteredCampgrounds) {
+        for (CampgroundDto campground : filteredCampgrounds) {
             int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
         }
