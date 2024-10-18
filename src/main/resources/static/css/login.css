@@ -112,5 +112,24 @@ input {
     font-size: 12px;
     font-weight: bold;
 }
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px; /* 아이콘 크기 조절 */
+}
+.error-message {
+    color: red; /* 빨간색으로 오류 메시지 색상 설정 */
+    margin-top: 10px; /* 버튼과 간격을 설정 */
+    margin-bottom: 20px; /* 메시지와 다음 요소 간격 설정 */
+    text-align: center; /* 메시지 중앙 정렬 */
+}
 
 

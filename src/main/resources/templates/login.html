@@ -4,21 +4,7 @@
     <meta charset="UTF-8">
     <title>모닥불</title>
     <link rel="stylesheet" th:href="@{/css/login.css}">
-    <style>
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
 
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            font-size: 18px; /* 아이콘 크기 조절 */
-        }
-    </style>
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc0yWEqAAAAAAAE7SptQSwGfetMv_vXBmpVb-IP"></script>
     <script>
         function reCapt() {
@@ -33,7 +19,6 @@
 <body>
 <div class="login-container">
     <h2>모닥불</h2>
-
     <form th:action="@{/login}" method="post" onsubmit="reCapt()">
         <div class="input-group">
             <label for="userId"></label>
@@ -44,6 +29,10 @@
             <input type="password" id="password" name="password" required placeholder="비밀번호를 입력해주세요.">
             <span id="togglePassword" class="toggle-password" title="비밀번호 보기"
                   onclick="togglePasswordVisibility()">👁️</span>
+        </div>
+        <!-- 로그인 실패 시 메시지 표시 -->
+        <div th:if="${param.error}" class="error-message">
+            아이디나 비밀번호가 옳지 않습니다.
         </div>
         <input type="hidden" id="token" name="token" value="">
         <button type="submit" class="login-button">로그인</button>

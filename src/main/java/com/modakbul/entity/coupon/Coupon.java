@@ -26,7 +26,7 @@ public class Coupon {
     private String couponCode;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private int minimumOrderAmount;
+    private int discountAmount;
     private int couponType;
     private boolean isActive;
 
