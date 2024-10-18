@@ -1,5 +1,8 @@
 package com.modakbul.controller.booking;
 
+import com.modakbul.dto.booking.BookingDto;
+import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Member;
@@ -43,8 +46,8 @@ public class BookingController {
             Model model) {
 
         // 캠프사이트 정보 가져오기
-        Campsite campsite = campsiteService.findCampsiteById(campsiteId);
-        model.addAttribute("campsite", campsite);
+        CampsiteDto campsiteDto = new CampsiteDto(campsiteService.findCampsiteById(campsiteId));
+        model.addAttribute("campsite", campsiteDto);
 
         // 체크인/체크아웃 날짜 모델에 추가
         model.addAttribute("checkInDate", checkInDate);
