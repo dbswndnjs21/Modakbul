@@ -2,6 +2,7 @@ package com.modakbul.service.payment;
 
 import com.modakbul.dto.payment.ApproveResponse;
 import com.modakbul.dto.payment.KaKaoPayCancelDto;
+import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.dto.payment.ReadyResponse;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.member.Member;
@@ -204,8 +205,9 @@ public class PaymentService {
 
     }
 
-    public KaKaoPayCancelDto kakaoPayCancel(Long orderNumber){
-        Payment findTidPayment = paymentRepository.findByOrderNumber(orderNumber);
+    public KaKaoPayCancelDto kakaoPayCancel(Long bookingId){
+//        Payment findTidPayment = paymentRepository.findByOrderNumber(orderNumber);
+        Payment findTidPayment = paymentRepository.findByBookingId(bookingId);
         String paymentTid = findTidPayment.getPaymentTid();
         int amount = findTidPayment.getAmount();
         System.out.println(paymentTid);
@@ -243,6 +245,11 @@ public class PaymentService {
     public Payment getPaymentByBookingId(Long bookingId) {
         // 해당 bookingId로 결제 정보를 조회
         return paymentRepository.findByBookingId(bookingId);
+    }
+
+    public PaymentDTO findByBookingId(Long bookingId) {
+        Payment byBookingId = paymentRepository.findByBookingId(bookingId);
+        return new PaymentDTO(byBookingId);
     }
 
 }

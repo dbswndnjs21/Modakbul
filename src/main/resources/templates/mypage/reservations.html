@@ -6,6 +6,71 @@
     <title>예약 내역</title>
     <link rel="stylesheet" href="/css/reservations.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        function cancelBooking(bookingId) {
+            $.ajax({
+                type: 'post',
+                url: '/mypage/findPayment',
+                data: {bookingId: bookingId},
+                success: function (response) {
+                    if (confirm("정말로 취소하시겠습니까?")) {
+                        console.log("Booking ID:", bookingId);
+                    if (response.paymentMethod === "KakaoPay") {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/order/pay/cancel',
+                            data: {bookingId: bookingId},
+                            success: function (response) {
+                                // 서버에서 반환한 URL로 리다이렉트
+                                console.log("결제 취소 정보:", response);
+                                $('#responseDiv').html('<p>결제 취소 정보: ' + JSON.stringify(response) + '</p>');
+
+                                alert("결제가 취소되었습니다")
+
+                                // response로 받은 url로 이동
+                                // window.location.href = response;
+                            },
+                            error: function (xhr, status, error) {
+                                // 오류 처리
+                                console.error("결제 취소 중 오류 발생:", error);
+                                alert("결제 취소에 실패했습니다.");
+                            }
+                        });
+
+                    } else if(response.paymentMethod === "IamPort") {
+                        // Ajax 요청으로 서버에 취소 요청 전송
+                        $.ajax({
+                            url: '/iamport/cancel',  // Spring 서버의 결제 취소 API URL
+                            type: 'POST',
+                            data: {
+                                imp_uid: response.paymentTid,
+                                amount: response.amount
+                            },
+                            success: function(response) {
+                                console.log(response)
+                                if (response && response.response) {
+                                    alert("결제 취소 성공: " + response.response.merchantUid);
+                                } else {
+                                    alert("결제 취소 실패: 서버 응답 없음");
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("결제 취소 오류:", error);
+                                console.error("상태:", status);
+                                console.error("xhr:", xhr);
+                                alert("결제 취소 중 오류가 발생했습니다: " + xhr.responseText);
+                            }
+                        });
+                    }
+                    } else {
+                        console.log("결제취소를 취소하셨습니다")
+                    }
+
+                }
+            })
+        }
+    </script>
 </head>
 <body>
 
@@ -51,15 +116,13 @@
                     <span th:if="${booking.bookingStatus == 1}" class="status-cancelled">취소됨</span>
                 </td>
                 <td>
-                    <button th:if="${booking.bookingStatus == 0}" class="btn-cancel" th:onclick="'cancelBooking(' + ${booking.id} + ')'">취소</button>
+                    <button th:if="${booking.bookingStatus == 0}" class="btn-cancel" th:onclick="|cancelBooking(${booking.id})|">취소</button>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
-<script>
 
-</script>
 </body>
 </html>
