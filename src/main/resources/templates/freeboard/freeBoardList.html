@@ -39,7 +39,7 @@
             <p>Loading...</p>
         </div>
     </section>
-
+	<button class="side-button" type="button" onclick="scrollToTop()">⬆️</button>
     <!-- 푸터 영역 -->
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 
@@ -116,5 +116,13 @@
     }
 
     </script>
+      <script>
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // 부드럽게 스크롤
+      });
+    }
+  </script>
 </body>
 </html>
