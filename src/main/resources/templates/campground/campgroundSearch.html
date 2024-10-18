@@ -39,6 +39,7 @@
   <!-- Hidden inputs to hold selected dates -->
   <input type="hidden" id="checkInDate" name="checkInDate">
   <input type="hidden" id="checkOutDate" name="checkOutDate">
+  <input type="hidden" id="locationDetailId" name="locationDetailId">
   <div class="date-display">
     <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
     <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
@@ -97,6 +98,11 @@
         // 지역 선택이 해제된 경우 세부 지역 초기화
         $('#locationDetailSelect').empty().append('<option value="">세부 지역 선택</option>');
       }
+    });
+
+    $('#locationDetailSelect').change(function() {
+      const selectedLocationDetailId = $(this).val();
+      $('#locationDetailId').val(selectedLocationDetailId);  // 숨겨진 필드에 값 설정
     });
 
     // 페이지 로드 시 선택된 지역에 대한 세부 지역 로드

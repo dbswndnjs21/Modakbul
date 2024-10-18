@@ -51,6 +51,9 @@ public class CampgroundService {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
         return campgroundRepository.findByCampgroundNameContainingIgnoreCase(query);
     }
+    public List<Campground> searchCampgrounds(String query, Integer locationDetailId) {
+        return campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
+    }
 
     public int getLowestPrice(Campground campground, LocalDate checkInDate, LocalDate checkOutDate) {
         List<Campsite> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
@@ -65,7 +68,7 @@ public class CampgroundService {
                 lowestPrice = totalPrice;
             }
         }
-        System.out.println("최저가!!!!!!!!!! "+lowestPrice  +"  캠핑장"+ campground.getCampgroundName());
         return lowestPrice;
     }
+
 }

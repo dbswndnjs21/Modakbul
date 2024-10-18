@@ -81,17 +81,25 @@ public class CampgroundController {
     @GetMapping("/list")
     public String getCampgroundList(
             @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "locationDetailId", required = false) Integer locationDetailId,
             @RequestParam LocalDate checkInDate,
             @RequestParam LocalDate checkOutDate,
             Model model) {
 
         List<Campground> filteredCampgrounds;
+        System.out.println("로케이션 아이디!~!!!!"+locationDetailId);
 
-        // query가 존재하면 이름이나 지역으로 검색
-        if (query != null && !query.isEmpty()) {
-            filteredCampgrounds = campgroundService.searchCampgrounds(query);
-        } else {
-            filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+        if(locationDetailId != null) {
+            filteredCampgrounds = campgroundService.searchCampgrounds(query, locationDetailId);
+        }else{
+            // query가 존재하면 이름이나 지역으로 검색
+            if (query != null && !query.isEmpty()) {
+                filteredCampgrounds = campgroundService.searchCampgrounds(query);
+
+            }
+            else{
+                filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+            }
         }
 
         Map<Long, Integer> totalLowestPrices = new HashMap<>();
@@ -100,10 +108,6 @@ public class CampgroundController {
         for (Campground campground : filteredCampgrounds) {
             int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
-//            int totalLowestPrice = campsiteService.calculateTotalPrice()
-//            int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-//            System.out.println("total가격 : "+ totalPrice);
-//            totalPrices.put(campsite.getId(), totalPrice);
         }
         model.addAttribute("totalLowestPrices", totalLowestPrices);
 
