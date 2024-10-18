@@ -3,6 +3,8 @@ package com.modakbul.service.freeboard;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.modakbul.entity.freeboard.Freeboard;
+import com.modakbul.entity.member.Member;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,10 +31,17 @@ public class FreeboardCommentService {
 	private final FreeboardCommentRepository freeboardCommentRepository;
 	private final FreeboardRepository freeboardRepository;
 	private final MemberRepository memberRepository;
-	
+//	public FreeboardComment toEntity(Freeboard freeboard, Member member, FreeboardComment parentComment) {
 	public void writeComment(FreeboardCommentDto commentDto) {
+		Freeboard freeboard = new Freeboard();
+		freeboard.setId(commentDto.getFreeboardId());
+		Member member = new Member();
+		member.setId(commentDto.getMemberId());
+		FreeboardComment parent = new FreeboardComment();
+		parent.setId(commentDto.getParentId());
+
 	    // 댓글 엔티티 생성
-	    FreeboardComment comment = commentDto.toEntity(commentDto.getMemberId(), commentDto.getFreeboardId());
+	    FreeboardComment comment = commentDto.toEntity(freeboard,member, parent);
 	    
 	    // 부모 댓글이 있는 경우
 	    if (commentDto.getParentId() != null) {
