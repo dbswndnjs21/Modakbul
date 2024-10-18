@@ -1,14 +1,12 @@
 package com.modakbul.entity.campground;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 public class CampgroundOptionLink {
@@ -24,5 +22,5 @@ public class CampgroundOptionLink {
     @JoinColumn(name = "campground_suboption_id")  // 실제 DB에서 외래 키로 사용될 컬럼명 지정
     private CampgroundSuboption campgroundSuboption;
 
-    private boolean is_exist;
+    private boolean isExist;
 }

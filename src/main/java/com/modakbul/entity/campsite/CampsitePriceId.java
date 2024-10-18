@@ -1,10 +1,14 @@
 package com.modakbul.entity.campsite;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Embeddable
+@Getter
+@Setter
 public class CampsitePriceId {
     private Long campsiteId;
     private LocalDate priceDate;
