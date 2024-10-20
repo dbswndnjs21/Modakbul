@@ -33,7 +33,7 @@ public class CampgroundController {
     }
     
     @GetMapping("/{id}")
-    public String showCampgroundDetail(@PathVariable Long id,
+    public String showCampgroundDetail(@PathVariable("id") Long id,
                                        @RequestParam(value = "query", required = false) String query,
                                        @RequestParam(value = "checkInDate") LocalDate checkInDate,
                                        @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
@@ -81,8 +81,8 @@ public class CampgroundController {
     public String getCampgroundList(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "locationDetailId", required = false) Integer locationDetailId,
-            @RequestParam LocalDate checkInDate,
-            @RequestParam LocalDate checkOutDate,
+            @RequestParam(value = "checkInDate") LocalDate checkInDate,
+            @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
             Model model) {
 
         List<CampgroundDto> filteredCampgrounds;
