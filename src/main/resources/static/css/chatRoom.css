@@ -1,0 +1,90 @@
+@charset "UTF-8";
+
+/* 전체 페이지 스타일 */
+body {
+    background-color: rgba(255, 255, 255, 0.95);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+}
+
+/* 컨테이너 */
+.container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+}
+
+/* 채팅방 카드 */
+.chat-room {
+    border: 2px solid #ff7f50; /* 주황빛 테두리 */
+    border-radius: 10px; /* 카드 모서리 둥글게 */
+    width: 600px; /* 카드 너비 설정 */
+    background-color: #ffffff; /* 카드 배경 흰색 */
+    margin: 20px 0; /* 카드 간의 간격 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+/* 메시지 섹션 */
+.message-section {
+    padding: 20px; /* 메시지 섹션 패딩 */
+    height: 400px; /* 높이 설정 */
+    overflow-y: auto; /* 스크롤 가능 */
+    background-color: #f9f9f9; /* 배경색 */
+    border-radius: 10px;
+}
+
+/* 메시지 */
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    max-width: 80%; /* 최대 너비 설정 */
+}
+
+/* 사용자 메시지 */
+.message.user {
+    background-color: #ff7f50; /* 주황빛 배경 */
+    color: white; /* 텍스트 색상 */
+    align-self: flex-end; /* 오른쪽 정렬 */
+}
+
+/* 다른 사용자 메시지 */
+.message.other {
+    background-color: #e0e0e0; /* 회색 배경 */
+    color: #333; /* 텍스트 색상 */
+    align-self: flex-start; /* 왼쪽 정렬 */
+}
+
+/* 입력 폼 */
+.input-area {
+    display: flex; /* 수평 정렬 */
+    margin-top: 10px; /* 상단 여백 */
+}
+
+.input-area textarea {
+    flex: 1; /* 남은 공간 차지 */
+    border-radius: 5px;
+    resize: none; /* 크기 조절 비활성화 */
+    padding: 10px; /* 내부 여백 */
+}
+
+.btn-send,
+.btn-chat-list {
+    background-color: #ff7f50; /* 주황빛 버튼 */
+    border: none;
+    border-radius: 20px;
+}
+
+.btn-send:hover,
+.btn-chat-list:hover {
+    background-color: #e06e43; /* 호버 시 색상 변경 */
+}
+
+/* 헤더 스타일 */
+.chat-header {
+    background-color: #ff7f50; /* 주황빛 배경 */
+    color: white; /* 텍스트 색상 */
+    padding: 10px; /* 패딩 */
+    text-align: center; /* 중앙 정렬 */
+    border-radius: 10px 10px 0 0; /* 상단 모서리 둥글게 */
+}

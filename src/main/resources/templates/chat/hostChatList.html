@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>호스트 채팅 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <h3>호스트 채팅 목록</h3>
+        <ul class="list-group">
+            <th:block th:each="chatRoom : ${chatRooms}">
+                <li class="list-group-item">
+                    <a th:href="@{/chat/chatRoom/{id}(id=${chatRoom.id})}">
+                        <span th:text="'캠핑장 ID - ' + ${chatRoom.campgroundId} + '의 채팅방'"></span>
+                    </a>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+</body>
+</html>
