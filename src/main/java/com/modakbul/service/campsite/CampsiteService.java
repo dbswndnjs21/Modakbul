@@ -53,10 +53,17 @@ public class CampsiteService {
         campground.setId(campsite.getCampgroundId());
         Campsite savedCampsite = campsiteRepository.save(campsite.toEntity(campground));
 
-        // 평일 및 주말 가격 설정 (예시: 다음 30일)
+        // 평일 및 주말 가격 설정 (예시: 다음 93일)
         for (int i = 0; i < 93; i++) {
             LocalDate date = LocalDate.now().plusDays(i);
-            int price = (date.getDayOfWeek().getValue() <= 5) ? campsite.getWeekdayPrice() : campsite.getWeekendPrice();
+            int price;
+
+            // 금요일과 토요일에 주말 가격 적용
+            if (date.getDayOfWeek().getValue() == 5 || date.getDayOfWeek().getValue() == 6) {
+                price = campsite.getWeekendPrice(); // 주말 가격
+            } else {
+                price = campsite.getWeekdayPrice(); // 평일 가격
+            }
 
             CampsitePrice campsitePrice = CampsitePrice.builder()
                     .id(new CampsitePriceId(savedCampsite.getId(), date))
@@ -69,6 +76,7 @@ public class CampsiteService {
         CampsiteDto campsiteDto = new CampsiteDto(savedCampsite);
         return campsiteDto;
     }
+
 
     // Campsite 삭제
     public void deleteCampsite(Long id) {
