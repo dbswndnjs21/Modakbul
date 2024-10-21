@@ -1,5 +1,6 @@
 package com.modakbul.controller.member;
 
+import com.modakbul.dto.member.HostDto;
 import com.modakbul.entity.member.Host;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
@@ -59,15 +60,19 @@ public class JoinController {
         }
 
         // Host 객체 생성 및 필드 설정
-        Host host = new Host();
-        host.setId(member.getId());
-        host.setMember(member);
-        host.setBankName(bankName);
-        host.setAccount(account);
-        host.setAccountHolder(accountHolder);
+//        HostDto host = new HostDto();
+//        host.setId(member.getId());
+//        host.setBankName(bankName);
+//        host.setAccount(account);
+//        host.setAccountHolder(accountHolder);
+//
+//        System.out.println(host.getId());
+//        System.out.println(host.getBankName());
+
+        Host host = Host.builder().member(member).bankName(bankName).account(account).accountHolder(accountHolder).build();
 
         // Host 정보를 저장
-        hostService.save(host);
+        hostService.saveHost(host);
 
         return ResponseEntity.ok("호스트 등록이 완료되었습니다."); // 성공 시 메시지를 포함한 HTTP 200 응답
     }

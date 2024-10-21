@@ -1,8 +1,6 @@
 package com.modakbul.entity.member;
 
 import com.modakbul.entity.campground.Campground;
-import com.modakbul.entity.freeboard.FreeboardComment;
-import com.modakbul.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +14,7 @@ import java.util.List;
 @Builder
 public class Host {
     @Id
+    @Column(name = "member_id")
     private Long id;  // Member 테이블의 id가 그대로 기본 키가 됨
 
     @OneToOne

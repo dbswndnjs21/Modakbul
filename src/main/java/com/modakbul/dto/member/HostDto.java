@@ -1,6 +1,7 @@
 package com.modakbul.dto.member;
 
 import com.modakbul.entity.member.Host;
+import com.modakbul.entity.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +18,10 @@ public class HostDto {
     private String accountHolder; // 계좌 소유자
 
     // DTO에서 엔티티로 변환하는 메서드
-    public Host toEntity() {
+    public Host toEntity(Member member) {
         return Host.builder()
-                .id(this.id) // PK
+                .id(this.id)
+                .member(member)
                 .bankName(this.bankName)
                 .account(this.account)
                 .accountHolder(this.accountHolder)
