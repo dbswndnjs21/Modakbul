@@ -124,42 +124,37 @@
                 }).open();
             }
         </script>
-<!--        <div class="mb-3">-->
-<!--            <label for="campgroundAddress" class="form-label">주소:</label>-->
-<!--            <input type="text" id="campgroundAddress" th:field="*{campgroundAddress}" class="form-control" required/>-->
-<!--        </div>-->
-<!--        <div class="mb-3">-->
-<!--            <label for="addressDetail" class="form-label">주소 상세:</label>-->
-<!--            <input type="text" id="addressDetail" th:field="*{addressDetail}" class="form-control" required/>-->
-<!--        </div>-->
+
         <div class="mb-3">
             <label for="phone" class="form-label">전화번호:</label>
             <input type="text" id="phone" th:field="*{phone}" class="form-control" required/>
         </div>
-        <div class="mb-3">
-            <label for="approve" class="form-label">승인 상태:</label>
-            <select id="approve" th:field="*{approve}" class="form-select">
-                <option value="0">수정중</option>
-                <option value="1">승인대기중</option>
-                <option value="2">승인</option>
-                <option value="3">거절</option>
-            </select>
+
+        <input type="hidden" id="approve" value="0">
+
+        <div>
+            <label>옵션 선택:</label>
+            <div th:each="option : ${campgroundOptions}">
+                <h4 th:text="${option.optionName}"></h4> <!-- 옵션 이름 표시 -->
+                <div th:each="subOption : ${campgroundSuboptions}"
+                     th:if="${subOption.campgroundOptionId == option.id}"> <!-- 서브 옵션의 CampgroundOption ID가 현재 옵션 ID와 같을 때만 표시 -->
+                    <input type="checkbox" th:value="${subOption.id}" th:name="'subOptionIds'" />
+                    <label th:text="${subOption.optionName}"></label>
+                </div>
+            </div>
         </div>
+
 
         <!-- 이미지 업로드 추가 -->
         <div class="mb-3">
             <label for="images" class="form-label">캠프장 이미지:</label>
-            <input type="file" id="images" name="images" class="form-control" multiple accept="image/*" required>
+            <input type="file" id="images" name="images" class="form-control" multiple accept="image/*">
         </div>
 
         <!-- 이미지 미리보기 컨테이너 -->
         <div class="preview-container" id="preview-container"></div>
 
         <button type="submit" class="btn btn-success w-100">저장</button>
-
-        <h2>추가 옵션</h2>
-        <label><input type="checkbox" name="options" value="doorLock"> 문 잠금 장치</label><br>
-
     </form>
 
     <div class="text-center mt-3">
