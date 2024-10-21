@@ -1,6 +1,8 @@
 package com.modakbul.controller.campground;
 
 import com.modakbul.dto.campground.CampgroundDto;
+import com.modakbul.dto.campground.CampgroundOptionDto;
+import com.modakbul.dto.campground.CampgroundSuboptionDto;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
@@ -58,6 +60,11 @@ public class CampgroundController {
     // 캠핑장 추가 폼 페이지로 이동
     @GetMapping("/add")
     public String showAddCampgroundForm(Model model) {
+        List<CampgroundOptionDto> campgroundOptions = campgroundService.getCampgroundOptions();
+        List<CampgroundSuboptionDto> campgroundSuboptions = campgroundService.getCampgroundSuboptions();
+
+        model.addAttribute("campgroundOptions", campgroundOptions);
+        model.addAttribute("campgroundSuboptions",campgroundSuboptions);
         model.addAttribute("campground", new CampgroundDto());
         return "campground/campgroundForm";
     }

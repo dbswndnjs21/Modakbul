@@ -1,15 +1,17 @@
 package com.modakbul.service.campground;
 
-import com.modakbul.dto.campground.CampgroundDto;
-import com.modakbul.dto.campground.LocationDetailDto;
-import com.modakbul.dto.campground.LocationDto;
+import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.campground.CampgroundOption;
+import com.modakbul.entity.campground.CampgroundSuboption;
 import com.modakbul.entity.campground.LocationDetail;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
+import com.modakbul.repository.campground.CampgroundOptionRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
+import com.modakbul.repository.campground.CampgroundSuboptionRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
@@ -36,6 +38,10 @@ public class CampgroundService {
     private LocationDetailService locationDetailService;
     @Autowired
     private CampsiteService campsiteService;
+    @Autowired
+    private CampgroundSuboptionRepository campgroundSuboptionRepository;
+    @Autowired
+    private CampgroundOptionRepository campgroundOptionRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -126,5 +132,23 @@ public class CampgroundService {
                 .map(campground -> new CampgroundDto(campground))
                 .collect(Collectors.toList());
         return campgroundDtos;
+    }
+
+    public List<CampgroundSuboptionDto> getCampgroundSuboptions(){
+        List<CampgroundSuboption> suboptions = campgroundSuboptionRepository.findAll();
+
+        List<CampgroundSuboptionDto> campgroundSuboptionDtos = suboptions.stream()
+                .map(suboption -> new CampgroundSuboptionDto(suboption))
+                .collect(Collectors.toList());
+        return campgroundSuboptionDtos;
+    }
+
+    public List<CampgroundOptionDto> getCampgroundOptions(){
+        List<CampgroundOption> campgroundOptions = campgroundOptionRepository.findAll();
+
+        List<CampgroundOptionDto> campgroundOptionDtos = campgroundOptions.stream()
+                .map(option -> new CampgroundOptionDto(option))
+                .collect(Collectors.toList());
+        return campgroundOptionDtos;
     }
 }
