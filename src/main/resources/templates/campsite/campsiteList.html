@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캠프장 추가</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <style>
+        /* 미리보기 이미지 스타일 */
+        .preview-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .preview-item {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .preview-container {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+        .preview-item {
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+<!-- 헤더 영역 -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- 메인 콘텐츠 영역 -->
+<section class="container my-5">
+    <h2 class="text-center mb-4">캠핑장 객실 관리</h2>
+
+    <h1>캠프사이트 목록</h1>
+    <a th:href="@{/campsite/add(campgroundId=${campgroundId})}">캠프사이트 추가</a>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>캠핑장객실 이름</th>
+            <th>설명</th>
+            <th>수용 인원</th>
+<!--            <th>카테고리</th>-->
+            <th>가격</th>
+            <th>주말가격</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 타임리프를 사용하여 campsite 리스트 반복 출력 -->
+        <tr th:each="campsite, iterStat : ${campsites}">
+            <td th:text="${iterStat.index + 1}"></td> <!-- 번호 출력 -->
+            <td th:text="${campsite.campsiteName}"></td> <!-- 캠프사이트 이름 출력 -->
+            <td th:text="${campsite.campsiteDescription}"></td> <!-- 설명 출력 -->
+            <td th:text="${campsite.headCount}"></td> <!-- 수용 인원 출력 -->
+<!--            <td th:text="${campsite.campsiteCategory}"></td> &lt;!&ndash; 카테고리 출력 &ndash;&gt;-->
+            <td th:text="${campsite.weekdayPrice}"></td> <!-- 가격 출력 -->
+            <td th:text="${campsite.weekendPrice}"></td> <!-- 가격 출력 -->
+            <td>
+                <a th:href="@{/campsite/edit/{id}(id=${campsite.id})}">수정</a> |
+                <a th:href="@{/campsite/delete/{id}(id=${campsite.id})}"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <a th:href="@{/campgrounds}" class="btn btn-secondary">목록으로 돌아가기</a>
+    </div>
+</section>
+
+<!-- 푸터 영역 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const imageInput = document.getElementById('images');
+    const previewContainer = document.getElementById('preview-container');
+
+    let imagesArray = [];
+
+    imageInput.addEventListener('change', function(event) {
+        const files = Array.from(event.target.files);
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.classList.add('preview-item');
+                previewItem.draggable = true;
+                previewItem.setAttribute('data-index', imagesArray.length);
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                previewItem.appendChild(img);
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-btn');
+                removeButton.innerHTML = '&times;';
+                removeButton.addEventListener('click', function() {
+                    imagesArray = imagesArray.filter((_, i) => i !== index);
+                    updatePreview();
+                });
+                previewItem.appendChild(removeButton);
+
+                previewContainer.appendChild(previewItem);
+                imagesArray.push(file);
+
+                // 드래그 앤 드롭 기능 추가
+                previewItem.addEventListener('dragstart', dragStart);
+                previewItem.addEventListener('dragover', dragOver);
+                previewItem.addEventListener('drop', drop);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    function updatePreview() {
+        previewContainer.innerHTML = '';
+        imagesArray.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.classList.add('preview-item');
+                previewItem.draggable = true;
+                previewItem.setAttribute('data-index', index);
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                previewItem.appendChild(img);
+
+                const removeButton = document.createElement('button');
+                removeButton.classList.add('remove-btn');
+                removeButton.innerHTML = '&times;';
+                removeButton.addEventListener('click', function() {
+                    imagesArray = imagesArray.filter((_, i) => i !== index);
+                    updatePreview();
+                });
+                previewItem.appendChild(removeButton);
+
+                previewContainer.appendChild(previewItem);
+
+                previewItem.addEventListener('dragstart', dragStart);
+                previewItem.addEventListener('dragover', dragOver);
+                previewItem.addEventListener('drop', drop);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    let dragged;
+
+    function dragStart(e) {
+        dragged = e.target;
+        e.target.style.opacity = 0.5;
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function drop(e) {
+        e.preventDefault();
+        dragged.style.opacity = '';
+        if (dragged !== e.target) {
+            const draggedIndex = parseInt(dragged.getAttribute('data-index'));
+            const targetIndex = parseInt(e.target.getAttribute('data-index'));
+            [imagesArray[draggedIndex], imagesArray[targetIndex]] = [imagesArray[targetIndex], imagesArray[draggedIndex]];
+            updatePreview();
+        }
+    }
+</script>
+
+</body>
+</html>

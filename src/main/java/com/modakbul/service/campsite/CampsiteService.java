@@ -23,6 +23,12 @@ public class CampsiteService {
     @Autowired
     private CampsitePriceRepository campsitePriceRepository;
 
+    public List<CampsiteDto> CampsiteListToCampsiteDtoList(List<Campsite> campsites){
+        return campsites.stream()
+                .map(CampsiteDto::new)
+                .collect(Collectors.toList());
+    }
+
     public List<CampsiteDto> findByCampgroundId(Long CampgroundId) {
         List<Campsite> campsites = campsiteRepository.findByCampgroundId(CampgroundId);
         return campsites.stream()
@@ -31,8 +37,9 @@ public class CampsiteService {
     }
 
     // 특정 Campground의 Campsite 목록 조회
-    public List<Campsite> findCampsitesByCampgroundId(Long campgroundId) {
-        return campsiteRepository.findByCampgroundId(campgroundId);
+    public List<CampsiteDto> findCampsitesByCampgroundId(Long campgroundId) {
+        List<Campsite> campsites = campsiteRepository.findByCampgroundId(campgroundId);
+        return CampsiteListToCampsiteDtoList(campsites);
     }
 
     // Campsite ID로 조회
@@ -80,4 +87,5 @@ public class CampsiteService {
                 .mapToInt(CampsitePrice::getPrice)  // 각 가격을 추출
                 .sum();  // 총합 계산
     }
+
 }

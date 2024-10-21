@@ -68,8 +68,8 @@ public class CampgroundController {
                                 @RequestParam("images")MultipartFile[] images,
                                 @RequestParam("sido") String sido,
                                 @RequestParam("sigungu") String sigungu) {
-        campgroundService.createCampground(campground, sido, sigungu);
-        return "redirect:/campsite/add?campgroundId=" + campground.getId();
+        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu);
+        return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 
     @GetMapping

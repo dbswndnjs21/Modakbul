@@ -3,6 +3,7 @@ package com.modakbul.service.campground;
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campground.LocationDetailDto;
 import com.modakbul.dto.campground.LocationDto;
+import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campground.LocationDetail;
@@ -105,13 +106,13 @@ public class CampgroundService {
     }
 
     public int getLowestPrice(CampgroundDto campground, LocalDate checkInDate, LocalDate checkOutDate) {
-        List<Campsite> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
+        List<CampsiteDto> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
         if(campsites.isEmpty()){
             return 0;
         }
         int lowestPrice = Integer.MAX_VALUE;
 
-        for (Campsite campsite : campsites) {
+        for (CampsiteDto campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
             if(totalPrice <= lowestPrice){
                 lowestPrice = totalPrice;
