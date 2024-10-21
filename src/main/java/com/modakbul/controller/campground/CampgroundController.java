@@ -8,12 +8,14 @@ import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
+import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campground.CampgroundOptionLinkService;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campground.CampgroundSuboptionService;
 import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,10 +51,12 @@ public class CampgroundController {
                                        @RequestParam(value = "query", required = false) String query,
                                        @RequestParam(value = "checkInDate") LocalDate checkInDate,
                                        @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
+                                       @AuthenticationPrincipal CustomUserDetails member,
                                        Model model) {
+    	Long memberId = member.getId();
         // 캠프사이트 정보
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
-
+        model.addAttribute("memberId", memberId);
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
 
