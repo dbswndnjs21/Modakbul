@@ -50,7 +50,7 @@ public class MyPageController {
             Integer couponId = memberCouponService.findCouponIdByMember(membership);
             if (couponId != null) {
                 Coupon coupon = couponService.findCoupons(couponId);
-                model.addAttribute("coupon", coupon.getCouponName());
+                model.addAttribute("coupon", coupon);
             }
 
 
