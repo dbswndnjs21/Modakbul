@@ -11,7 +11,30 @@
 <div th:replace="host/fragments/sidebar :: sidebar"></div>
 
 <div class="main-content">
-    <h1>캠핑장 관리</h1>
+    <h1>수익</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>날짜</th>
+            <th>정산금액</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="paymentSearch : ${paymentSearch}">
+            <td th:text="${paymentSearch.getApproveDate()}"></td>
+            <td th:text="${paymentSearch.getAmount()}"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td><strong>총합</strong></td>
+            <td th:text="${paymentAmount}"></td> <!-- 총합을 출력 -->
+        </tr>
+        </tfoot>
+    </table>
+
+    <hr>
+    <h1>캠핑장 목록</h1>
     <table border="1">
         <thead>
         <tr>
@@ -24,20 +47,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="camp : ${camp}">
+        <!-- campgroundsByHostId 리스트를 순회하며 각 캠핑장 정보를 출력 -->
+        <tr th:each="camp, iterStat : ${campground}" th:if="${iterStat.index < 10}">
             <td th:text="${camp.id}"></td>
-<!--            <td th:text="${camp.campGroundName}"></td>-->
-<!--            <td th:text="${camp.campGroundAddress}"></td>-->
+            <td th:text="${camp.campgroundName}"></td>
+            <td th:text="${camp.address}"></td>
             <td th:text="${camp.phone}"></td>
-            <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
-            <td>
-                <button th:if="${camp.approve == 0}" onclick="approveCampground(${camp.id})">승인</button>
-            </td>
+            <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
         </tr>
         </tbody>
     </table>
-
-    <hr>
 
 </div>
 </body>

@@ -29,10 +29,7 @@
             <td th:text="${camp.campgroundName}"></td>
             <td th:text="${camp.address}"></td>
             <td th:text="${camp.phone}"></td>
-            <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
-            <td>
-                <button th:if="${camp.approve == 0}" onclick="approveCampground(${camp.id})">승인</button>
-            </td>
+            <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
         </tr>
         </tbody>
     </table>

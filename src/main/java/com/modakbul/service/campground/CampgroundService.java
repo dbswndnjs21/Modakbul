@@ -127,4 +127,10 @@ public class CampgroundService {
                 .collect(Collectors.toList());
         return campgroundDtos;
     }
+    public void approveCampground(Long id) {
+        Campground campground = campgroundRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
+        campground.setApprove(2);  // 승인 상태를 2로 변경
+        campgroundRepository.save(campground);  // 변경된 상태를 저장
+    }
 }

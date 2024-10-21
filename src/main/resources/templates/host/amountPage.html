@@ -16,17 +16,21 @@
         <thead>
         <tr>
             <th>날짜</th>
-            <th>캠핑장 이름</th>
             <th>정산금액</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="paymentSearch : ${paymentSearch}">
             <td th:text="${paymentSearch.getApproveDate()}"></td>
-<!--            <td th:text="${}"></td>--><td>뭘 넣어야하지;;</td>
             <td th:text="${paymentSearch.getAmount()}"></td>
         </tr>
         </tbody>
+        <tfoot>
+        <tr>
+            <td><strong>총합</strong></td>
+            <td th:text="${paymentAmount}"></td> <!-- 총합을 출력 -->
+        </tr>
+        </tfoot>
     </table>
 
     <hr>
