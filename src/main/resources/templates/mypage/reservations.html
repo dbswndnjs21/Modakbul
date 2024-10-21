@@ -7,67 +7,75 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/reservations.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script>
+    <script th:inline="javascript">
+
+        // 페이지가 로드된 후 successMessage가 있으면 alert를 띄운다.
+        window.onload = function() {
+            const successMessage = [[${successMessage}]];
+            if (successMessage != null) {
+                alert(successMessage);
+            }
+        };
+
         function cancelBooking(bookingId) {
-            $.ajax({
-                type: 'post',
-                url: '/mypage/findPayment',
-                data: {bookingId: bookingId},
-                success: function (response) {
-                    if (confirm("정말로 취소하시겠습니까?")) {
-                        console.log("Booking ID:", bookingId);
-                    if (response.paymentMethod === "KakaoPay") {
-                        $.ajax({
-                            type: 'POST',
-                            url: '/order/pay/cancel',
-                            data: {bookingId: bookingId},
-                            success: function (response) {
-                                // 서버에서 반환한 URL로 리다이렉트
-                                console.log("결제 취소 정보:", response);
+            if (confirm("정말로 취소하시겠습니까?")) {  // 확인 창을 먼저 띄운다.
+                console.log("Booking ID:", bookingId);
 
-                                alert("결제가 취소되었습니다")
-
-                                window.location.href = '/mypage/reservations';
-                            },
-                            error: function (xhr, status, error) {
-                                // 오류 처리
-                                console.error("결제 취소 중 오류 발생:", error);
-                                alert("결제 취소에 실패했습니다.");
-                            }
-                        });
-
-                    } else if(response.paymentMethod === "IamPort") {
-                        // Ajax 요청으로 서버에 취소 요청 전송
-                        $.ajax({
-                            url: '/iamport/cancel',  // Spring 서버의 결제 취소 API URL
-                            type: 'POST',
-                            data: {
-                                imp_uid: response.paymentTid,
-                                amount: response.amount
-                            },
-                            success: function(response) {
-                                console.log(response)
-                                if (response && response.response) {
-                                    alert("결제 취소 성공: " + response.response.merchantUid);
+                $.ajax({
+                    type: 'post',
+                    url: '/mypage/findPayment',
+                    data: {bookingId: bookingId},
+                    success: function (response) {
+                        if (response.paymentMethod === "KakaoPay") {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/order/pay/cancel',
+                                data: {bookingId: bookingId},
+                                success: function (response) {
+                                    // 결제 취소 후 처리
+                                    console.log("결제 취소 정보:", response);
+                                    alert("결제가 취소되었습니다");
                                     window.location.href = '/mypage/reservations';
-                                } else {
-                                    alert("결제 취소 실패: 서버 응답 없음");
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("결제 취소 중 오류 발생:", error);
+                                    alert("결제 취소에 실패했습니다.");
                                 }
-                            },
-                            error: function(xhr, status, error) {
-                                console.error("결제 취소 오류:", error);
-                                console.error("상태:", status);
-                                console.error("xhr:", xhr);
-                                alert("결제 취소 중 오류가 발생했습니다: " + xhr.responseText);
-                            }
-                        });
-                    }
-                    } else {
-                        console.log("결제취소를 취소하셨습니다")
-                    }
+                            });
 
-                }
-            })
+                        } else if (response.paymentMethod === "IamPort") {
+                            // IamPort 결제 취소 처리
+                            $.ajax({
+                                url: '/iamport/cancel',
+                                type: 'POST',
+                                data: {
+                                    imp_uid: response.paymentTid,
+                                    amount: response.amount
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response && response.response) {
+                                        alert("결제 취소 성공: " + response.response.merchantUid);
+                                        window.location.href = '/mypage/reservations';
+                                    } else {
+                                        alert("결제 취소 실패: 서버 응답 없음");
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("결제 취소 오류:", error);
+                                    alert("결제 취소 중 오류가 발생했습니다: " + xhr.responseText);
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("결제 정보 조회 중 오류 발생:", error);
+                        alert("결제 정보를 가져오는 중 오류가 발생했습니다.");
+                    }
+                });
+            } else {
+                console.log("결제취소를 취소하셨습니다");
+            }
         }
     </script>
 </head>
