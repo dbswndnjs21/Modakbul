@@ -34,6 +34,23 @@
         <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
     </div>
 
+<!--    옵션 -->
+    <h4>Campground Options</h4>
+
+    <table>
+        <thead>
+        <tr>
+            <th>옵션 이름</th>
+            <th>존재 여부</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="option : ${campgroundSubOptions}">
+            <td th:text="${option.optionName}">옵션 이름</td>
+<!--            <td th:text="${link.isExist ? '존재함' : '존재하지 않음'}">존재 여부</td>-->
+        </tr>
+        </tbody>
+    </table>
     <div id='calendar'></div>
 
     <!-- 캠핑장 정보 -->

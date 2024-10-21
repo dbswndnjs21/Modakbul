@@ -26,7 +26,7 @@ public class CampsitePriceService {
         LocalDate nextDate = LocalDate.now().plusDays(93);  // 오늘 기준 93일 후
 
         for (Campsite campsite : campsites) {
-            // 30일 후의 날짜에 대해 가격 설정
+            // 93일 후의 날짜에 대해 가격 설정
             CampsitePriceId priceId = new CampsitePriceId(campsite.getId(), nextDate);
             int price = (nextDate.getDayOfWeek().getValue() <= 5)
                     ? campsite.getWeekdayPrice()
