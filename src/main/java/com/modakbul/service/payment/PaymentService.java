@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.awt.print.Book;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -202,7 +203,10 @@ public class PaymentService {
                 .build();
         paymentCancelRepository.save(paymentCancel);
 
-
+        Optional<Booking> byId = bookingRepository.findById(paymentEntity.getBooking().getId());
+        Booking booking = byId.get();
+        booking.setBookingStatus(1);
+        bookingRepository.save(booking);
     }
 
     public KaKaoPayCancelDto kakaoPayCancel(Long bookingId){
@@ -239,6 +243,10 @@ public class PaymentService {
                 .canceledAt(LocalDateTime.parse(res.getCanceled_at()))
                 .build();
         paymentCancelRepository.save(paymentCancel);
+
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
+        booking.get().setBookingStatus(1);
+        bookingRepository.save(booking.get());
 
         return res;
     }

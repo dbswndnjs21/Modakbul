@@ -24,12 +24,10 @@
                             success: function (response) {
                                 // 서버에서 반환한 URL로 리다이렉트
                                 console.log("결제 취소 정보:", response);
-                                $('#responseDiv').html('<p>결제 취소 정보: ' + JSON.stringify(response) + '</p>');
 
                                 alert("결제가 취소되었습니다")
 
-                                // response로 받은 url로 이동
-                                // window.location.href = response;
+                                window.location.href = '/mypage/reservations';
                             },
                             error: function (xhr, status, error) {
                                 // 오류 처리
@@ -51,6 +49,7 @@
                                 console.log(response)
                                 if (response && response.response) {
                                     alert("결제 취소 성공: " + response.response.merchantUid);
+                                    window.location.href = '/mypage/reservations';
                                 } else {
                                     alert("결제 취소 실패: 서버 응답 없음");
                                 }
