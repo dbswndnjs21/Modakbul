@@ -6,10 +6,7 @@ import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.*;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
-import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
-import com.modakbul.repository.campground.CampgroundOptionRepository;
-import com.modakbul.repository.campground.CampgroundRepository;
-import com.modakbul.repository.campground.CampgroundSuboptionRepository;
+import com.modakbul.repository.campground.*;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
@@ -43,6 +40,8 @@ public class CampgroundService {
     private CampgroundOptionRepository campgroundOptionRepository;
     @Autowired
     private CampgroundOptionLinkRepository campgroundOptionLinkRepository;
+    @Autowired
+    private LocationRepository locationRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -187,5 +186,11 @@ public class CampgroundService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
         campground.setApprove(2);  // 승인 상태를 2로 변경
         campgroundRepository.save(campground);  // 변경된 상태를 저장
+    }
+
+    public String getLocationSido(Long campgroundId){
+        CampgroundDto campgroundDto = getCampgroundById(campgroundId);
+        Location location = locationRepository.findById(campgroundDto.getLocationDetailId());
+        return location.getSido();
     }
 }

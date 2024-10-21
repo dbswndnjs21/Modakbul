@@ -145,6 +145,8 @@ public class CampgroundController {
         List<CampgroundOptionDto> options = campgroundService.getCampgroundOptions();
         List<CampgroundSuboptionDto> suboptions = campgroundService.getCampgroundSuboptions();
 
+
+
         model.addAttribute("options", options);
         model.addAttribute("suboptions",suboptions);
 
@@ -155,5 +157,16 @@ public class CampgroundController {
         model.addAttribute("suboptionIdList", suboptionIdList);
 
         return "campground/campgroundEdit";
+    }
+
+    // 폼에서 입력된 캠핑장 정보를 저장
+    @PostMapping("/edit")
+    public String editCampground(@ModelAttribute("campground") CampgroundDto campground,
+                                @RequestParam("images")MultipartFile[] images,
+                                @RequestParam("sido") String sido,
+                                @RequestParam("sigungu") String sigungu,
+                                @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
+        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds);
+        return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 }
