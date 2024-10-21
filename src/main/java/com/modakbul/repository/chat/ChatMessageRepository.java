@@ -9,4 +9,5 @@ import com.modakbul.entity.chat.ChatRoom;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
     List<ChatMessage> findByChatRoom(ChatRoom chatRoom);
+    
 }
