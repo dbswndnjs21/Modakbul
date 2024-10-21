@@ -134,4 +134,22 @@ public class CampgroundController {
         return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
     }
 
+
+    @GetMapping("/edit/{id}")
+    public String editCampground(@PathVariable("id") Long id,
+                                       @RequestParam(value = "query", required = false) String query,
+                                       Model model) {
+        // 캠프사이트 정보
+        List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
+        List<CampgroundOptionDto> campgroundOptionDtos = campgroundService.getCampgroundOptions();
+
+        model.addAttribute("campgroundOptions",campgroundOptionDtos);
+        model.addAttribute("campground", campgroundService.getCampgroundById(id));
+        model.addAttribute("campsites", campsites);
+
+        List<CampgroundSuboptionDto> campgroundSuboptionDtos= campgroundSuboptionService.getSubOptionByCampgroundId(id);
+
+        model.addAttribute("campgroundSubOptions", campgroundSuboptionDtos);
+        return "campground/campgroundEdit";
+    }
 }
