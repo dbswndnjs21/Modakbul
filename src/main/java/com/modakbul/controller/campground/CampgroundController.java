@@ -2,11 +2,15 @@ package com.modakbul.controller.campground;
 
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campground.CampgroundOptionDto;
+import com.modakbul.dto.campground.CampgroundOptionLinkDto;
 import com.modakbul.dto.campground.CampgroundSuboptionDto;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
+import com.modakbul.service.campground.CampgroundOptionLinkService;
 import com.modakbul.service.campground.CampgroundService;
+import com.modakbul.service.campground.CampgroundSuboptionService;
 import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,11 +31,17 @@ public class CampgroundController {
     private final CampgroundService campgroundService;
     private final CampsiteService campsiteService;
     private final LocationService locationService;
+    private final CampgroundOptionLinkRepository campgroundOptionLinkRepository;
+    private final CampgroundOptionLinkService campgroundOptionLinkService;
+    private final CampgroundSuboptionService campgroundSuboptionService;
 
-    public CampgroundController(CampgroundService campgroundService, CampsiteService campsiteService, LocationService locationService) {
+    public CampgroundController(CampgroundService campgroundService, CampsiteService campsiteService, LocationService locationService, CampgroundOptionLinkRepository campgroundOptionLinkRepository, CampgroundOptionLinkService campgroundOptionLinkService, CampgroundSuboptionService campgroundSuboptionService, CampgroundSuboptionService campgroundSuboptionService1) {
         this.campgroundService = campgroundService;
         this.campsiteService = campsiteService;
         this.locationService = locationService;
+        this.campgroundOptionLinkRepository = campgroundOptionLinkRepository;
+        this.campgroundOptionLinkService = campgroundOptionLinkService;
+        this.campgroundSuboptionService = campgroundSuboptionService1;
     }
     
     @GetMapping("/{id}")
@@ -53,6 +63,9 @@ public class CampgroundController {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
             totalPrices.put(campsite.getId(), totalPrice);
         }
+
+        List<CampgroundSuboptionDto> campgroundSuboptionDtos= campgroundSuboptionService.getSubOptionByCampgroundId(id);
+        model.addAttribute("campgroundSubOptions", campgroundSuboptionDtos);
         model.addAttribute("totalPrices", totalPrices);
         return "campground/campgroundDetail";
     }
