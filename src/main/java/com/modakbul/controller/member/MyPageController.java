@@ -146,14 +146,10 @@ public class MyPageController {
     }
 
 
-    @GetMapping("/reviews")
-    public String rewviews(@AuthenticationPrincipal CustomUserDetails member, Model model) {
-        if (member != null) {
-            model.addAttribute("member", member);
-        }
-        return "mypage/reviews";
-    }
-
+   @GetMapping("/coupon")
+   public String coupon(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        return "mypage/coupon";
+   }
     @GetMapping("/payments")
     public String payments(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member != null) {

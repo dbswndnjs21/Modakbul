@@ -94,5 +94,27 @@ public class FreeboardCommentService {
 	
 	public void deleteComment(long id) {
 		freeboardCommentRepository.deleteById(id);
-	} 
+	}
+	public List<FreeboardCommentDto> findAllComments() {
+		log.info("Fetching all comments");
+
+		// 모든 댓글 조회
+		List<FreeboardComment> comments = freeboardCommentRepository.findAll();
+
+		// 댓글을 DTO로 변환
+		return comments.stream()
+				.map(comment -> new FreeboardCommentDto(
+						comment.getId(),
+						comment.getParent() != null ? comment.getParent().getId() : null,
+						null, // 자식 댓글 처리
+						comment.getFreeboard().getId(),
+						comment.getMember().getId(),
+						comment.getContent(),
+						comment.getCreatedAt(),
+						comment.getMember().getUserId()
+				))
+				.collect(Collectors.toList());
+	}
+
+
 }

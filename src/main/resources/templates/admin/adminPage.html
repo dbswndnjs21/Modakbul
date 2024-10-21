@@ -5,6 +5,7 @@
     <title>관리자 페이지</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/admin/admin.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 <body>
 <!-- 사이드바 포함 -->
@@ -16,8 +17,8 @@
     <table>
         <thead>
         <tr>
-            <th>번호</th>
             <th>ID</th>
+            <th>아이디</th>
             <th>이메일</th>
             <th>이름</th>
             <th>전화번호</th>
@@ -58,18 +59,25 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="camp : ${camp}">
+        <tr th:each="camp : ${camp}" th:if="${camp.approve != 0}">
             <td th:text="${camp.id}"></td>
-<!--            <td th:text="${camp.campGroundName}"></td>-->
-<!--            <td th:text="${camp.campGroundAddress}"></td>-->
-            <td th:text="${camp.phone}"></td>
-            <td th:text="${camp.approve == 1 ? '승인됨' : '대기중'}"></td>
             <td>
-                <button th:if="${camp.approve == 0}" onclick="approveCampground(${camp.id})">승인</button>
+                <a th:href="@{/campgrounds/{id}(id=${camp.id}, checkInDate=${today}, checkOutDate=${tomorrow})}" target="_blank" th:text="${camp.campgroundName}"></a>
+            </td>
+            <td th:text="${camp.address}"></td>
+            <td th:text="${camp.phone}"></td>
+            <td th:text="${camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : '')}"></td>
+            <td>
+                <form th:action="@{/admin/approve/{id}(id=${camp.id})}" method="post" onsubmit="return confirm('이 캠핑장을 승인하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/> <!-- 필요한 경우 -->
+                    <button type="submit" th:if="${camp.approve == 1}">승인</button>
+                </form>
             </td>
         </tr>
         </tbody>
     </table>
+
+
 
     <hr>
 
@@ -92,8 +100,8 @@
                 <a th:href="@{/freeboard/freeBoardView(id=${freeboard.id})}" target="_blank" th:text="${freeboard.title}"></a>
             </td>
             <td th:text="${freeboard.content}"></td>
-            <td th:text="${freeboard.createdAt}"></td>
-            <td th:text="${freeboard.updatedAt}"></td>
+            <td th:text="${#temporals.format(freeboard.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(freeboard.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td>
                 <form th:action="@{/admin/freeboard/delete/{id}(id=${freeboard.id})}" method="post" onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
                     <input type="hidden" name="_method" value="delete">
@@ -107,7 +115,37 @@
     <hr>
 
     <h1>댓글 목록</h1>
-    <!-- 댓글 목록 내용 추가 -->
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>게시판 ID</th>
+            <th>회원 ID</th>
+            <th>댓글 내용</th>
+            <th>작성 시간</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}"></td>
+            <td>
+                <a th:href="@{/freeboard/freeBoardView(id=${comment.freeboardId})}" target="_blank" th:text="${comment.freeboardId}"></a>
+            </td>
+            <td th:text="${comment.memberId}"></td>
+            <td th:text="${comment.content}"></td>
+            <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+            <td>
+                <form th:action="@{/freeboard/freeboardCommentDelete/{commentId}(commentId=${comment.id})}" method="post" onsubmit="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
 </div>
 </body>
 </html>
