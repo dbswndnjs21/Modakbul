@@ -79,7 +79,7 @@ public class MyPageController {
 
 
     @GetMapping("/reservations")
-    public String reservations(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+    public String reservations(@AuthenticationPrincipal CustomUserDetails member, Model model, @RequestParam( value = "successMessage",required = false)String successMessage) {
         if (member != null) {
 
             Long memberId = member.getId();
@@ -93,6 +93,10 @@ public class MyPageController {
         } else {
             System.out.println("No valid authentication found.");
         }
+        // KakapayController에서 redirectAttributes로 보낸 메세지
+        System.out.println("받아온 메세지 : "  +  successMessage);
+        model.addAttribute("successMessage", successMessage);
+        
         return "mypage/reservations";
     }
 

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigInteger;
 
@@ -52,7 +53,7 @@ public class KaKaoPayController {
     }
 
     @GetMapping("/pay/completed")
-    public String payCompleted(@RequestParam("pg_token") String pgToken,@RequestParam("orderNumber")String orderNumber, @RequestParam("bookingId") BigInteger bookingId , Model model) {
+    public String payCompleted(@RequestParam("pg_token") String pgToken, @RequestParam("orderNumber")String orderNumber, @RequestParam("bookingId") BigInteger bookingId , Model model, RedirectAttributes redirectAttributes) {
 
         String tid = SessionUtils.getStringAttributeValue("tid");
         log.info("결제승인 요청을 인증하는 토큰: " + pgToken);
@@ -62,7 +63,9 @@ public class KaKaoPayController {
         ApproveResponse approveResponse = PaymentService.payApprove(tid, pgToken, orderNumber, bookingId);
         model.addAttribute("approveResponse", approveResponse);
 
-        return "kakaopay/ordercompleted";
+        redirectAttributes.addAttribute("successMessage", "결제 성공");
+
+        return "redirect:/mypage/reservations";
     }
 // 결제 취소 후 마이페이지의 예약내역으로가기
 //    @PostMapping("/pay/cancel")
