@@ -27,6 +27,7 @@ public class ChatRoomService {
 	private final CampgroundRepository campgroundRepository;	
 	private final MemberRepository memberRepository;
 	
+	
 	// 캠프장 ID와 현재 사용자 ID로 채팅 방 찾기
     public ChatRoomDto findChatRoomByCampgroundIdAndMemberId(Long campgroundId, Long memberId) {
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByCampgroundIdAndMemberId(campgroundId, memberId);
@@ -67,4 +68,7 @@ public class ChatRoomService {
                 .collect(Collectors.toList());
     }
     
+    public ChatRoom findById(Long id) {
+        return chatRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+    }
 }

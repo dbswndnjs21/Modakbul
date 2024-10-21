@@ -6,9 +6,11 @@
     <title>채팅룸</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/header.css}">
-	<link rel="stylesheet" th:href="@{/css/chatRoom.css}">
-	<link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/css/chatRoom.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script> <!-- SockJS 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script> <!-- STOMP 추가 -->
 </head>
 <body>
     <!-- 헤더 영역 -->
@@ -62,46 +64,89 @@
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:inline="javascript">
+<script th:inline="javascript">
     $(document).ready(function () {
-        const chatRoomId = /*[[${chatRoom.id}]]*/ null; // 채팅룸 ID
-        const userId = /*[[${userId}]]*/ null; // 현재 사용자 ID
-
+        const chatRoomId = /*[[${chatRoom.id}]]*/ null; 
+        const memberId = /*[[${memberId}]]*/ null; 
+        const userId = /*[[${userId}]]*/ null; 
+        
         // 웹소켓 연결
-        const socket = new WebSocket(`ws://your-websocket-url/chatroom/${chatRoomId}`);
+        const socket = new SockJS('/chat-websocket');
+        const stompClient = Stomp.over(socket);
 
-        // 웹소켓 메시지 수신
-        socket.onmessage = function (event) {
-            const message = JSON.parse(event.data);
-            const messageElement = `
-                <div class="message ${message.memberId == userId ? 'text-end' : ''}">
-                    <strong>${message.memberId}</strong>
-                    <span>${message.content}</span>
-                    <small class="text-muted">${message.createdAt}</small>
-                </div>
-            `;
-            $('.message-list').append(messageElement); // 새로운 메시지 추가
+        // 이전 메시지 가져오기
+        $.get(`/chat/messages/${chatRoomId}`, function(messages) {
+            messages.forEach(function(message) {
+                // 날짜 및 시간 포맷 설정 (YYYY-MM-DD HH:mm:ss 형식)
+                const createdAt = new Date(message.createdAt);
+                const formattedDate = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0') + ' ' +
+                    String(createdAt.getHours()).padStart(2, '0') + ':' +
+                    String(createdAt.getMinutes()).padStart(2, '0') + ':' +
+                    String(createdAt.getSeconds()).padStart(2, '0');
+
+                // 메시지와 시간 순서 변경
+                const messageElement = `
+                    <div class="message ${message.memberId == userId ? 'text-end' : ''}">
+                        <strong>${message.memberId}</strong>
+                        <small class="text-muted">${formattedDate}</small><br>
+                        <span>${message.message}</span>
+                    </div>`;
+                    
+                $('.message-list').append(messageElement);
+            });
             $('.message-section').scrollTop($('.message-section')[0].scrollHeight); // 스크롤 최하단으로 이동
-        };
+        });
+
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (messageOutput) {
+                const message = JSON.parse(messageOutput.body);
+
+                // 날짜 및 시간 포맷 설정 (YYYY-MM-DD HH:mm:ss 형식)
+                const createdAt = new Date(message.createdAt);
+                const formattedDate = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0') + ' ' +
+                    String(createdAt.getHours()).padStart(2, '0') + ':' +
+                    String(createdAt.getMinutes()).padStart(2, '0') + ':' +
+                    String(createdAt.getSeconds()).padStart(2, '0');
+
+                // 메시지와 시간 순서 변경
+                const messageElement = `
+                    <div class="message ${message.memberId == userId ? 'text-end' : ''}">
+                        <strong>${message.memberId}</strong>
+                        <small class="text-muted">${formattedDate}</small><br>
+                        <span>${message.message}</span>
+                    </div>`;
+                    
+                $('.message-list').append(messageElement);
+                $('.message-section').scrollTop($('.message-section')[0].scrollHeight);
+            });
+        });
 
         // 메시지 전송
         $('#message-form').on('submit', function (e) {
-            e.preventDefault(); // 기본 제출 동작 방지
+            e.preventDefault();
             const messageContent = $('#message-input').val();
             const message = {
-                content: messageContent,
-                memberId: userId
+                message: messageContent,   // 메시지 내용
+                memberId: memberId,          // 사용자 ID
+                chatRoomId: chatRoomId     // 채팅방 ID
             };
-            socket.send(JSON.stringify(message)); // 메시지를 웹소켓으로 전송
-            $('#message-input').val(''); // 입력창 초기화
+
+            console.log("보내는 메시지:", message); // 디버깅용 로그 추가
+
+            stompClient.send("/app/chat/sendMessage", {}, JSON.stringify(message));
+            $('#message-input').val('');
         });
 
-        // 채팅 나가기 버튼 클릭 이벤트
         $('#leave-chat-btn').on('click', function () {
-            socket.close(); // 웹소켓 연결 종료
-            window.location.href = '/chat/chatList'; // 채팅 리스트로 이동
+            stompClient.disconnect();
+            window.location.href = '/chat/chatList';
         });
     });
-    </script>
+</script>
+
 </body>
 </html>
