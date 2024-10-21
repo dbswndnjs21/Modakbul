@@ -173,13 +173,15 @@ public class CampgroundService {
         return campgroundSuboptionDtos;
     }
 
-    public List<CampgroundOptionDto> getCampgroundOptions(){
+    public List<CampgroundOptionDto> getCampgroundOptions() {
         List<CampgroundOption> campgroundOptions = campgroundOptionRepository.findAll();
 
         List<CampgroundOptionDto> campgroundOptionDtos = campgroundOptions.stream()
                 .map(option -> new CampgroundOptionDto(option))
                 .collect(Collectors.toList());
         return campgroundOptionDtos;
+    }
+    
     public void approveCampground(Long id) {
         Campground campground = campgroundRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
