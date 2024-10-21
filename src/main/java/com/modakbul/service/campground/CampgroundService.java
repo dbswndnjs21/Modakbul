@@ -3,12 +3,10 @@ package com.modakbul.service.campground;
 import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
-import com.modakbul.entity.campground.Campground;
-import com.modakbul.entity.campground.CampgroundOption;
-import com.modakbul.entity.campground.CampgroundSuboption;
-import com.modakbul.entity.campground.LocationDetail;
+import com.modakbul.entity.campground.*;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
+import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
 import com.modakbul.repository.campground.CampgroundOptionRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
 import com.modakbul.repository.campground.CampgroundSuboptionRepository;
@@ -21,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +41,8 @@ public class CampgroundService {
     private CampgroundSuboptionRepository campgroundSuboptionRepository;
     @Autowired
     private CampgroundOptionRepository campgroundOptionRepository;
+    @Autowired
+    private CampgroundOptionLinkRepository campgroundOptionLinkRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -87,9 +88,38 @@ public class CampgroundService {
         // Campground 저장
         Campground savedCampground = campgroundRepository.save(campground);
 
-        return new CampgroundDto(savedCampground);
+        CampgroundDto result = new CampgroundDto(savedCampground);
+
+        createCampgroundOptionLink(subOptionIds, result);
+        return result;
     }
 
+    public void createCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto){
+        LocationDetail locationDetail = new LocationDetail();
+        Host host = new Host();
+        host.setId(campgroundDto.getHostId());
+        Campground campground = campgroundDto.toEntity(locationDetail, host);
+
+        List<CampgroundSuboption> allSubOptions = campgroundSuboptionRepository.findAll();
+
+        List<CampgroundOptionLink> links = new ArrayList<>();
+
+        // 3. 서브 옵션을 체크하여 CampgroundOptionLink에 추가
+        for (CampgroundSuboption subOption : allSubOptions) {
+            CampgroundOptionLink link = new CampgroundOptionLink();
+            link.setCampground(campground);
+            link.setCampgroundSuboption(subOption);
+            // 4. 선택된 ID와 비교하여 isExist 값 설정
+            if (subOptionIds.contains(subOption.getId())) {
+                link.setExist(true); // 선택됨
+            } else {
+                link.setExist(false); // 선택되지 않음
+            }
+            links.add(link);
+        }
+
+        campgroundOptionLinkRepository.saveAll(links);
+    }
 
     public List<CampgroundDto> searchCampgrounds(String query) {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링

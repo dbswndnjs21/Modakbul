@@ -75,7 +75,7 @@ public class CampgroundController {
                                 @RequestParam("images")MultipartFile[] images,
                                 @RequestParam("sido") String sido,
                                 @RequestParam("sigungu") String sigungu,
-                                @RequestParam("subOptionsIds") List<Integer> subOptionIds) {
+                                @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
         CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
