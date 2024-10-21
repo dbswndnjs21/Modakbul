@@ -6,6 +6,8 @@ import com.modakbul.repository.member.MemberCouponRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MemberCouponService {
     @Autowired
@@ -16,7 +18,7 @@ public class MemberCouponService {
         return memberCoupon;
     }
 
-    public Integer findCouponIdByMember(Member member) {
+    public List<Integer> findCouponIdByMember(Member member) {
         return memberCouponRepository.findCouponIdByMember(member);
     }
 }

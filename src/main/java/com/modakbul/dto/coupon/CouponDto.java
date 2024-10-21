@@ -16,8 +16,7 @@ public class CouponDto {
     private int id; // PK
     private String couponName;
     private String couponCode;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+
     private int discountAmount;
     private int couponType;
     private boolean isActive;
@@ -28,8 +27,7 @@ public class CouponDto {
                 .id(this.id)
                 .couponName(this.couponName)
                 .couponCode(this.couponCode)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
+
                 .discountAmount(this.discountAmount)
                 .couponType(this.couponType)
                 .isActive(this.isActive)
@@ -41,8 +39,7 @@ public class CouponDto {
         this.id = coupon.getId(); // PK 설정
         this.couponName = coupon.getCouponName();
         this.couponCode = coupon.getCouponCode();
-        this.startDate = coupon.getStartDate();
-        this.endDate = coupon.getEndDate();
+
         this.discountAmount = coupon.getDiscountAmount();
         this.couponType = coupon.getCouponType();
         this.isActive = coupon.isActive();

@@ -18,6 +18,8 @@ public class MemberCouponDto {
     private int id; // PK
     private Long memberId; // 외래 키로 설정 가능
     private int couponId; // 외래 키
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private boolean isUsed;
     private LocalDateTime usedAt;
 
@@ -27,6 +29,8 @@ public class MemberCouponDto {
                 .id(this.id)
                 .member(member)
                 .coupon(coupon) // Coupon 엔티티를 설정
+                .startDate(this.startDate)
+                .endDate(this.endDate)
                 .isUsed(this.isUsed)
                 .usedAt(this.usedAt)
                 .build();
@@ -37,6 +41,8 @@ public class MemberCouponDto {
         this.id = memberCoupon.getId(); // PK 설정
         this.memberId = memberCoupon.getMember().getId();
         this.couponId = memberCoupon.getCoupon().getId(); // Coupon 엔티티에서 ID 추출
+        this.startDate = memberCoupon.getStartDate();
+        this.endDate = memberCoupon.getEndDate();
         this.isUsed = memberCoupon.isUsed();
         this.usedAt = memberCoupon.getUsedAt();
     }

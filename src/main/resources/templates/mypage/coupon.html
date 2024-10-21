@@ -27,7 +27,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr th:each="coupon : ${coupons}">
                 <td th:text="${coupon.couponName}"></td>
                 <td th:text="${coupon.isActive ? '사용 가능' : '사용 불가'}"
                     th:class="${coupon.isActive} ? 'coupon-active' : 'coupon-inactive'"></td>
