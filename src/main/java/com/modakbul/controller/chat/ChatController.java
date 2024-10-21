@@ -34,7 +34,6 @@ public class ChatController {
 
     // 클라이언트로부터 메시지를 받는 엔드포인트
     @MessageMapping("/chat/sendMessage")
-    @SendTo("/topic/chatRoom")
     public ChatMessageDto sendMessage(ChatMessageDto chatMessageDto) {
         // ChatRoom과 Member 엔티티 찾기
     	System.out.println("dto확인" + chatMessageDto);
@@ -45,10 +44,10 @@ public class ChatController {
 
         // 저장된 메시지를 클라이언트로 전송
         messagingTemplate.convertAndSend("/topic/chatRoom/" + chatRoomDto.getId(), savedMessageDto);
-        
+        	
         return savedMessageDto;
     }
-    	
+    
     @GetMapping("/chat/messages/{chatRoomId}")
     @ResponseBody // JSON 형태로 반환하기 위해 추가
     public List<ChatMessageDto> getMessages(@PathVariable("chatRoomId") Long chatRoomId) {

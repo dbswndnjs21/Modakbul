@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.chat.ChatRoomDto;
-import com.modakbul.entity.campground.Campground;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.chat.ChatRoomService;
-import com.modakbul.service.freeboard.FreeboardService;
 
 import lombok.RequiredArgsConstructor;
 
