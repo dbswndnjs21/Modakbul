@@ -141,15 +141,19 @@ public class CampgroundController {
                                        Model model) {
         // 캠프사이트 정보
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
-        List<CampgroundOptionDto> campgroundOptionDtos = campgroundService.getCampgroundOptions();
+        //캠핑장 옵션, 서브 옵션 조회
+        List<CampgroundOptionDto> options = campgroundService.getCampgroundOptions();
+        List<CampgroundSuboptionDto> suboptions = campgroundService.getCampgroundSuboptions();
 
-        model.addAttribute("campgroundOptions",campgroundOptionDtos);
+        model.addAttribute("options", options);
+        model.addAttribute("suboptions",suboptions);
+
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
 
-        List<CampgroundSuboptionDto> campgroundSuboptionDtos= campgroundSuboptionService.getSubOptionByCampgroundId(id);
+        List<Integer> suboptionIdList= campgroundSuboptionService.getSuboptionId(id);
+        model.addAttribute("suboptionIdList", suboptionIdList);
 
-        model.addAttribute("campgroundSubOptions", campgroundSuboptionDtos);
         return "campground/campgroundEdit";
     }
 }
