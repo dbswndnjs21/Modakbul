@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리뷰 관리</title>
-    <link rel="stylesheet" href="/css/reviews.css"> <!-- 리뷰 CSS 파일 링크 -->
+    <title>모닥불</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/coupon.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -17,19 +17,23 @@
 
     <!-- 메인 콘텐츠 -->
     <div class="main-content">
-        <header class="header">
-            <h1>리뷰 관리</h1>
-            <a href="/camping/addReview" class="btn-new">새 리뷰 추가</a>
-        </header>
-
-        <!-- 리뷰 목록 테이블 -->
-        <table class="reviews-table">
+        <h1>쿠폰 목록</h1>
+        <table border="1">
+            <thead>
             <tr>
-                <th>쿠폰</th>
+                <th>쿠폰이름</th>
+                <th>사용여부</th>
+                <th>마감날짜</th>
             </tr>
-                <td th:text="${coupon}"></td>
-
-            <!-- 추가 리뷰 데이터를 여기에 포함 -->
+            </thead>
+            <tbody>
+            <tr th:each="coupon : ${coupons}">
+                <td th:text="${coupon.couponName}"></td>
+                <td th:text="${coupon.isActive ? '사용 가능' : '사용 불가'}"
+                    th:class="${coupon.isActive} ? 'coupon-active' : 'coupon-inactive'"></td>
+                <td th:text="${coupon.endDate}"></td>
+            </tr>
+            </tbody>
         </table>
     </div>
 </div>

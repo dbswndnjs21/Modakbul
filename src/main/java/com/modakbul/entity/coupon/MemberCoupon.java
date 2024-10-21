@@ -32,6 +32,8 @@ public class MemberCoupon {
 
     private boolean isUsed;
     private LocalDateTime usedAt;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "memberCoupon", cascade = CascadeType.ALL)
     private List<Payment> payments;

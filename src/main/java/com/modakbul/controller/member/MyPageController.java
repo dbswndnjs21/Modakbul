@@ -2,6 +2,7 @@ package com.modakbul.controller.member;
 
 import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.booking.BookingReservationsDto;
+import com.modakbul.dto.coupon.CouponDto;
 import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.coupon.Coupon;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -47,13 +49,20 @@ public class MyPageController {
             Member membership = memberService.findMembership(member.getUsername());
 
             // 멤버 정보를 사용하여 쿠폰 ID를 가져옴
-            Integer couponId = memberCouponService.findCouponIdByMember(membership);
+            List<Integer> couponId = memberCouponService.findCouponIdByMember(membership);
+            List<CouponDto> coupons = new ArrayList<>(); // 쿠폰을 저장할 리스트 생성
+
             if (couponId != null) {
-                Coupon coupon = couponService.findCoupons(couponId);
-                model.addAttribute("coupon", coupon.getCouponName());
+                for (Integer i : couponId) {
+                    List<CouponDto> coupon = couponService.findCoupons(i);
+                    coupons.addAll(coupon);
+                }
+            }else {
+                // 쿠폰이 없는 경우 빈 리스트 설정
+                coupons = new ArrayList<>();
             }
-
-
+            model.addAttribute("coupons", coupons);
+            model.addAttribute("coupon", couponId);
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
         }

@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class MembershipService {
     public void updateMembershipAndDistributeCoupons() {
         LocalDateTime now = LocalDateTime.now();
         List<Member> members = memberRepository.findAll();
+        LocalDateTime startDateTime = LocalDateTime.now();
+        LocalDateTime endDateTime = LocalDateTime.now().plusDays(30);
 
         for (Member member : members) {
             // 예약 상태가 완료된 것만 체크
@@ -60,6 +63,8 @@ public class MembershipService {
                         MemberCoupon memberCoupon = new MemberCoupon();
                         memberCoupon.setMember(member);
                         memberCoupon.setCoupon(coupon);
+                        memberCoupon.setStartDate(startDateTime);
+                        memberCoupon.setEndDate(endDateTime);
 
                         // MemberCoupon 저장
                         memberCouponRepository.save(memberCoupon);

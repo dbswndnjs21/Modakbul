@@ -14,12 +14,23 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class CampsiteController {
     @Autowired
     private CampsiteService campsiteService;
     @Autowired
     private CampgroundService campgroundService;
+
+    @GetMapping("/campsite/list")
+    public String showCampsiteList(@RequestParam("campgroundId") Long campgroundId, Model model) {
+        List<CampsiteDto> campsites;
+        campsites = campsiteService.findCampsitesByCampgroundId(campgroundId);
+        model.addAttribute("campsites", campsites); // 모델에 추가
+        model.addAttribute("campgroundId", campgroundId);
+        return "campsite/campsiteList";  // CampsiteForm.html 뷰
+    }
 
     @GetMapping("/campsite/add")
     public String showCampsiteForm(@RequestParam("campgroundId") Long campgroundId, Model model) {
