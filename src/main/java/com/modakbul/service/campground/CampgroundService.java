@@ -7,7 +7,6 @@ import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campground.LocationDetail;
-import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
@@ -57,7 +56,7 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds) {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
