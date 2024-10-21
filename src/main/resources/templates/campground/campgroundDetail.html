@@ -58,7 +58,12 @@
     <strong>Campground Name:</strong> 
     <span th:text="${campground.campgroundName}">Camp Name</span>
     <!-- 호스트와 채팅하기 버튼 -->
-    <a th:href="@{/chat/chatroom/{campgroundId}(campgroundId=${campground.id})}" class="chat-btn" style="margin-left: 10px;">호스트와 채팅하기</a>
+    <a th:if="${campground.hostId == memberId}" th:href="@{/chat/chatList(campgroundId=${campground.id})}" class="chat-btn" style="margin-left: 10px;">
+        게스트 채팅 리스트
+    </a>
+    <a th:if="${campground.hostId != memberId}" th:href="@{/chat/chatroom/{campgroundId}(campgroundId=${campground.id})}" class="chat-btn" style="margin-left: 10px;">
+        호스트와 채팅하기
+    </a>
 	</p>
     <p><strong>Address:</strong> <span th:text="${campground.address}">Address</span></p>
     <p><strong>Phone:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>

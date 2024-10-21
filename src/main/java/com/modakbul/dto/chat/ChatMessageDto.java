@@ -1,5 +1,6 @@
 package com.modakbul.dto.chat;
 
+import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.chat.ChatMessage;
 import com.modakbul.entity.chat.ChatRoom; // ChatRoom 엔티티 임포트
 import com.modakbul.entity.member.Member; // Member 엔티티 임포트
@@ -22,8 +23,11 @@ public class ChatMessageDto {
     private boolean readStatus;
     private LocalDateTime createdAt;
 
-    // ChatMessageDto를 ChatMessage 엔티티로 변환하는 메서드
-    public ChatMessage toEntity(ChatRoom chatRoom, Member member) {
+    // ChatMessageDto에서의 메서드
+    public ChatMessage toEntity(ChatRoomDto chatRoomDto, Member member ,Campground campground) {
+        // Campground와 Member를 전달
+        ChatRoom chatRoom = chatRoomDto.toEntity(campground, member);  
+
         return ChatMessage.builder()
                 .id(this.id)
                 .chatRoom(chatRoom) // 외래키 필드 설정
