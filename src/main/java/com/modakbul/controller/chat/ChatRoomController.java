@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.chat.ChatRoomDto;
-import com.modakbul.entity.campground.Campground;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.chat.ChatRoomService;
-import com.modakbul.service.freeboard.FreeboardService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,9 +26,10 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomController {
 	private final ChatRoomService chatRoomService;
 	private final CampgroundService campgroundService;
-		
+	
+	
 	@GetMapping("/chatroom/{campgroundId}")
-	public String getChatRoom(@PathVariable("campgroundId") Long campgroundId, 
+	public String getChatRoom(@PathVariable("campgroundId") Long campgroundId,
 	                           @AuthenticationPrincipal CustomUserDetails member, 
 	                           Model model) {
 	    Long memberId = member.getId(); // CustomUserDetails에서 사용자 ID를 가져옴
@@ -44,6 +43,21 @@ public class ChatRoomController {
 	    if (chatRoomDto == null) {
 	        chatRoomDto = chatRoomService.createChatRoom(campgroundId, memberId); // 캠프장 ID와 사용자 ID를 사용해 채팅 방 생성
 	    }
+	    model.addAttribute("memberId", memberId);
+	    model.addAttribute("chatRoom", chatRoomDto);
+	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
+	}
+	
+	@GetMapping("/chatroombyid/{chatRoomId}")
+	public String getChatRoomById(@PathVariable("chatRoomId") Long chatRoomId,
+	                           @AuthenticationPrincipal CustomUserDetails member, 
+	                           Model model) {
+	    Long memberId = member.getId(); // CustomUserDetails에서 사용자 ID를 가져옴
+	    
+	    
+	    // 현재 사용자 ID를 사용하여 채팅 방을 찾습니다.
+	    ChatRoomDto chatRoomDto = chatRoomService.findById(chatRoomId);
+	    
 	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
