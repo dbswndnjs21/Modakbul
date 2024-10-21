@@ -68,7 +68,13 @@ public class ChatRoomService {
                 .collect(Collectors.toList());
     }
     
-    public ChatRoom findById(Long id) {
-        return chatRoomRepository.findById(id).orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+    public ChatRoomDto findById(Long id) {
+        ChatRoom chatRoom = chatRoomRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("ChatRoom not found"));
+        
+        // ChatRoom 엔티티를 ChatRoomDto로 변환하여 반환
+        return new ChatRoomDto(chatRoom);
     }
+    
+    
 }
