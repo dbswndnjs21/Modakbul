@@ -29,6 +29,16 @@
     <option value="iamport">아임포트</option>
   </select>
 
+  <label for="couponSelect">쿠폰 선택:</label>
+  <select id="couponSelect" name="selectedCoupon" onchange="updateTotalPrice()">
+    <!-- 쿠폰 리스트 반복문으로 표시 -->
+    <option value="">쿠폰을 선택하세요</option>
+    <option th:each="coupon : ${coupons}"
+            th:value="${coupon.discountAmount}"
+            th:text="${coupon.couponName}">
+    </option>
+  </select>
+
   <button id="btn-submit" type="button">예약 확정 및 결제</button>
 </form>
 
@@ -148,6 +158,22 @@
       return orderNum;
     }
   });
+
+  function updateTotalPrice() {
+    var discountAmount = document.getElementById('couponSelect').value;
+
+  // 초기 totalPrice (할인이 적용되지 않은 원래 가격) 가져오기
+    var initialTotalPrice = [[${totalPrice}]]; // 서버에서 제공한 초기 가격
+
+    // 할인 금액이 있는지 확인 (옵션이 선택되지 않으면 0으로 설정)
+    var discount = discountAmount ? parseFloat(discountAmount) : 0;
+
+    // 최종 가격 계산
+    var newTotalPrice = initialTotalPrice - discount;
+
+    // 결과를 totalPrice input에 반영
+    document.getElementById('totalPrice').value = newTotalPrice;
+  }
 </script>
 </body>
 </html>

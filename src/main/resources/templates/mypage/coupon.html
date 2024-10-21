@@ -31,7 +31,6 @@
                 <td th:text="${coupon.couponName}"></td>
                 <td th:text="${coupon.isActive ? '사용 가능' : '사용 불가'}"
                     th:class="${coupon.isActive} ? 'coupon-active' : 'coupon-inactive'"></td>
-                <td th:text="${coupon.endDate}"></td>
             </tr>
             </tbody>
         </table>
