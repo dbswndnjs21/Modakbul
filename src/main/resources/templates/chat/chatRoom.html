@@ -102,7 +102,7 @@
         stompClient.connect({}, function (frame) {
             stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (messageOutput) {
                 const message = JSON.parse(messageOutput.body);
-
+				
                 // 날짜 및 시간 포맷 설정 (YYYY-MM-DD HH:mm:ss 형식)
                 const createdAt = new Date(message.createdAt);
                 const formattedDate = createdAt.getFullYear() + '-' +
