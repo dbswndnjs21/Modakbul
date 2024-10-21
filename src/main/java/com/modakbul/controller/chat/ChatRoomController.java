@@ -44,7 +44,7 @@ public class ChatRoomController {
 	    if (chatRoomDto == null) {
 	        chatRoomDto = chatRoomService.createChatRoom(campgroundId, memberId); // 캠프장 ID와 사용자 ID를 사용해 채팅 방 생성
 	    }
-	    
+	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
 	}
