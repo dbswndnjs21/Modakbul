@@ -149,7 +149,11 @@ public class CampgroundController {
         List<CampgroundOptionDto> options = campgroundService.getCampgroundOptions();
         List<CampgroundSuboptionDto> suboptions = campgroundService.getCampgroundSuboptions();
 
+        String sido = campgroundService.getLocationSido(id);
+        String sigungu = campgroundService.getLocationDetailSigungu(id);
 
+        model.addAttribute("sido", sido);
+        model.addAttribute("sigungu", sigungu);
 
         model.addAttribute("options", options);
         model.addAttribute("suboptions",suboptions);

@@ -190,13 +190,16 @@ public class CampgroundService {
         campgroundRepository.save(campground);  // 변경된 상태를 저장
     }
 
-    public String getLocationSido(Long campgroundId){
+    public String getLocationDetailSigungu(Long campgroundId){
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
-        Location location = locationRepository.findById(campgroundDto.getLocationDetailId());
-        return location.getSido();
+        LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
+        return locationDetail.getSigungu();
     }
 
-    public String getLocationDetailSigungu(int locationDetailId){
-        return locationDetailRepository.findById(locationDetailId).getSigungu();
+    public String getLocationSido(Long campgroundId){
+        CampgroundDto campgroundDto = getCampgroundById(campgroundId);
+        LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
+        System.out.println(locationDetail.getLocation().getSido());
+        return locationDetail.getLocation().getSido();
     }
 }
