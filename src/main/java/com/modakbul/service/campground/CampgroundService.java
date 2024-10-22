@@ -42,6 +42,8 @@ public class CampgroundService {
     private CampgroundOptionLinkRepository campgroundOptionLinkRepository;
     @Autowired
     private LocationRepository locationRepository;
+    @Autowired
+    private LocationDetailRepository locationDetailRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -192,5 +194,9 @@ public class CampgroundService {
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         Location location = locationRepository.findById(campgroundDto.getLocationDetailId());
         return location.getSido();
+    }
+
+    public String getLocationDetailSigungu(int locationDetailId){
+        return locationDetailRepository.findById(locationDetailId).getSigungu();
     }
 }
