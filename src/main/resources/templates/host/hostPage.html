@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>관리자 페이지</title>
+    <title>모닥불</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/host/host.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -15,12 +15,14 @@
     <table border="1">
         <thead>
         <tr>
+            <th>캠핑장명</th>
             <th>날짜</th>
             <th>정산금액</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="paymentSearch : ${paymentSearch}">
+            <td th:text="${paymentSearch.getProductName()}"></td>
             <td th:text="${paymentSearch.getApproveDate()}"></td>
             <td th:text="${paymentSearch.getAmount()}"></td>
         </tr>
@@ -28,7 +30,8 @@
         <tfoot>
         <tr>
             <td><strong>총합</strong></td>
-            <td th:text="${paymentAmount}"></td> <!-- 총합을 출력 -->
+            <td></td>
+            <td th:text="${paymentAmount} + 원" ></td> <!-- 총합을 출력 -->
         </tr>
         </tfoot>
     </table>

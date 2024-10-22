@@ -7,11 +7,12 @@
 <div th:fragment="sidebar">
     <div class="sidebar">
         <a th:href="@{/}">홈</a>
-        <h2>관리 메뉴</h2>
+        <h2>
+            <a th:href="@{/host}">관리 메뉴</a>
+        </h2>
+
         <a th:href="@{/host/amount}">수익 !!!!!</a>
         <a th:href="@{/host/campground}">캠핑장 목록</a>
-        <a th:href="@{/}">홈으로</a>
-        <h2 th:text="'넌 지금까지' + ${paymentAmount}  +'원 벌었다ㅋㅋ. '" ></h2>
     </div>
 </div>
 </body>

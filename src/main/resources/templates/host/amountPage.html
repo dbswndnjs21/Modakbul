@@ -15,12 +15,14 @@
     <table border="1">
         <thead>
         <tr>
+            <th>캠핑장이름</th>
             <th>날짜</th>
             <th>정산금액</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="paymentSearch : ${paymentSearch}">
+            <td th:text="${paymentSearch.getProductName()}"></td>
             <td th:text="${paymentSearch.getApproveDate()}"></td>
             <td th:text="${paymentSearch.getAmount()}"></td>
         </tr>
