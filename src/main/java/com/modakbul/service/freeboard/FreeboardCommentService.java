@@ -57,23 +57,10 @@ public class FreeboardCommentService {
 	    freeboardCommentRepository.save(comment);
 	}
 	
-	public Page<FreeboardCommentDto> findCommentsByfreeBoardId(Long freeboardId, int page, int size) {
-		if (page < 1) {
-	        page = 1; // 페이지는 1 이상이어야 함
-	    }
-		log.info("Fetching comments for boardId: {}, page: {}, size: {}", freeboardId, page, size);
-		// 페이지에 맞는 limit와 offset 계산
-	    int limit = size;
-	    int offset = (page - 1) * size;
-	    
-	    // 댓글 트리 조회
-	    List<FreeboardComment> comments = freeboardCommentRepository.findCommentTree(freeboardId, limit, offset);
-	    
-	    // 전체 댓글 수 조회
-	    Long totalRowCount = freeboardCommentRepository.countByFreeboardId(freeboardId);
-	    
-	    // 댓글을 DTO로 변환
-	    List<FreeboardCommentDto> commentDtos = comments.stream()
+	public List<FreeboardCommentDto> findCommentsByfreeBoardId(Long freeboardId) {
+		
+	    // FreeboardComment를 FreeboardCommentDto로 변환
+	    return freeboardCommentRepository.findByFreeboardId(freeboardId).stream()
 	            .map(comment -> new FreeboardCommentDto(
 	                    comment.getId(),
 	                    comment.getParent() != null ? comment.getParent().getId() : null,
@@ -85,9 +72,6 @@ public class FreeboardCommentService {
 	                    comment.getMember().getUserId()
 	            ))
 	            .collect(Collectors.toList());
-
-	    // 페이징 정보를 포함한 Page 반환
-	    return new PageImpl<>(commentDtos, PageRequest.of(page - 1, size), totalRowCount);
 	}
 	
 	
