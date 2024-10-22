@@ -123,6 +123,10 @@
       const bookingId = response.bookingId; // 이걸 줘서 DB에 넣어야하는데
       const memberUserName = response.memberUserName;
       const memberEmail = response.memberEmail;
+      const couponUsed = document.getElementById("couponUsed").value;
+      let selectValue = document.getElementById('couponSelect').value;
+      let values = selectValue.split('-');
+      let couponId = values[1];
 
       IMP.request_pay({
         pg: "html5_inicis.INIpayTest",
@@ -138,7 +142,7 @@
       }, function (rsp) { // callback
         $.ajax({
           type: 'POST',
-          url: '/verify/' + rsp.imp_uid + '/'+ bookingId
+          url: '/verify/' + rsp.imp_uid + '/'+ bookingId + '/'+ couponUsed + '/'+ couponId
         }).done(function(data) {
           console.log(data)
           if(rsp.paid_amount === data.response.amount){

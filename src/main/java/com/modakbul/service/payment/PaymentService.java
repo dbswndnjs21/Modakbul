@@ -178,7 +178,7 @@ public class PaymentService {
         return headers;
     }
 
-    public void saveIamPortPayment(IamportResponse<com.siot.IamportRestClient.response.Payment> paymentResponse, Long bookingId){
+    public void saveIamPortPayment(IamportResponse<com.siot.IamportRestClient.response.Payment> paymentResponse, Long bookingId, boolean isCouponUsed, int couponId){
         com.siot.IamportRestClient.response.Payment paymentData = paymentResponse.getResponse();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
@@ -188,8 +188,15 @@ public class PaymentService {
         Optional<Booking> byId = bookingRepository.findById(bookingId);
         Booking booking = byId.get();
 
+        Coupon coupon = couponService.findById(couponId);
+        MemberCoupon memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
+
+        memberCoupon.setUsed(isCouponUsed);
+        memberCouponService.save(memberCoupon);
+
         Payment paymentEntity = new Payment();
         paymentEntity.setProductName(paymentData.getName());
+        paymentEntity.setMemberCoupon(memberCoupon);
         paymentEntity.setAmount(paymentData.getAmount().intValue());
         paymentEntity.setApproveDate(paymentData.getPaidAt().toInstant()
                 .atZone(ZoneId.systemDefault())

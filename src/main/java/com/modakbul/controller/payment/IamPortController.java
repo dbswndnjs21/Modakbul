@@ -41,17 +41,21 @@ public class IamPortController {
     }
 
     @ResponseBody
-    @PostMapping("/verify/{imp_uid}/{bookingId}")
-    public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid, @PathVariable("bookingId") Long bookingId){
+    @PostMapping("/verify/{imp_uid}/{bookingId}/{couponUsed}/{couponId}")
+    public IamportResponse<Payment> paymentByImpUid(@PathVariable("imp_uid") String imp_uid,
+                                                    @PathVariable("bookingId") Long bookingId,
+                                                    @PathVariable("couponUsed") String couponUsed,
+                                                    @PathVariable("couponId") int couponId
+
+    ){
         System.out.println("bookingId = " + bookingId);
         System.out.println("imp_uid: " + imp_uid);
         IamportResponse<Payment> payment = iamportClient.paymentByImpUid(imp_uid);
         if (payment != null && payment.getResponse() != null) {
             log.info("결제 요청 응답. 결제 내역 - 주문 번호: {}", payment.getResponse().getMerchantUid());
             Payment paymentData = payment.getResponse();
-            // 여기서 paymentData 보내서 service에서 DB에 저장하면될듯
-
-            paymentService.saveIamPortPayment(payment, bookingId);
+            boolean isCouponUsed = !"N".equals(couponUsed); // N 이면 false 그 외는 true
+            paymentService.saveIamPortPayment(payment, bookingId, isCouponUsed, couponId);
 
 //            System.out.println("결제 금액: " + paymentData.getAmount());
 //            System.out.println("결제 상태: " + paymentData.getStatus());
