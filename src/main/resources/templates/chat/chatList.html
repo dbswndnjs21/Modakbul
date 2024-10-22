@@ -17,7 +17,7 @@
             <th:block th:each="chatRoom : ${chatRooms}">
                 <li class="list-group-item">
                     <a th:href="@{/chat/chatroom/{campgroundId}(campgroundId=${chatRoom.campgroundId})}">
-                        <span th:text="'채팅방 - ' + ${campgroundNames[chatRoom.campgroundId]}"></span>
+                        <span th:text="'캠핑장 :' + ${campgroundNames[chatRoom.campgroundId]}+ '의 호스트님과 대화'"></span>
                     </a>
                 </li>
             </th:block>

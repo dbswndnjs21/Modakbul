@@ -111,7 +111,7 @@ body {
 }
 
 .message-list .message:not(.text-end) {
-    background-color: #eeb900; /* 왼쪽 메시지 배경색 */
+    background-color: rgb(255, 248, 111); /* 왼쪽 메시지 배경색 */
     text-align: left;
     margin-right: auto; /* 왼쪽 메시지를 왼쪽으로 정렬 */
 }
