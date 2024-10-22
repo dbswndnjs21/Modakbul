@@ -57,7 +57,6 @@ public class ChatRoomController {
 	    
 	    // 현재 사용자 ID를 사용하여 채팅 방을 찾습니다.
 	    ChatRoomDto chatRoomDto = chatRoomService.findById(chatRoomId);
-	    
 	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
@@ -71,15 +70,16 @@ public class ChatRoomController {
 		
 	    Long memberId = member.getId();  // 현재 로그인된 사용자 ID
 	    List<ChatRoomDto> chatRooms;
-	    
 	    if (campgroundId != null && isHost(memberId, campgroundId)) {
 	        // 사용자가 호스트일 경우 캠핑장 ID로 채팅 리스트 가져오기
 	        chatRooms = chatRoomService.getChatRoomsForHost(campgroundId);
+	        model.addAttribute("memberId", memberId);
 	        model.addAttribute("chatRooms", chatRooms);
 	        return "chat/hostChatList";  // 호스트 채팅 리스트 페이지로 이동
 	    } else {
 	        // 사용자가 게스트일 경우 멤버 ID로 채팅 리스트 가져오기
 	        chatRooms = chatRoomService.getChatRoomsForGuest(memberId);
+	        model.addAttribute("memberId", memberId);
 	        model.addAttribute("chatRooms", chatRooms);
 	        return "chat/chatList";  // 게스트 채팅 리스트 페이지로 이동
 	    }
@@ -87,12 +87,9 @@ public class ChatRoomController {
 
 	public boolean isHost(Long memberId, Long campgroundId) {
 	    CampgroundDto campground = campgroundService.getCampgroundById(campgroundId);
-	    
 	    // campground가 null인지 확인하고, hostId가 null이 아닌지 확인
-	    if (campground != null && campground.getHostId() != null && campground.getHostId().equals(memberId)) {
-	        return true; // 현재 사용자가 호스트
-	    }
-	    return false; // 호스트가 아님
+	    boolean isHost = (campground != null && campground.getHostId() != null && campground.getHostId().equals(memberId));
+	    return isHost; // 호스트가 아님
 	}
 	
 }
