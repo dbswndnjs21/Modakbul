@@ -21,12 +21,24 @@
   <input type="hidden" id="campgroundName" name="campgroundName" th:value="${campground.getCampgroundName()}">
   <input type="hidden" id="campsiteName" name="campsiteName" th:value="${campsite.campsiteName}">
   <input type="text" id="totalPrice" name="totalPrice" th:value="${totalPrice}">
+  <!-- 숨겨진 필드로 쿠폰 사용 여부 전송 -->
+  <input type="hidden" id="couponUsed" name="couponUsed" value="N">
 
   <!-- 결제 방식 선택 -->
   <label for="paymentMethod">결제 방식:</label>
   <select id="paymentMethod" name="paymentMethod">
     <option value="kakaoPay">카카오페이</option>
     <option value="iamport">아임포트</option>
+  </select>
+
+  <label for="couponSelect">쿠폰 선택:</label>
+  <select id="couponSelect" name="selectedCoupon" onchange="updateTotalPrice()">
+    <!-- 쿠폰 리스트 반복문으로 표시 -->
+    <option value="">쿠폰을 선택하세요</option>
+    <option th:each="coupon : ${coupons}"
+            th:value="${coupon.discountAmount} +'-'+ ${coupon.id}"
+            th:text="${coupon.couponName}">
+    </option>
   </select>
 
   <button id="btn-submit" type="button">예약 확정 및 결제</button>
@@ -72,12 +84,18 @@
       const campgroundName = document.getElementById("campgroundName").value;
       const totalPrice = document.getElementById("totalPrice").value;
       const bookingId = response.bookingId;
+      const couponUsed = document.getElementById("couponUsed").value;
+      let selectValue = document.getElementById('couponSelect').value;
+      let values = selectValue.split('-');
+      let couponId = values[1];
 
       let data = {
         name: campgroundName,    // 카카오페이에 보낼 대표 상품명
         totalPrice: totalPrice,        // 총 결제금액
         orderNumber: orderNumber,  // 생성한 주문번호 추가
-        bookingId : bookingId
+        bookingId : bookingId,
+        couponUsed : couponUsed, // 쿠폰 사용 여부
+        couponId : couponId
       };
       // 카카오페이 결제 준비 API 호출
       $.ajax({
@@ -105,6 +123,10 @@
       const bookingId = response.bookingId; // 이걸 줘서 DB에 넣어야하는데
       const memberUserName = response.memberUserName;
       const memberEmail = response.memberEmail;
+      const couponUsed = document.getElementById("couponUsed").value;
+      let selectValue = document.getElementById('couponSelect').value;
+      let values = selectValue.split('-');
+      let couponId = values[1];
 
       IMP.request_pay({
         pg: "html5_inicis.INIpayTest",
@@ -120,11 +142,12 @@
       }, function (rsp) { // callback
         $.ajax({
           type: 'POST',
-          url: '/verify/' + rsp.imp_uid + '/'+ bookingId
+          url: '/verify/' + rsp.imp_uid + '/'+ bookingId + '/'+ couponUsed + '/'+ couponId
         }).done(function(data) {
           console.log(data)
           if(rsp.paid_amount === data.response.amount){
             alert("결제 성공");
+            window.location.href = '/mypage/reservations';
           } else {
             alert("결제 실패" + res.paid_amout);
           }
@@ -147,6 +170,33 @@
       return orderNum;
     }
   });
+
+  function updateTotalPrice() {
+    let selectValue = document.getElementById('couponSelect').value;
+    let values = selectValue.split('-');
+    let discountAmount = values[0];
+    let couponId = values[1];
+
+    // 초기 totalPrice (할인이 적용되지 않은 원래 가격) 가져오기
+    let initialTotalPrice = [[${totalPrice}]]; // 서버에서 제공한 초기 가격
+
+    // 할인 금액이 있는지 확인 (옵션이 선택되지 않으면 0으로 설정)
+    let discount = discountAmount ? parseFloat(discountAmount) : 0;
+
+    // 최종 가격 계산
+    let newTotalPrice = initialTotalPrice - discount;
+
+    // 결과를 totalPrice input에 반영
+    document.getElementById('totalPrice').value = newTotalPrice;
+
+    // 쿠폰 사용 여부 확인
+    if (discount > 0) {
+      document.getElementById('couponUsed').value = 'Y';  // 쿠폰 사용 시 'Y'
+    } else {
+      document.getElementById('couponUsed').value = 'N';  // 쿠폰 미사용 시 'N'
+    }
+
+  }
 </script>
 </body>
 </html>

@@ -22,8 +22,5 @@ public class Membership {
     private int validPeriod;
 
     @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
-    private List<Payment> payments;
-
-    @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
     private List<Member> members;
 }

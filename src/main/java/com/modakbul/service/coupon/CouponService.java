@@ -17,6 +17,9 @@ public class CouponService {
         List<Coupon> coupon = couponRepository.findCouponById(userId);
         List<CouponDto> couponDto = coupon.stream().map(m -> new CouponDto(m)).toList();
         return couponDto;
+    }
 
+    public Coupon findById(int id) {
+        return couponRepository.findById(id).orElse(null);
     }
 }

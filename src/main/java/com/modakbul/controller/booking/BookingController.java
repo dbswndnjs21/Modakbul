@@ -3,16 +3,23 @@ package com.modakbul.controller.booking;
 import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.dto.coupon.CouponDto;
+import com.modakbul.dto.coupon.MemberCouponDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campsite.CampsiteService;
+import com.modakbul.service.coupon.CouponService;
+import com.modakbul.service.coupon.MemberCouponService;
 import com.modakbul.service.member.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,30 +30,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
+@RequiredArgsConstructor
 public class BookingController {
 
     private final CampsiteService campsiteService;
     private final BookingService bookingService;
     private final MemberService memberService;
     private final CampgroundService campgroundService;
+    private final MemberCouponService memberCouponService;
+    private final CouponService couponService;
 
-    public BookingController(CampsiteService campsiteService, BookingService bookingService, MemberService memberService, CampgroundService campgroundService) {
-        this.campsiteService = campsiteService;
-        this.bookingService = bookingService;
-        this.memberService = memberService;
-        this.campgroundService = campgroundService;
-    }
+
 
     @GetMapping("/booking/new")
     public String showBookingForm(
             @RequestParam("campsiteId") Long campsiteId,
             @RequestParam("checkInDate") String checkInDate,
             @RequestParam("checkOutDate") String checkOutDate,
+            @AuthenticationPrincipal CustomUserDetails member,
             Model model) {
 
         // 캠프사이트 정보 가져오기
@@ -61,6 +65,28 @@ public class BookingController {
 
         int totalPrice = campsiteService.calculateTotalPrice(campsiteId, LocalDate.parse(checkInDate), LocalDate.parse(checkOutDate));
         model.addAttribute("totalPrice",totalPrice);
+
+
+        // 세션에 내 아이디로 맴버 결과 조회
+        Member membership = memberService.findMembership(member.getUsername());
+
+        // 멤버 정보를 사용하여 쿠폰 ID를 가져옴 -> 내가 가진 쿠폰 전체 ID 
+        List<MemberCouponDto> couponId = memberCouponService.findCouponIdByMemberAndIsUsedFalse(membership);
+
+        List<CouponDto> coupons = new ArrayList<>(); // 쿠폰을 저장할 리스트 생성
+
+        if (couponId != null) {
+            for (MemberCouponDto i : couponId) {
+                // 내가 가진 쿠폰의 세부 내역 조회
+                List<CouponDto> coupon = couponService.findCoupons(i.getCouponId());
+                coupons.addAll(coupon);
+            }
+        }else {
+            // 쿠폰이 없는 경우 빈 리스트 설정
+            coupons = new ArrayList<>();
+        }
+
+        model.addAttribute("coupons", coupons);
 
         // 예약 폼 페이지로 이동
         return "booking/bookingForm";

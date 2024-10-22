@@ -23,7 +23,6 @@
             <tr>
                 <th>쿠폰이름</th>
                 <th>사용여부</th>
-                <th>마감날짜</th>
             </tr>
             </thead>
             <tbody>
@@ -31,7 +30,6 @@
                 <td th:text="${coupon.couponName}"></td>
                 <td th:text="${coupon.isActive ? '사용 가능' : '사용 불가'}"
                     th:class="${coupon.isActive} ? 'coupon-active' : 'coupon-inactive'"></td>
-                <td th:text="${coupon.endDate}"></td>
             </tr>
             </tbody>
         </table>

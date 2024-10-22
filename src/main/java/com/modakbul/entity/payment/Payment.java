@@ -31,10 +31,6 @@ public class Payment {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "membership_id")
-    private Membership membership;
-
-    @ManyToOne
     @JoinColumn(name = "member_coupon_id")
     private MemberCoupon memberCoupon;
 

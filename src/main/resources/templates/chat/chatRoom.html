@@ -20,10 +20,10 @@
     <section class="container my-5">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title mb-3" th:text="'채팅 - ' + ${chatRoom.campgroundId}">채팅룸 제목</h4>
+                <h4 class="card-title mb-3" th:text="'채팅 - ' + ${campgroundName}">채팅룸 제목</h4>
                 <div class="d-flex justify-content-between">
                     <div>
-                        <span th:text="'현재 참여자: ' + ${chatRoom.memberId}">참여자</span>
+                        <span th:text="'게스트아이디: ' + ${chatRoom.memberId}">참여자</span>
                     </div>
                     <div>
                         <button class="btn btn-danger btn-sm" id="leave-chat-btn">채팅 나가기</button>
@@ -36,7 +36,7 @@
                     <div class="message-list">
                         <!-- 메시지 목록 -->
                         <th:block th:each="message : ${messages}">
-                            <div class="message" th:class="${message.memberId == userId} ? 'text-end' : ''">
+                            <div class="message" th:class="${message.memberId == memberId} ? 'text-end' : ''">
                                 <strong th:text="${message.memberId}"></strong>
                                 <span th:text="${message.content}"></span>
                                 <small class="text-muted" th:text="${#temporals.format(message.createdAt, 'HH:mm:ss')}"></small>
@@ -54,10 +54,10 @@
                 </form>
             </div>
         </div>
-
+		
         <!-- 목록 버튼 추가 -->
         <div class="text-center my-4">
-            <a th:href="@{/chat/chatList(campgroundId=${campgroundId})}" class="btn btn-chat-list">채팅 리스트</a>
+            <a th:href="@{/chat/chatList(campgroundId=${chatRoom.campgroundId})}" class="btn btn-chat-list">채팅 리스트</a>
         </div>
     </section>
 
@@ -88,7 +88,7 @@
 
                 // 메시지와 시간 순서 변경
                 const messageElement = `
-                    <div class="message ${message.memberId == userId ? 'text-end' : ''}">
+                    <div class="message ${message.memberId == memberId ? 'text-end' : ''}">
                         <strong>${message.memberId}</strong>
                         <small class="text-muted">${formattedDate}</small><br>
                         <span>${message.message}</span>
@@ -102,7 +102,7 @@
         stompClient.connect({}, function (frame) {
             stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (messageOutput) {
                 const message = JSON.parse(messageOutput.body);
-
+				
                 // 날짜 및 시간 포맷 설정 (YYYY-MM-DD HH:mm:ss 형식)
                 const createdAt = new Date(message.createdAt);
                 const formattedDate = createdAt.getFullYear() + '-' +
@@ -114,7 +114,7 @@
 
                 // 메시지와 시간 순서 변경
                 const messageElement = `
-                    <div class="message ${message.memberId == userId ? 'text-end' : ''}">
+                    <div class="message ${message.memberId == memberId ? 'text-end' : ''}">
                         <strong>${message.memberId}</strong>
                         <small class="text-muted">${formattedDate}</small><br>
                         <span>${message.message}</span>
