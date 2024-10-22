@@ -52,7 +52,7 @@ public class MembershipService {
                 member.setMembership(membership); // 멤버의 membership 설정
                 memberRepository.save(member); // 멤버 업데이트
 
-                Long couponId = determineCouponIdByMembership(membershipId);
+                int couponId = determineCouponIdByMembership(membershipId);
                 Coupon coupon = couponRepository.findById(couponId).orElse(null);
 
                 if (coupon != null) {
@@ -94,15 +94,15 @@ public class MembershipService {
     }
 
     // 멤버십 등급에 따라 쿠폰 ID를 반환하는 로직
-    private Long determineCouponIdByMembership(Long membershipId) {
+    private Integer determineCouponIdByMembership(Long membershipId) {
         if (membershipId == 4) {
-            return 4L; // VVIP 쿠폰
+            return 4; // VVIP 쿠폰
         } else if (membershipId == 3) {
-            return 3L; // VIP 쿠폰
+            return 3; // VIP 쿠폰
         } else if (membershipId == 2) {
-            return 2L; // GOLD 쿠폰
+            return 2; // GOLD 쿠폰
         } else if (membershipId == 1) {
-            return 1L; // WELCOME 쿠폰
+            return 1; // WELCOME 쿠폰
         }
         return null;
     }

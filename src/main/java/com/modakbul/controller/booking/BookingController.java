@@ -4,9 +4,11 @@ import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.coupon.CouponDto;
+import com.modakbul.dto.coupon.MemberCouponDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
@@ -65,15 +67,18 @@ public class BookingController {
         model.addAttribute("totalPrice",totalPrice);
 
 
+        // 세션에 내 아이디로 맴버 결과 조회
         Member membership = memberService.findMembership(member.getUsername());
 
-        // 멤버 정보를 사용하여 쿠폰 ID를 가져옴
-        List<Integer> couponId = memberCouponService.findCouponIdByMember(membership);
+        // 멤버 정보를 사용하여 쿠폰 ID를 가져옴 -> 내가 가진 쿠폰 전체 ID 
+        List<MemberCouponDto> couponId = memberCouponService.findCouponIdByMemberAndIsUsedFalse(membership);
+
         List<CouponDto> coupons = new ArrayList<>(); // 쿠폰을 저장할 리스트 생성
 
         if (couponId != null) {
-            for (Integer i : couponId) {
-                List<CouponDto> coupon = couponService.findCoupons(i);
+            for (MemberCouponDto i : couponId) {
+                // 내가 가진 쿠폰의 세부 내역 조회
+                List<CouponDto> coupon = couponService.findCoupons(i.getCouponId());
                 coupons.addAll(coupon);
             }
         }else {

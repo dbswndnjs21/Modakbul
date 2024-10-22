@@ -10,4 +10,6 @@ public class OrderCreateForm {
     private int totalPrice;
     private String orderNumber;
     private int bookingId;
+    private String couponUsed;
+    private int couponId;
 }

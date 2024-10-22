@@ -38,13 +38,17 @@ public class KaKaoPayController {
         int totalPrice = orderCreateForm.getTotalPrice();
         String orderNumber = orderCreateForm.getOrderNumber();
         BigInteger bookingId = BigInteger.valueOf(orderCreateForm.getBookingId());
+        String couponUsed = orderCreateForm.getCouponUsed();
+        int couponId = orderCreateForm.getCouponId();
+        boolean isCouponUsed = !"N".equals(couponUsed); // N 이면 false 그 외는 true
         System.out.println("예약 아이디 : " + bookingId);
+        System.out.println("isCouponUsed = " + isCouponUsed);
 
         log.info("주문 상품 이름: " + name);
         log.info("주문 금액: " + totalPrice);
 
         // 카카오 결제 준비하기
-        ReadyResponse readyResponse = PaymentService.payReady(name, totalPrice, orderNumber, bookingId);
+        ReadyResponse readyResponse = PaymentService.payReady(name, totalPrice, orderNumber, bookingId, isCouponUsed,couponId);
         // 세션에 결제 고유번호(tid) 저장
         SessionUtils.addAttribute("tid", readyResponse.getTid());
         log.info("결제 고유번호: " + readyResponse.getTid());
@@ -53,14 +57,19 @@ public class KaKaoPayController {
     }
 
     @GetMapping("/pay/completed")
-    public String payCompleted(@RequestParam("pg_token") String pgToken, @RequestParam("orderNumber")String orderNumber, @RequestParam("bookingId") BigInteger bookingId , Model model, RedirectAttributes redirectAttributes) {
+    public String payCompleted(@RequestParam("pg_token") String pgToken,
+                               @RequestParam("orderNumber")String orderNumber,
+                               @RequestParam("bookingId") BigInteger bookingId ,
+                               @RequestParam("isCouponUsed") boolean isCouponUsed,
+                               @RequestParam("couponId") int couponId,
+                               Model model, RedirectAttributes redirectAttributes) {
 
         String tid = SessionUtils.getStringAttributeValue("tid");
         log.info("결제승인 요청을 인증하는 토큰: " + pgToken);
         log.info("결제 고유번호: " + tid);
 
         // 카카오 결제 요청하기
-        ApproveResponse approveResponse = PaymentService.payApprove(tid, pgToken, orderNumber, bookingId);
+        ApproveResponse approveResponse = PaymentService.payApprove(tid, pgToken, orderNumber, bookingId, isCouponUsed, couponId);
         model.addAttribute("approveResponse", approveResponse);
 
         redirectAttributes.addAttribute("successMessage", "결제 성공");

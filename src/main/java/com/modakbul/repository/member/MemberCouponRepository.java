@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long> {
     boolean existsByMemberAndCoupon(Member member, Coupon coupon);
@@ -16,4 +17,8 @@ public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long
     // 쿠폰 ID를 반환하는 메서드
     @Query("SELECT mc.coupon.id FROM MemberCoupon mc WHERE mc.member = :member")
     List<Integer> findCouponIdByMember(@Param("member") Member member);
+
+    Optional<MemberCoupon> findByMemberAndCoupon(Member member, Coupon coupon);
+
+    public List<MemberCoupon> findCouponIdByMemberAndIsUsedFalse(Member member);
 }

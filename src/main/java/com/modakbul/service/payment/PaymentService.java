@@ -1,10 +1,13 @@
 package com.modakbul.service.payment;
 
+import com.modakbul.dto.coupon.MemberCouponDto;
 import com.modakbul.dto.payment.ApproveResponse;
 import com.modakbul.dto.payment.KaKaoPayCancelDto;
 import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.dto.payment.ReadyResponse;
 import com.modakbul.entity.booking.Booking;
+import com.modakbul.entity.coupon.Coupon;
+import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
 import com.modakbul.entity.payment.Payment;
 import com.modakbul.entity.payment.PaymentCancel;
@@ -12,7 +15,10 @@ import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.payment.PaymentCancelRepository;
 import com.modakbul.repository.payment.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
+import com.modakbul.service.coupon.CouponService;
+import com.modakbul.service.coupon.MemberCouponService;
 import com.siot.IamportRestClient.response.IamportResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -35,18 +41,17 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private PaymentCancelRepository paymentCancelRepository;
-    @Autowired
-    private BookingRepository bookingRepository;
-
+    private final PaymentRepository paymentRepository;
+    private final PaymentCancelRepository paymentCancelRepository;
+    private final BookingRepository bookingRepository;
+    private final MemberCouponService memberCouponService;
+    private final CouponService couponService;
 
     // 카카오페이 결제창 연결
-    public ReadyResponse payReady(String name, int totalPrice, String orderNumber, BigInteger bookingId) {
+    public ReadyResponse payReady(String name, int totalPrice, String orderNumber, BigInteger bookingId, boolean isCouponUsed, int couponId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -76,7 +81,7 @@ public class PaymentService {
         parameters.put("quantity", "1");                                             // 상품 수량
         parameters.put("total_amount", String.valueOf(totalPrice));                  // 상품 총액
         parameters.put("tax_free_amount", "0");                                      // 상품 비과세 금액
-        parameters.put("approval_url", "http://localhost:8080/order/pay/completed?orderNumber="+ orderNumber + "&bookingId="+bookingId); // 결제 성공 시 URL
+        parameters.put("approval_url", "http://localhost:8080/order/pay/completed?orderNumber="+ orderNumber + "&bookingId="+bookingId + "&isCouponUsed=" + isCouponUsed + "&couponId=" + couponId); // 결제 성공 시 URL
         parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
         parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
 
@@ -98,7 +103,7 @@ public class PaymentService {
     // 카카오페이 결제 승인
     // 사용자가 결제 수단을 선택하고 비밀번호를 입력해 결제 인증을 완료한 뒤,
     // 최종적으로 결제 완료 처리를 하는 단계
-    public ApproveResponse payApprove(String tid, String pgToken, String orderNumber, BigInteger bookingId) {
+    public ApproveResponse payApprove(String tid, String pgToken, String orderNumber, BigInteger bookingId, boolean isCouponUsed, int couponId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
@@ -133,9 +138,15 @@ public class PaymentService {
         log.info("결제승인 응답객체: " + approveResponse);
 
         Booking booking = bookingRepository.findById(bookingId);
+        Coupon coupon = couponService.findById(couponId);
+        MemberCoupon memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
+
+        memberCoupon.setUsed(isCouponUsed);
+        memberCouponService.save(memberCoupon);
 
         Payment payment = Payment.builder()
                 .member(member)                                          // 결제한 회원
+                .memberCoupon(memberCoupon)
                 .orderNumber(Long.parseLong(orderNumber))                // 주문번호 설정
                 .amount(approveResponse.getAmount().getTotal())          // 총 결제 금액
                 .productName(approveResponse.getItem_name())             // 승인 응답에서 받은 상품명
@@ -148,6 +159,12 @@ public class PaymentService {
                 .build();
 
         paymentRepository.save(payment); // 결제 정보 DB에 저장
+
+        /*
+        여기서 해야할일
+        1. memberCoupon 테이블에 사용 여부 true로 변경 ->  쿠폰 id로 세션의 memberID와 같이 조회 하면 맴버쿠폰ID가 나오겠지
+        2. payment 테이블에 사용한 쿠폰 ID 추가 -
+        * */
 
         return approveResponse;
     }
