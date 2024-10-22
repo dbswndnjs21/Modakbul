@@ -1,6 +1,7 @@
 package com.modakbul.security;
 
 import com.modakbul.entity.member.Member;
+import com.modakbul.entity.payment.Membership;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,7 +53,12 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     public String getUserName() {
         return member.getUserName();
     }
-
+    public String getRole(){
+        return member.getRole();
+    }
+    public Membership getMembership(){
+        return member.getMembership();
+    }
 
     public Member getMember() {
         return member;

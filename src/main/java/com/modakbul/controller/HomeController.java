@@ -15,6 +15,9 @@ public class HomeController {
 
         if (member != null) {
             model.addAttribute("member", member);
+            model.addAttribute("role", member.getRole());
+            model.addAttribute("membership", member.getMembership());
+
             System.out.println("UserDetails member: " + member.getUserName());
         } else {
             System.out.println("No valid authentication found.");
