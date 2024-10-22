@@ -56,7 +56,7 @@
     <h2 class="text-center mb-4">캠핑장 수정</h2>
 
     <form th:action="@{/campgrounds/edit}" th:object="${campground}" method="post" enctype="multipart/form-data">
-        <input type="hidden" id="id" th:value="campground.id">
+        <input type="hidden" id="id" th:field="*{id}" th:value="campground.id">
         <div class="mb-3">
             <label for="campgroundName" class="form-label">캠프장 이름:</label>
             <input type="text" id="campgroundName" th:field="*{campgroundName}" th:value="*{campgroundName}" class="form-control" required/>

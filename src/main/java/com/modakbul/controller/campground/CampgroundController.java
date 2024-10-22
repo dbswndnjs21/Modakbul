@@ -170,11 +170,11 @@ public class CampgroundController {
     // 폼에서 입력된 캠핑장 정보를 저장
     @PostMapping("/edit")
     public String editCampground(@ModelAttribute("campground") CampgroundDto campground,
-                                @RequestParam("images")MultipartFile[] images,
                                 @RequestParam("sido") String sido,
                                 @RequestParam("sigungu") String sigungu,
                                 @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
-        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds);
+//        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds);
+        CampgroundDto campgroundDto = campgroundService.editCampground(campground,sido, sigungu, subOptionIds);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 }
