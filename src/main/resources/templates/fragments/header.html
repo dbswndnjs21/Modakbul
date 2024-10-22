@@ -29,10 +29,10 @@
           <li th:if="${member != null}">
             <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
             <span class="nav-link">
-            <span th:if="${member.membership == 1}">Welcome</span>
-            <span th:if="${member.membership == 2}">Gold</span>
-            <span th:if="${member.membership == 3}">VIP</span>
-            <span th:if="${member.membership == 4}">VVIP</span>
+            <span th:if="${membership == 1}">Welcome 회원</span>
+            <span th:if="${membership == 2}">Gold 회원</span>
+            <span th:if="${membership == 3}">VIP 회원</span>
+            <span th:if="${membership == 4}">VVIP 회원</span>
               </span>
             <form th:action="@{/logout}" method="post">
               <input type="submit" value="로그아웃">
