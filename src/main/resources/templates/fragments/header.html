@@ -34,9 +34,7 @@
             <span th:if="${membership == 3}">VIP 회원</span>
             <span th:if="${membership == 4}">VVIP 회원</span>
               </span>
-            <form th:action="@{/logout}" method="post">
-              <input type="submit" value="로그아웃">
-            </form>
+          <li th:if="${member != null}"><a class="nav-link" th:href="@{/logout}">로그아웃</a></li>
           </li>
         </ul>
       </div>
