@@ -21,6 +21,8 @@
   <input type="hidden" id="campgroundName" name="campgroundName" th:value="${campground.getCampgroundName()}">
   <input type="hidden" id="campsiteName" name="campsiteName" th:value="${campsite.campsiteName}">
   <input type="text" id="totalPrice" name="totalPrice" th:value="${totalPrice}">
+  <!-- 숨겨진 필드로 쿠폰 사용 여부 전송 -->
+  <input type="hidden" id="couponUsed" name="couponUsed" value="N">
 
   <!-- 결제 방식 선택 -->
   <label for="paymentMethod">결제 방식:</label>
@@ -34,7 +36,7 @@
     <!-- 쿠폰 리스트 반복문으로 표시 -->
     <option value="">쿠폰을 선택하세요</option>
     <option th:each="coupon : ${coupons}"
-            th:value="${coupon.discountAmount}"
+            th:value="${coupon.discountAmount} +'-'+ ${coupon.id}"
             th:text="${coupon.couponName}">
     </option>
   </select>
@@ -82,12 +84,18 @@
       const campgroundName = document.getElementById("campgroundName").value;
       const totalPrice = document.getElementById("totalPrice").value;
       const bookingId = response.bookingId;
+      const couponUsed = document.getElementById("couponUsed").value;
+      let selectValue = document.getElementById('couponSelect').value;
+      let values = selectValue.split('-');
+      let couponId = values[1];
 
       let data = {
         name: campgroundName,    // 카카오페이에 보낼 대표 상품명
         totalPrice: totalPrice,        // 총 결제금액
         orderNumber: orderNumber,  // 생성한 주문번호 추가
-        bookingId : bookingId
+        bookingId : bookingId,
+        couponUsed : couponUsed, // 쿠폰 사용 여부
+        couponId : couponId
       };
       // 카카오페이 결제 준비 API 호출
       $.ajax({
@@ -160,19 +168,30 @@
   });
 
   function updateTotalPrice() {
-    var discountAmount = document.getElementById('couponSelect').value;
+    let selectValue = document.getElementById('couponSelect').value;
+    let values = selectValue.split('-');
+    let discountAmount = values[0];
+    let couponId = values[1];
 
-  // 초기 totalPrice (할인이 적용되지 않은 원래 가격) 가져오기
-    var initialTotalPrice = [[${totalPrice}]]; // 서버에서 제공한 초기 가격
+    // 초기 totalPrice (할인이 적용되지 않은 원래 가격) 가져오기
+    let initialTotalPrice = [[${totalPrice}]]; // 서버에서 제공한 초기 가격
 
     // 할인 금액이 있는지 확인 (옵션이 선택되지 않으면 0으로 설정)
-    var discount = discountAmount ? parseFloat(discountAmount) : 0;
+    let discount = discountAmount ? parseFloat(discountAmount) : 0;
 
     // 최종 가격 계산
-    var newTotalPrice = initialTotalPrice - discount;
+    let newTotalPrice = initialTotalPrice - discount;
 
     // 결과를 totalPrice input에 반영
     document.getElementById('totalPrice').value = newTotalPrice;
+
+    // 쿠폰 사용 여부 확인
+    if (discount > 0) {
+      document.getElementById('couponUsed').value = 'Y';  // 쿠폰 사용 시 'Y'
+    } else {
+      document.getElementById('couponUsed').value = 'N';  // 쿠폰 미사용 시 'N'
+    }
+
   }
 </script>
 </body>
