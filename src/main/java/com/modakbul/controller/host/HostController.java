@@ -2,8 +2,8 @@ package com.modakbul.controller.host;
 
 import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.campground.CampgroundDto;
-import com.modakbul.entity.booking.Booking;
-import com.modakbul.entity.campground.Campground;
+import com.modakbul.dto.member.HostDto;
+import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.entity.member.Host;
 import com.modakbul.entity.payment.Payment;
 import com.modakbul.security.CustomUserDetails;
@@ -36,11 +36,12 @@ public class HostController {
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         model.addAttribute("member", member);
-        Host hostId = hostService.findById(member.getId());
+        HostDto hostId = hostService.findHostDtoById(member.getId());
         List<CampgroundDto> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
         List<Long> campgroundIds = new ArrayList<>();
+        List<PaymentDTO> paymentSearch = new ArrayList<>(); // Payment 리스트로 변경
+
         int paymentAmount = 0;
-        Payment paymentSearch = null;
 
         for (CampgroundDto campground : campgroundsByHostId) {
             campgroundIds.add(campground.getId());
@@ -50,17 +51,18 @@ public class HostController {
 
         for (BookingDto booking : bookings) {
             // 각 예약에 대한 결제 정보 조회
-            Payment payment = paymentService.getPaymentByBookingId(booking.getId());
-            if (payment != null) {
+            PaymentDTO payment = paymentService.findByBookingId(booking.getId());
                 paymentAmount += payment.getAmount();  // 결제 금액 합산
-                paymentSearch = paymentService.getPaymentByBookingId(booking.getId());
-            }
+                paymentSearch.add(payment);  // 결제 내역을 리스트에 추가
         }
+
+        model.addAttribute("host", hostId);
         model.addAttribute("campground", campgroundsByHostId);
         model.addAttribute("bookings", bookings);
         model.addAttribute("paymentAmount", paymentAmount);
-        model.addAttribute("paymentSearch", paymentSearch);
+        model.addAttribute("paymentSearch", paymentSearch); // 리스트로 변경
     }
+
 
 // 모든 예약에 대한 결제 금액이 합산된 후 모델에 추가
 

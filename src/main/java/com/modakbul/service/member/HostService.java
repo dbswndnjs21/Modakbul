@@ -17,7 +17,7 @@ public class HostService {
     @Autowired
     private MemberService memberService;
 
-    public void saveHost(Host host){
+    public void saveHost(Host host) {
 //        Host entity = hostDto.toEntity(member);
 //        System.out.println("entity = " + entity);
 //        System.out.println("호스트서비스");
@@ -31,7 +31,9 @@ public class HostService {
         hostRepository.save(host);
     }
 
-    public Host findById(Long id) {
-        return hostRepository.findById(id).orElse(null);
+    // Host 엔티티를 HostDto로 변환하는 메서드
+    public HostDto findHostDtoById(Long id) {
+        Host host = hostRepository.findById(id).orElseThrow(() -> new RuntimeException("Host not found"));
+        return new HostDto(host);  // Host 엔티티를 HostDto로 변환하여 반환
     }
 }
