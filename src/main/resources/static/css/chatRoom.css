@@ -80,6 +80,7 @@ body {
 .btn-chat-list {
     background-color: #ff7f50; /* 주황빛 버튼 */
     border: none;
+    color: white;
     border-radius: 20px;
 }
 
