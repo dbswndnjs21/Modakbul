@@ -27,7 +27,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/campgrounds")
 public class CampgroundController {
-    @Value("${campgroundImage.path}")
+    @Value("${file.path}")
     private String filePath;
 
     private final CampgroundService campgroundService;

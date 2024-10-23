@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 
 @RestController
 public class DataURLController {
-    @Value("${campgroundImage.path}")
+    @Value("${file.path}")
     private String filePath;
 
     @GetMapping("/upload/{fileName}")
