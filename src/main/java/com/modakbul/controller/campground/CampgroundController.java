@@ -14,6 +14,7 @@ import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campground.CampgroundSuboptionService;
 import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
@@ -30,6 +31,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/campgrounds")
 public class CampgroundController {
+    @Value("${campgroundImage.path}")
+    private String filePath;
+
     private final CampgroundService campgroundService;
     private final CampsiteService campsiteService;
     private final LocationService locationService;
@@ -89,11 +93,11 @@ public class CampgroundController {
     // 폼에서 입력된 캠핑장 정보를 저장
     @PostMapping("/add")
     public String addCampground(@ModelAttribute("campground") CampgroundDto campground,
-                                @RequestParam("images")MultipartFile[] images,
+                                @RequestParam("images")List<MultipartFile> images,
                                 @RequestParam("sido") String sido,
                                 @RequestParam("sigungu") String sigungu,
                                 @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
-        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds);
+        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images, filePath);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 

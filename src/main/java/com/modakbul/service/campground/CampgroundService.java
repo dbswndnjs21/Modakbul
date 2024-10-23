@@ -10,10 +10,12 @@ import com.modakbul.repository.campground.*;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
+import com.modakbul.utils.TransferPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class CampgroundService {
     private LocationRepository locationRepository;
     @Autowired
     private LocationDetailRepository locationDetailRepository;
+    @Autowired
+    private CampgroundImageService campgroundImageService;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -64,7 +68,7 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images, String filePath) {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
@@ -88,6 +92,8 @@ public class CampgroundService {
 
         // Campground 저장
         Campground savedCampground = campgroundRepository.save(campground);
+
+        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images, TransferPath.getUploadPath(filePath));
 
         CampgroundDto result = new CampgroundDto(savedCampground);
 
