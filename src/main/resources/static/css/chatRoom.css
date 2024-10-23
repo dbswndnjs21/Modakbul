@@ -106,13 +106,13 @@ body {
 }
 
 .text-end {
-    background-color: #d4edda; /* 오른쪽 메시지 배경색 */
+    background-color: rgba(195, 230, 203, 0.6); /* 오른쪽 메시지 배경색, 투명도 추가 */
     text-align: right;
     margin-left: auto; /* 오른쪽 메시지를 오른쪽으로 정렬 */
 }
 
 .message-list .message:not(.text-end) {
-    background-color: rgb(255, 248, 111); /* 왼쪽 메시지 배경색 */
+    background-color: rgba(255, 127, 80, 0.6); /* 왼쪽 메시지 배경색을 투명하게 */
     text-align: left;
     margin-right: auto; /* 왼쪽 메시지를 왼쪽으로 정렬 */
 }
