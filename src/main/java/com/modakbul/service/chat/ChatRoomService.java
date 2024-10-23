@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.modakbul.dto.chat.ChatRoomDto;
@@ -52,20 +55,32 @@ public class ChatRoomService {
         return new ChatRoomDto(chatRoom); // DTO 반환
     }
     
-  // 게스트(사용자)의 채팅 목록을 조회
-    public List<ChatRoomDto> getChatRoomsForGuest(Long memberId) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByMemberId(memberId);
-        return chatRooms.stream()
-                .map(ChatRoomDto::new)  // 엔티티를 DTO로 변환
-                .collect(Collectors.toList());
+    // 게스트(사용자)의 채팅 목록을 조회
+    public Page<ChatRoomDto> getChatRoomsForGuest(Long memberId, Pageable pageable) {
+        // 게스트의 채팅방 목록을 엔티티로 조회
+        Page<ChatRoom> chatRoomsPage = chatRoomRepository.findByMemberId(memberId, pageable);
+        
+        // 엔티티를 DTO로 변환
+        List<ChatRoomDto> chatRoomDtos = chatRoomsPage.getContent().stream()
+            .map(chatRoom -> new ChatRoomDto(chatRoom)) // DTO 생성자로 변환
+            .collect(Collectors.toList());
+
+        // DTO로 이루어진 Page 객체 생성하여 반환
+        return new PageImpl<>(chatRoomDtos, pageable, chatRoomsPage.getTotalElements());
     }
-    
+
     // 호스트(캠핑장 관리자의) 채팅 목록을 조회
-    public List<ChatRoomDto> getChatRoomsForHost(Long campgroundId) {
-        List<ChatRoom> chatRooms = chatRoomRepository.findByCampgroundId(campgroundId);
-        return chatRooms.stream()
-                .map(ChatRoomDto::new)  // 엔티티를 DTO로 변환
-                .collect(Collectors.toList());
+    public Page<ChatRoomDto> getChatRoomsForHost(Long campgroundId, Pageable pageable) {
+        // 호스트의 채팅방 목록을 엔티티로 조회
+        Page<ChatRoom> chatRoomsPage = chatRoomRepository.findByCampgroundId(campgroundId, pageable);
+        
+        // 엔티티를 DTO로 변환
+        List<ChatRoomDto> chatRoomDtos = chatRoomsPage.getContent().stream()
+            .map(chatRoom -> new ChatRoomDto(chatRoom)) // DTO 생성자로 변환
+            .collect(Collectors.toList());
+
+        // DTO로 이루어진 Page 객체 생성하여 반환
+        return new PageImpl<>(chatRoomDtos, pageable, chatRoomsPage.getTotalElements());
     }
     
     public ChatRoomDto findById(Long id) {

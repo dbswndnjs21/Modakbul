@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,12 +75,14 @@ public class ChatRoomController {
 	@GetMapping("/chatList")
 	public String getChatList(
 	        @AuthenticationPrincipal CustomUserDetails member, 
-	        @RequestParam(value = "campgroundId", required = false) Long campgroundId, 
+	        @RequestParam(value = "campgroundId", required = false) Long campgroundId,
+	        @RequestParam(value = "page", defaultValue = "0") int page, // 페이지 번호
+	        @RequestParam(value = "size", defaultValue = "5") int size,
 	        Model model) {
 		
 	    Long memberId = member.getId();  // 현재 로그인된 사용자 ID
 	    
-	    List<ChatRoomDto> chatRooms;
+	    Page<ChatRoomDto> chatRooms; // Page 객체로 변경
 	    if (campgroundId != null && isHost(memberId, campgroundId)) {
 	    	// 캠핑장 이름 가져오기
 	        String campgroundName = null;
@@ -89,15 +93,17 @@ public class ChatRoomController {
 	            }
 	        }
 	        // 사용자가 호스트일 경우 캠핑장 ID로 채팅 리스트 가져오기
-	        chatRooms = chatRoomService.getChatRoomsForHost(campgroundId);
+	        chatRooms = chatRoomService.getChatRoomsForHost(campgroundId, PageRequest.of(page, size));
 	        
 	        model.addAttribute("campgroundName", campgroundName);
 	        model.addAttribute("memberId", memberId);
-	        model.addAttribute("chatRooms", chatRooms);
+	        model.addAttribute("chatRooms", chatRooms.getContent());
+	        model.addAttribute("currentPage", page); // 현재 페이지 정보
+	        model.addAttribute("totalPages", chatRooms.getTotalPages());
 	        return "chat/hostChatList";  // 호스트 채팅 리스트 페이지로 이동
 	    } else {
 	        // 사용자가 게스트일 경우 멤버 ID로 채팅 리스트 가져오기
-	        chatRooms = chatRoomService.getChatRoomsForGuest(memberId);
+	        chatRooms = chatRoomService.getChatRoomsForGuest(memberId, PageRequest.of(page, size));
 	        
 	        // 캠핑장 이름을 저장할 Map 생성
 	        Map<Long, String> campgroundNames = new HashMap<>();
@@ -112,14 +118,16 @@ public class ChatRoomController {
 	                }
 	            }
 	        }
-
+	        
 	        model.addAttribute("campgroundNames", campgroundNames);
 	        model.addAttribute("memberId", memberId);
-	        model.addAttribute("chatRooms", chatRooms);
+	        model.addAttribute("chatRooms", chatRooms.getContent());
+	        model.addAttribute("currentPage", page); // 현재 페이지 정보
+	        model.addAttribute("totalPages", chatRooms.getTotalPages()); // 총 페이지 수
 	        return "chat/chatList";  // 게스트 채팅 리스트 페이지로 이동
 	    }
 	}
-
+	
 	public boolean isHost(Long memberId, Long campgroundId) {
 	    CampgroundDto campground = campgroundService.getCampgroundById(campgroundId);
 	    // campground가 null인지 확인하고, hostId가 null이 아닌지 확인
