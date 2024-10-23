@@ -2,11 +2,8 @@ package com.modakbul.controller.campground;
 
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campground.CampgroundOptionDto;
-import com.modakbul.dto.campground.CampgroundOptionLinkDto;
 import com.modakbul.dto.campground.CampgroundSuboptionDto;
 import com.modakbul.dto.campsite.CampsiteDto;
-import com.modakbul.entity.campground.Campground;
-import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campground.CampgroundOptionLinkService;
@@ -14,8 +11,8 @@ import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campground.CampgroundSuboptionService;
 import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
 import org.springframework.ui.Model;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +93,7 @@ public class CampgroundController {
                                 @RequestParam("sido") String sido,
                                 @RequestParam("sigungu") String sigungu,
                                 @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
+
         CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images, filePath);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
@@ -122,7 +119,6 @@ public class CampgroundController {
             // query가 존재하면 이름이나 지역으로 검색
             if (query != null && !query.isEmpty()) {
                 filteredCampgrounds = campgroundService.searchCampgrounds(query);
-
             }
             else{
                 filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
@@ -136,8 +132,16 @@ public class CampgroundController {
             int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
         }
+        filteredCampgrounds = campgroundService.getCampgroundWithImages(filteredCampgrounds);
+//        for (CampgroundDto filteredCampground : filteredCampgrounds) {
+//            List<CampgroundImage> CampgroundImages = filteredCampground.getCampgroundImages();
+//            System.out.println("campground Name : " + filteredCampground.getCampgroundName());
+//            for (CampgroundImage campgroundImage : CampgroundImages) {
+//                System.out.println("path : " + campgroundImage.getImagePath());
+//                System.out.println("saveFile : " + campgroundImage.getSaveFileName());
+//            }
+//        }
         model.addAttribute("totalLowestPrices", totalLowestPrices);
-
         model.addAttribute("campgrounds", filteredCampgrounds);
         return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지
     }

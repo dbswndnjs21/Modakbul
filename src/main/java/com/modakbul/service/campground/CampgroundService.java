@@ -4,13 +4,13 @@ import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.*;
+import com.modakbul.entity.image.CampgroundImage;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campground.*;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
-import com.modakbul.utils.TransferPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,6 +48,8 @@ public class CampgroundService {
     private LocationDetailRepository locationDetailRepository;
     @Autowired
     private CampgroundImageService campgroundImageService;
+    @Autowired
+    private CampgroundImageRepository campgroundImageRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -68,7 +70,7 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images, String filePath) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images, String path) {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
@@ -93,7 +95,7 @@ public class CampgroundService {
         // Campground 저장
         Campground savedCampground = campgroundRepository.save(campground);
 
-        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images, TransferPath.getUploadPath(filePath));
+        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images, path);
 
         CampgroundDto result = new CampgroundDto(savedCampground);
 
@@ -127,6 +129,19 @@ public class CampgroundService {
 
         campgroundOptionLinkRepository.saveAll(links);
     }
+
+    public List<CampgroundDto> getCampgroundWithImages(List<CampgroundDto> campgrounds) {
+
+        // 각 캠핑장 DTO에 대해 이미지를 조회하고 설정
+        for (CampgroundDto dto : campgrounds) {
+            // 해당 캠핑장 ID를 사용하여 이미지 리스트 조회
+            List<CampgroundImage> campgroundImages = campgroundImageRepository.findByCampgroundId(dto.getId());
+            dto.setCampgroundImages(campgroundImages);
+        }
+
+        return campgrounds;  // 이미지가 추가된 DTO 리스트 반환
+    }
+
 
     public List<CampgroundDto> searchCampgrounds(String query) {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
@@ -199,13 +214,14 @@ public class CampgroundService {
     public String getLocationDetailSigungu(Long campgroundId){
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
+
         return locationDetail.getSigungu();
     }
 
     public String getLocationSido(Long campgroundId){
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
-        System.out.println(locationDetail.getLocation().getSido());
+
         return locationDetail.getLocation().getSido();
     }
 
