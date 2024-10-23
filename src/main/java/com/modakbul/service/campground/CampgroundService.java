@@ -4,12 +4,10 @@ import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.*;
+import com.modakbul.entity.image.CampgroundImage;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
-import com.modakbul.repository.campground.CampgroundOptionLinkRepository;
-import com.modakbul.repository.campground.CampgroundOptionRepository;
-import com.modakbul.repository.campground.CampgroundRepository;
-import com.modakbul.repository.campground.CampgroundSuboptionRepository;
+import com.modakbul.repository.campground.*;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,6 +42,14 @@ public class CampgroundService {
     private CampgroundOptionRepository campgroundOptionRepository;
     @Autowired
     private CampgroundOptionLinkRepository campgroundOptionLinkRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+    @Autowired
+    private LocationDetailRepository locationDetailRepository;
+    @Autowired
+    private CampgroundImageService campgroundImageService;
+    @Autowired
+    private CampgroundImageRepository campgroundImageRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -63,7 +70,7 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images, String path) {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
@@ -87,6 +94,8 @@ public class CampgroundService {
 
         // Campground 저장
         Campground savedCampground = campgroundRepository.save(campground);
+
+        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images, path);
 
         CampgroundDto result = new CampgroundDto(savedCampground);
 
@@ -120,6 +129,19 @@ public class CampgroundService {
 
         campgroundOptionLinkRepository.saveAll(links);
     }
+
+    public List<CampgroundDto> getCampgroundWithImages(List<CampgroundDto> campgrounds) {
+
+        // 각 캠핑장 DTO에 대해 이미지를 조회하고 설정
+        for (CampgroundDto dto : campgrounds) {
+            // 해당 캠핑장 ID를 사용하여 이미지 리스트 조회
+            List<CampgroundImage> campgroundImages = campgroundImageRepository.findByCampgroundId(dto.getId());
+            dto.setCampgroundImages(campgroundImages);
+        }
+
+        return campgrounds;  // 이미지가 추가된 DTO 리스트 반환
+    }
+
 
     public List<CampgroundDto> searchCampgrounds(String query) {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
@@ -187,5 +209,79 @@ public class CampgroundService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
         campground.setApprove(2);  // 승인 상태를 2로 변경
         campgroundRepository.save(campground);  // 변경된 상태를 저장
+    }
+
+    public String getLocationDetailSigungu(Long campgroundId){
+        CampgroundDto campgroundDto = getCampgroundById(campgroundId);
+        LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
+
+        return locationDetail.getSigungu();
+    }
+
+    public String getLocationSido(Long campgroundId){
+        CampgroundDto campgroundDto = getCampgroundById(campgroundId);
+        LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
+
+        return locationDetail.getLocation().getSido();
+    }
+
+    public CampgroundDto editCampground(CampgroundDto campground, String sido, String sigungu, List<Integer> subOptionIds) {
+        // 기존 캠핑장 조회
+        Campground existingCampground = campgroundRepository.findById(campground.getId())
+                .orElseThrow(() -> new IllegalArgumentException("캠핑장을 찾을 수 없습니다. ID: " + campground.getId()));
+
+        // 현재 인증된 사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        MemberDto member = new MemberDto(principal.getMember());
+
+        // 수정 권한 확인 (예시: 현재 로그인된 사용자가 호스트인지 확인)
+        if (!existingCampground.getHost().getId().equals(member.getId())) {
+            throw new SecurityException("캠핑장 수정 권한이 없습니다.");
+        }
+
+        // Location 수정
+        LocationDto location = locationService.findOnCreateLocation(sido);
+        LocationDetailDto locationDetailDto = locationDetailService.findOrCreateLocationDetail(sigungu, location);
+
+        LocationDetail updatedLocationDetail = locationDetailDto.toEntity(location.toEntity());
+
+        // Campground 업데이트
+        existingCampground.updateFromDto(campground);  // Dto의 값으로 엔티티 업데이트
+
+        // LocationDetail 및 Host 업데이트
+        existingCampground.setLocationDetail(updatedLocationDetail);
+
+        // 캠핑장 옵션 수정
+        editCampgroundOptionLink(subOptionIds, campground);
+
+        // 변경된 캠핑장 저장
+        Campground updatedCampground = campgroundRepository.save(existingCampground);
+
+        return new CampgroundDto(updatedCampground);
+    }
+
+    public void editCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto){
+        LocationDetail locationDetail = new LocationDetail();
+        Host host = new Host();
+        host.setId(campgroundDto.getHostId());
+//        Campground campground = campgroundDto.toEntity(locationDetail, host);
+
+        // 해당 캠핑장의 기존 옵션 링크들을 모두 조회
+        List<CampgroundOptionLink> existingLinks = campgroundOptionLinkRepository.findByCampgroundId(campgroundDto.getId());
+
+        // 3. 서브 옵션에 따라 isExist 값을 업데이트
+        for (CampgroundOptionLink link : existingLinks) {
+            CampgroundSuboption subOption = link.getCampgroundSuboption();
+
+            // 4. 선택된 서브 옵션 ID와 비교하여 is_exist 값 수정
+            if (subOptionIds != null && subOptionIds.contains(subOption.getId())) {
+                link.setExist(true);  // 선택된 서브 옵션이면 is_exist를 true로 설정
+            } else {
+                link.setExist(false); // 선택되지 않은 서브 옵션이면 false로 설정
+            }
+        }
+
+        campgroundOptionLinkRepository.saveAll(existingLinks);
     }
 }

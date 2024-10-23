@@ -33,11 +33,4 @@ public class LocationDetailService {
         LocationDetailDto locationDetailDto = new LocationDetailDto(locationDetail);
         return locationDetailDto;
     }
-
-    public LocationDto getLocationByLocationDetail(LocationDetailDto locationDetailDto){
-        Location location = locationService.findById(locationDetailDto.getLocationId());
-        System.out.println("location id : " + location.getId());
-        System.out.println("location Sido" + location.getSido());
-        return new LocationDto(location);
-    }
 }

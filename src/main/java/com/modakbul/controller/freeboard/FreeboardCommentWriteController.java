@@ -17,7 +17,6 @@ public class FreeboardCommentWriteController {
 
 	@PostMapping("/freeboard/freeboardCommentWrite")
 	public String writeComment(@ModelAttribute FreeboardCommentDto dto,Model model) {
-		System.out.println(dto);
 		freeboardCommentService.writeComment(dto);
 		model.addAttribute("result","성공");
 		

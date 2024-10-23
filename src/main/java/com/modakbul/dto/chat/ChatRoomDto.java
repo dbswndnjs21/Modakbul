@@ -18,6 +18,7 @@ public class ChatRoomDto {
     private Long id; // PK
     private Long campgroundId; // 외래키
     private Long memberId; // 외래키
+    private String userId;
     private LocalDateTime createdAt;
 
     // ChatRoomDto를 ChatRoom 엔티티로 변환하는 메서드
@@ -35,6 +36,7 @@ public class ChatRoomDto {
         this.id = chatRoom.getId();
         this.campgroundId = chatRoom.getCampground().getId(); // 외래키 ID 설정
         this.memberId = chatRoom.getMember().getId(); // 외래키 ID 설정
+        this.userId = chatRoom.getMember().getUserId();
         this.createdAt = chatRoom.getCreatedAt();
     }
 }

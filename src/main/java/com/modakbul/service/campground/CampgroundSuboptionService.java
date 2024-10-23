@@ -45,5 +45,16 @@ public class CampgroundSuboptionService {
         return suboptionDtos;
     }
 
+    public List<Integer> getSuboptionId(Long campgroundId) {
+        // 활성화된 링크 가져오기
+        List<CampgroundOptionLinkDto> campgroundOptionLinkDtos = campgroundOptionLinkService.getActiveLinksByCampgroundId(campgroundId);
+
+        // 서브 옵션 ID 목록 생성
+        List<Integer> suboptionIds = campgroundOptionLinkDtos.stream()
+                .map(CampgroundOptionLinkDto::getCampgroundSubOptionId) // 서브 옵션 ID 가져오기
+                .collect(Collectors.toList());
+
+        return suboptionIds; // 서브 옵션 ID 목록 반환
+    }
 
 }

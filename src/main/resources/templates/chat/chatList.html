@@ -22,6 +22,23 @@
                 </li>
             </th:block>
         </ul>
+        
+          <!-- 페이지 네비게이션 -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:class="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/chat/chatList(page=${currentPage - 1}, size=${size}, campgroundId=${campgroundId})}" tabindex="-1">이전</a>
+            </li>
+            <th:block th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <li class="page-item" th:class="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/chat/chatList(page=${i}, size=${size}, campgroundId=${campgroundId})}" th:text="${i + 1}"></a>
+                </li>
+            </th:block>
+            <li class="page-item" th:class="${currentPage + 1 == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/chat/chatList(page=${currentPage + 1}, size=${size}, campgroundId=${campgroundId})}">다음</a>
+            </li>
+        </ul>
+    </nav>
     </div>
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>

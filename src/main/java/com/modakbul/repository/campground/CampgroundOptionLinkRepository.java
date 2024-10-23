@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CampgroundOptionLinkRepository extends JpaRepository<CampgroundOptionLink, Integer> {
     List<CampgroundOptionLink> findByCampgroundIdAndIsExistTrue(Long campgroundId);
+    List<CampgroundOptionLink> findByCampgroundId(Long campgroundId);
 }
