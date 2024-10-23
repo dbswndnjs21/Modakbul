@@ -1,6 +1,7 @@
 package com.modakbul.service.freeboard;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.modakbul.entity.freeboard.Freeboard;
@@ -19,6 +20,7 @@ import com.modakbul.repository.freeboard.FreeboardCommentRepository;
 import com.modakbul.repository.freeboard.FreeboardRepository;
 import com.modakbul.repository.member.MemberRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +76,19 @@ public class FreeboardCommentService {
 	            .collect(Collectors.toList());
 	}
 	
-	
+	public void updateComment(long commentId, FreeboardCommentDto dto) {
+        // commentId로 기존 댓글 찾기
+        Optional<FreeboardComment> optionalComment = freeboardCommentRepository.findById(commentId);
+
+        if (optionalComment.isPresent()) {
+            FreeboardComment comment = optionalComment.get();
+            // DTO의 내용으로 댓글 수정
+            comment.setContent(dto.getContent());
+            freeboardCommentRepository.save(comment);  // 수정된 댓글 저장
+        } else {
+            throw new EntityNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+    }
 	
 	public void deleteComment(long id) {
 		freeboardCommentRepository.deleteById(id);

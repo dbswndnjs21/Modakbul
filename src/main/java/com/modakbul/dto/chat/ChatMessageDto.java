@@ -19,6 +19,7 @@ public class ChatMessageDto {
     private Long id; // PK
     private Long chatRoomId; // 외래키
     private Long memberId; // 외래키
+    private String userId;
     private String message;
     private boolean readStatus;
     private LocalDateTime createdAt;
@@ -42,7 +43,8 @@ public class ChatMessageDto {
     public ChatMessageDto(ChatMessage chatMessage) {
         this.id = chatMessage.getId();
         this.chatRoomId = chatMessage.getChatRoom().getId(); // 외래키 ID 설정
-        this.memberId = chatMessage.getMember().getId(); // 외래키 ID 설정
+        this.memberId = chatMessage.getMember().getId(); // 발신자 ID 설정
+        this.userId = chatMessage.getMember().getUserId(); // 발신자 이름 설정
         this.message = chatMessage.getMessage();
         this.readStatus = chatMessage.isReadStatus();
         this.createdAt = chatMessage.getCreatedAt();
