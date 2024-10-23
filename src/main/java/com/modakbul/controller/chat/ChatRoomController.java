@@ -60,13 +60,15 @@ public class ChatRoomController {
 	
 	@GetMapping("/chatroombyid/{chatRoomId}")
 	public String getChatRoomById(@PathVariable("chatRoomId") Long chatRoomId,
-	                           @AuthenticationPrincipal CustomUserDetails member, 
+	                           @AuthenticationPrincipal CustomUserDetails member,
+	                           @RequestParam("campgroundName") String campgroundName,
 	                           Model model) {
 	    Long memberId = member.getId(); // CustomUserDetails에서 사용자 ID를 가져옴
 	    
 	    
 	    // 현재 사용자 ID를 사용하여 채팅 방을 찾습니다.
 	    ChatRoomDto chatRoomDto = chatRoomService.findById(chatRoomId);
+	    model.addAttribute("campgroundName", campgroundName);
 	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
