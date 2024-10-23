@@ -2,27 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Campground List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
   <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+  <link rel="stylesheet" th:href="@{/css/campground/calendar.css}">
   <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    body {
-      margin: 40px 10px;
-      padding: 0;
-      font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-      font-size: 14px;
-    }
-    #calendar {
-      max-width: 600px;
-      margin: 20px auto;
-      display: none; /* 기본적으로 숨김 설정 */
-    }
-    .selected {
-      background-color: rgba(0, 255, 0, 0.3); /* 연한 초록색 */
-    }
-  </style>
 </head>
 <body>
+<!-- 헤더 영역 -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+
+<!--메인컨텐츠-->
 <div> 지역</div>
 <select id="locationSelect">
   <option value="">시도</option>
@@ -47,7 +40,8 @@
 </form>
 <button id="toggleButton">보이기</button>
 <div id='calendar'></div>
-
+<!-- 푸터 영역 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script>
   $(document).ready(function() {
     // 페이지 로드 시 location 목록을 가져오는 AJAX 요청
