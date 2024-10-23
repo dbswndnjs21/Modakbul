@@ -237,10 +237,11 @@ $(document).ready(function () {
 
                         $.ajax({
                             url: `/freeboard/freeboardCommentUpdate/${commentId}`,
-                            method: 'POST',
+                            method: 'PUT',
                             data: { content: newContent },
                             success: function () {
                                 loadComments(); // 댓글을 다시 로드하여 새 댓글 표시
+                                alert('댓글 수정 완료!');
                             },
                             error: function () {
                                 alert('댓글 수정 중 오류가 발생했습니다.');
@@ -272,7 +273,7 @@ $(document).ready(function () {
                 $('.reply-form').submit(function (e) {
                     e.preventDefault(); // 기본 제출 방지
                     const formData = $(this).serialize();
-
+			
                     $.ajax({
                         url: '/freeboard/freeboardCommentWrite',
                         method: 'POST',
