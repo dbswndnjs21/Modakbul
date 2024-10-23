@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
+//@Component
 public class DataLoader implements CommandLineRunner {
     private final CampgroundOptionRepository campgroundOptionRepository;
     private final CampgroundSuboptionRepository campgroundSuboptionRepository;

@@ -1,5 +1,6 @@
 package com.modakbul.entity.campground;
 
+import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.chat.ChatRoom;
@@ -54,4 +55,15 @@ public class Campground {
 
     @OneToMany(mappedBy = "campground", cascade = CascadeType.ALL)
     private List<ChatRoom> chatRooms;
+
+    public void updateFromDto(CampgroundDto campgroundDto) {
+        this.campgroundName = campgroundDto.getCampgroundName();
+        this.postcode = campgroundDto.getPostcode();
+        this.address = campgroundDto.getAddress();
+        this.detailAddress = campgroundDto.getDetailAddress();
+        this.extraAddress = campgroundDto.getExtraAddress();
+        this.phone = campgroundDto.getPhone();
+        this.approve = campgroundDto.getApprove();
+    }
+
 }

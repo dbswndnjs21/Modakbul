@@ -53,22 +53,22 @@
 
 <!-- 메인 콘텐츠 영역 -->
 <section class="container my-5">
-    <h2 class="text-center mb-4">새 캠프장 추가</h2>
+    <h2 class="text-center mb-4">캠핑장 수정</h2>
 
-    <form th:action="@{/campgrounds/add}" th:object="${campground}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/campgrounds/edit}" th:object="${campground}" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="id" th:field="*{id}" th:value="campground.id">
         <div class="mb-3">
             <label for="campgroundName" class="form-label">캠프장 이름:</label>
-            <input type="text" id="campgroundName" th:field="*{campgroundName}" class="form-control" required/>
+            <input type="text" id="campgroundName" th:field="*{campgroundName}" th:value="*{campgroundName}" class="form-control" required/>
         </div>
 
-        <input type="text" id="postcode" th:field="*{postcode}" placeholder="우편번호">
+        <input type="text" id="postcode" th:field="*{postcode}" th:value="*{postcode}" placeholder="우편번호">
         <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
-        <input type="text" id="address" th:field="*{address}" placeholder="주소"><br>
-        <input type="text" id="detailAddress" th:field="*{detailAddress}" placeholder="상세주소">
-        <input type="text" id="extraAddress" th:field="*{extraAddress}" placeholder="참고항목">
-
-        <input type="text" id="sido" name="sido" placeholder="시도">
-        <input type="text" id="sigungu" name="sigungu" placeholder="시군구">
+        <input type="text" id="address" th:field="*{address}" th:value="*{address}" placeholder="주소"><br>
+        <input type="text" id="detailAddress" th:field="*{detailAddress}" th:value="*{detailAddress}" placeholder="상세주소">
+        <input type="text" id="extraAddress" th:field="*{extraAddress}" th:value="*{extraAddress}" placeholder="참고항목">
+        <input type="text" id="sido" name="sido" th:value="${sido}" placeholder="시도">
+        <input type="text" id="sigungu" name="sigungu" th:value="${sigungu}" placeholder="시군구">
 
         <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script>
@@ -110,7 +110,6 @@
                         } else {
                             document.getElementById("extraAddress").value = '';
                         }
-
                         document.getElementById('sido').value = data.sido;
                         document.getElementById('sigungu').value = data.sigungu;
 
@@ -133,11 +132,14 @@
 
         <div>
             <label>옵션 선택:</label>
-            <div th:each="option : ${campgroundOptions}">
+            <div th:each="option : ${options}">
                 <h4 th:text="${option.optionName}"></h4> <!-- 옵션 이름 표시 -->
-                <div th:each="subOption : ${campgroundSuboptions}"
+                <div th:each="subOption : ${suboptions}"
                      th:if="${subOption.campgroundOptionId == option.id}"> <!-- 서브 옵션의 CampgroundOption ID가 현재 옵션 ID와 같을 때만 표시 -->
-                    <input type="checkbox" th:value="${subOption.id}" th:name="'subOptionIds'" />
+                    <input type="checkbox"
+                           th:value="${subOption.id}"
+                           th:name="'subOptionIds'"
+                           th:checked="${#lists.contains(suboptionIdList, subOption.id)}"/>
                     <label th:text="${subOption.optionName}"></label>
                 </div>
             </div>

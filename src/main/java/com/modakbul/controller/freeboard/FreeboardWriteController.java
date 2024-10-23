@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FreeboardWriteController {
 	private final FreeboardService freeboardService;
-	
+
 	@Value("${file.path}")
 	private String filePath;
 	
