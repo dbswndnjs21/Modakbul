@@ -2,6 +2,7 @@ package com.modakbul.service.campground;
 
 import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.dto.campsite.CampsitePriceDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.*;
 import com.modakbul.entity.campsite.CampsitePrice;
@@ -70,9 +71,9 @@ public class CampgroundService {
     public CampgroundDto getCampgroundById(Long id) {
         Campground campground = campgroundRepository.findById(id).orElse(null);
 
-        if(campground != null) {
+        if (campground != null) {
             return new CampgroundDto(campground);
-        }else {
+        } else {
             return null;
         }
     }
@@ -110,7 +111,7 @@ public class CampgroundService {
         return result;
     }
 
-    public void createCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto){
+    public void createCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto) {
         LocationDetail locationDetail = new LocationDetail();
         Host host = new Host();
         host.setId(campgroundDto.getHostId());
@@ -160,8 +161,9 @@ public class CampgroundService {
         return campgroundDtos;
 
     }
+
     public List<CampgroundDto> searchCampgrounds(String query, Integer locationDetailId) {
-        List<Campground> campgrounds =  campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
+        List<Campground> campgrounds = campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
 
         List<CampgroundDto> campgroundDtos = campgrounds.stream()
                 .map(campground -> new CampgroundDto(campground))
@@ -171,19 +173,20 @@ public class CampgroundService {
 
     public int getLowestPrice(CampgroundDto campground, LocalDate checkInDate, LocalDate checkOutDate) {
         List<CampsiteDto> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
-        if(campsites.isEmpty()){
+        if (campsites.isEmpty()) {
             return 0;
         }
         int lowestPrice = Integer.MAX_VALUE;
 
         for (CampsiteDto campsite : campsites) {
             int totalPrice = campsiteService.calculateTotalPrice(campsite.getId(), checkInDate, checkOutDate);
-            if(totalPrice <= lowestPrice){
+            if (totalPrice <= lowestPrice) {
                 lowestPrice = totalPrice;
             }
         }
         return lowestPrice;
     }
+
     public List<CampgroundDto> getCampgroundsByHostId(Long hostId) {
         List<Campground> campgrounds = campgroundRepository.findIdByHostId(hostId);
 
@@ -193,7 +196,7 @@ public class CampgroundService {
         return campgroundDtos;
     }
 
-    public List<CampgroundSuboptionDto> getCampgroundSuboptions(){
+    public List<CampgroundSuboptionDto> getCampgroundSuboptions() {
         List<CampgroundSuboption> suboptions = campgroundSuboptionRepository.findAll();
 
         List<CampgroundSuboptionDto> campgroundSuboptionDtos = suboptions.stream()
@@ -210,7 +213,7 @@ public class CampgroundService {
                 .collect(Collectors.toList());
         return campgroundOptionDtos;
     }
-    
+
     public void approveCampground(Long id) {
         Campground campground = campgroundRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
@@ -218,14 +221,14 @@ public class CampgroundService {
         campgroundRepository.save(campground);  // 변경된 상태를 저장
     }
 
-    public String getLocationDetailSigungu(Long campgroundId){
+    public String getLocationDetailSigungu(Long campgroundId) {
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
 
         return locationDetail.getSigungu();
     }
 
-    public String getLocationSido(Long campgroundId){
+    public String getLocationSido(Long campgroundId) {
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
 
@@ -268,7 +271,7 @@ public class CampgroundService {
         return new CampgroundDto(updatedCampground);
     }
 
-    public void editCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto){
+    public void editCampgroundOptionLink(List<Integer> subOptionIds, CampgroundDto campgroundDto) {
         LocationDetail locationDetail = new LocationDetail();
         Host host = new Host();
         host.setId(campgroundDto.getHostId());
@@ -292,33 +295,37 @@ public class CampgroundService {
         campgroundOptionLinkRepository.saveAll(existingLinks);
     }
 
-    public Map<LocalDate, Integer> getCampgroundLowestPrices(CampgroundDto campground) {
+    public List<CampsitePriceDto> getCampgroundLowestPrices(CampgroundDto campground) {
         LocalDate today = LocalDate.now();
         LocalDate endDate = today.plusDays(92);
 
         List<CampsiteDto> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
-        if(campsites.isEmpty()){
+        if (campsites.isEmpty()) {
             return null;
         }
-        Map<LocalDate, Integer> priceMap = new HashMap<>();
+        List<CampsitePriceDto> campsitePriceDtos = new ArrayList<>();
 
         List<LocalDate> dateList = DateUtil.getDatesBetween(today, endDate);
-        for (LocalDate date : dateList) {
-            Integer price;
+        for (int i = 0; i < dateList.size(); i++) {
+            CampsitePriceDto campsitePriceDto = new CampsitePriceDto();
             Integer lowestPrice = Integer.MAX_VALUE;
             for (CampsiteDto campsite : campsites) {
-                CampsitePrice campsitePrice = campsitePriceRepository.findByCampsiteIdAndIdPriceDate(campsite.getId(), date);
-                if(campsitePrice != null){
+                Integer price;
+                CampsitePrice campsitePrice = campsitePriceRepository.findByCampsiteIdAndIdPriceDate(campsite.getId(), dateList.get(i));
+                if (campsitePrice != null) {
                     price = campsitePrice.getPrice();
-                    if(price <= lowestPrice){
+                    if (price <= lowestPrice) {
                         lowestPrice = price;
                     }
                 }
             }
-            if(lowestPrice != Integer.MAX_VALUE){
-                priceMap.put(date, lowestPrice);
+            if (lowestPrice != Integer.MAX_VALUE) {
+                campsitePriceDto.setPriceDate(dateList.get(i));
+                campsitePriceDto.setPrice(lowestPrice);
+
+                campsitePriceDtos.add(campsitePriceDto);
             }
         }
-        return priceMap;
+        return campsitePriceDtos;
     }
 }

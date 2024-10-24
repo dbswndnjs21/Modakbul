@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class CampsitePriceController {
@@ -22,10 +20,10 @@ public class CampsitePriceController {
     private CampgroundService campgroundService;
 
     @GetMapping("/api/prices")
-    public ResponseEntity<Map<LocalDate, Integer>> getLowestCampsitePrices(@RequestParam Long campgroundId){
+    public ResponseEntity<List<CampsitePriceDto>> getLowestCampsitePrices(@RequestParam Long campgroundId){
         CampgroundDto campgroundDto = new CampgroundDto();
         campgroundDto.setId(campgroundId);
-        Map<LocalDate, Integer> lowestPrices = campgroundService.getCampgroundLowestPrices(campgroundDto);
+        List<CampsitePriceDto>lowestPrices = campgroundService.getCampgroundLowestPrices(campgroundDto);
         return ResponseEntity.ok(lowestPrices);
     }
 }
