@@ -57,6 +57,25 @@
             <td th:text="${camp.address}"></td>
             <td th:text="${camp.phone}"></td>
             <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
+            <!-- approve가 0일 때 승인신청 버튼 표시 -->
+            <td th:if="${camp.approve == 0}">
+                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=1)}" method="post">
+                    <button type="submit">승인신청</button>
+                </form>
+            </td>
+            <!-- approve가 1일 때 수정하기 버튼 표시 -->
+            <td th:if="${camp.approve == 1}">
+                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=0)}" method="post">
+                    <button type="submit">수정하기</button>
+                </form>
+            </td>
+            <!-- approve가 2일 때 수정하기 버튼 표시 -->
+            <td th:if="${camp.approve == 2}">
+                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=3)}" method="post">
+                    <button type="submit">수정하기</button>
+                </form>
+            </td>
+
         </tr>
         </tbody>
     </table>
