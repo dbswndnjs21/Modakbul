@@ -72,7 +72,7 @@ public class JoinController {
         Host host = Host.builder().member(member).bankName(bankName).account(account).accountHolder(accountHolder).build();
 
         // Host 정보를 저장
-        hostService.saveHost(host);
+        memberService.saveHost(host.getMember());
 
         return ResponseEntity.ok("호스트 등록이 완료되었습니다."); // 성공 시 메시지를 포함한 HTTP 200 응답
     }
