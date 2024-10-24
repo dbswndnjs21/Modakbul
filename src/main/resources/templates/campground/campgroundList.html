@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <h5 class="card-title" th:text="${campground.campgroundName}">캠핑장 이름</h5>
                     <p class="card-text" th:text="${totalLowestPrices[campground.id]} + '원'">게시글 내용</p>
-                    <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="btn btn-success">객실정보</a>
+                    <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link btn btn-success">객실정보</a>
                 </div>
             </div>
         </div>
