@@ -133,3 +133,10 @@ function formatDate(date) {
 function validateForm() {
     return true; // 폼을 제출할 수 있도록 true 반환
 }
+function setSelectedCampsite(campsiteId) {
+    // Set the campsite ID in the hidden input field
+    console.log("select campsite", campsiteId);
+    document.getElementById('campsiteId').value = campsiteId;
+    // Automatically submit the form
+    document.querySelector('form').submit();
+}

@@ -5,83 +5,98 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
     <link rel="stylesheet" th:href="@{/css/campground/calendar.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<h2>Campground Detail</h2>
+<!-- 헤더 영역 -->
+<header th:replace="~{fragments/header :: header}"></header>
 
- 예약 폼
+<!--이미지 넣어야함-->
+<th:block th:if="${campground != null}">
+    <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
+        <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}" class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
+    </th:block>
+</th:block>
 
-    <div class="date-display">
+<div class="container mt-4">
+    <h2 class="text-center mb-4" th:text="${campground.campgroundName}">캠핑장 이름</h2>
+
+    <div class="date-display mb-4 text-center">
         <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
         <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
     </div>
-    <button id="toggleButton">보이기</button>
-    <div id='calendar'></div>
 
-<!--    옵션 -->
-    <h4>Campground Options</h4>
+    <div class="text-center mb-4">
+        <button id="toggleButton" class="btn btn-secondary">보이기</button>
+    </div>
 
-    <table>
+    <div id='calendar' class="mb-4"></div>
+
+    <h4>캠핑장 옵션</h4>
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>옵션 이름</th>
-            <th>존재 여부</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="option : ${campgroundSubOptions}">
             <td th:text="${option.optionName}">옵션 이름</td>
-<!--            <td th:text="${link.isExist ? '존재함' : '존재하지 않음'}">존재 여부</td>-->
         </tr>
         </tbody>
     </table>
 
     <!-- 캠핑장 정보 -->
-    <p>
-    <strong>Campground Name:</strong> 
-    <span th:text="${campground.campgroundName}">Camp Name</span>
-    <!-- 호스트와 채팅하기 버튼 -->
-    <a th:if="${campground.hostId == memberId}" th:href="@{/chat/chatList(campgroundId=${campground.id})}" class="chat-btn" style="margin-left: 10px;">
-        게스트 채팅 리스트
-    </a>
-    <a th:if="${campground.hostId != memberId}" th:href="@{/chat/chatroom/{campgroundId}(campgroundId=${campground.id})}" class="chat-btn" style="margin-left: 10px;">
-        호스트와 채팅하기
-    </a>
-	</p>
-    <p><strong>Address:</strong> <span th:text="${campground.address}">Address</span></p>
-    <p><strong>Phone:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>
-<form action="/booking/new" method="get" onsubmit="return validateForm();">
-    <input type="hidden" id="checkInDate" name="checkInDate">
-    <input type="hidden" id="checkOutDate" name="checkOutDate">
-    <input type="hidden" id="campsiteId" name="campsiteId">
-    <h3>Campsite List</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>캠핑장 객실</th>
-            <th>설명</th>
-            <th>최대 인원</th>
-<!--            <th>Price</th>-->
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="campsite : ${campsites}">
-            <td th:text="${campsite.getId()}">campsite id</td>
-            
-            <td th:text="${campsite.campsiteName}">Campsite Name</td>
-            <td th:text="${campsite.campsiteDescription}">Description</td>
-            <td th:text="${campsite.headCount}">4</td>
-            <td th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
+    <div class="mb-4">
+        <p><strong>캠핑장 이름:</strong>
+            <span th:text="${campground.campgroundName}">Camp Name</span>
+            <a th:if="${memberId == null}" class="btn btn-link" style="margin-left: 10px;">
+            </a>
+            <a th:if="${campground.hostId == memberId}" th:href="@{/chat/chatList(campgroundId=${campground.id})}" class="btn btn-link" style="margin-left: 10px;">
+                게스트 채팅 리스트
+            </a>
+            <a th:if="${campground.hostId != memberId}" th:href="@{/chat/chatroom/{campgroundId}(campgroundId=${campground.id})}" class="btn btn-link" style="margin-left: 10px;">
+                호스트와 채팅하기
+            </a>
+        </p>
+        <p><strong>주소:</strong> <span th:text="${campground.address}">Address</span></p>
+        <p><strong>전화번호:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>
+    </div>
 
+    <form action="/booking/new" method="get" onsubmit="return validateForm();" class="mb-4">
+        <input type="hidden" id="checkInDate" name="checkInDate">
+        <input type="hidden" id="checkOutDate" name="checkOutDate">
+        <input type="hidden" id="campsiteId" name="campsiteId">
 
-            <td>
-                <button type="button" th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</form>
-
+        <h3>캠핑장 객실 목록</h3>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>캠핑장 객실</th>
+                <th>설명</th>
+                <th>최대 인원</th>
+                <th>총 가격</th>
+                <th>예약</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="campsite : ${campsites}">
+                <td th:text="${campsite.id}">Campsite ID</td>
+                <td th:text="${campsite.campsiteName}">Campsite Name</td>
+                <td th:text="${campsite.campsiteDescription}">Description</td>
+                <td th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
+                <td>
+                    <button type="button" class="btn btn-primary" th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<!-- 푸터 영역 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="/js/calendarWithPrice.js"></script>
 </body>
 </html>
