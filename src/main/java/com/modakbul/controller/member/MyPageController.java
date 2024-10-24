@@ -4,11 +4,8 @@ import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.booking.BookingReservationsDto;
 import com.modakbul.dto.coupon.CouponDto;
 import com.modakbul.dto.payment.PaymentDTO;
-import com.modakbul.entity.booking.Booking;
-import com.modakbul.entity.coupon.Coupon;
 import com.modakbul.entity.coupon.MemberCoupon;
 import com.modakbul.entity.member.Member;
-import com.modakbul.repository.payment.PaymentRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.coupon.CouponService;
@@ -49,20 +46,10 @@ public class MyPageController {
             Member membership = memberService.findMembership(member.getUsername());
 
             // 멤버 정보를 사용하여 쿠폰 ID를 가져옴
-            List<Integer> couponId = memberCouponService.findCouponIdByMember(membership);
-            List<CouponDto> coupons = new ArrayList<>(); // 쿠폰을 저장할 리스트 생성
+            List<MemberCoupon> couponsById = memberCouponService.findCouponsById(member.getId());
 
-            if (couponId != null) {
-                for (Integer i : couponId) {
-                    List<CouponDto> coupon = couponService.findCoupons(i);
-                    coupons.addAll(coupon);
-                }
-            }else {
-                // 쿠폰이 없는 경우 빈 리스트 설정
-                coupons = new ArrayList<>();
-            }
-            model.addAttribute("coupons", coupons);
-            model.addAttribute("coupon", couponId);
+
+            model.addAttribute("coupons", couponsById);
             model.addAttribute("membership", membership.getMembership().getMembershipName());
             model.addAttribute("member", member);
         }

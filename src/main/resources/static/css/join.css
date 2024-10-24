@@ -76,7 +76,8 @@ a {
 }
 
 a:hover {
-    text-decoration: underline; /* 호버 시 밑줄 추가 */
+    color: #ff7f50; /* 호버 시에도 같은 색상 */
+    text-decoration: none; /* 호버 시에도 밑줄 제거 */
 }
 .validation-message {
     color: red;

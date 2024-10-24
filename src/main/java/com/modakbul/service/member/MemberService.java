@@ -41,7 +41,7 @@ public class MemberService {
         member1.setMail(member.getMail());
         member1.setPassword(member.getPassword());
         member1.setProvider(member.getProvider());
-        member1.setRole("MEMBERHOST");
+        member1.setRole("HOST");
         member1.setUpdatedAt(LocalDateTime.now());
         member1.setUserId(member.getUserId());
         member1.setMembership(member.getMembership());

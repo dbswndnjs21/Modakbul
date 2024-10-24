@@ -16,7 +16,6 @@ public class HomeController {
         if (member != null) {
             model.addAttribute("member", member);
             model.addAttribute("role", member.getRole());
-            model.addAttribute("membership", member.getMembership().getId());
 
             System.out.println("UserDetails member: " + member.getUserName());
         } else {

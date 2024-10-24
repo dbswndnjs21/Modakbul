@@ -23,6 +23,9 @@ public class MemberCouponService {
         MemberCoupon memberCoupon = memberCouponRepository.findMemberCouponIdById(Integer.valueOf(id));
         return memberCoupon;
     }
+    public List<MemberCoupon> findCouponsById(Long id) {
+        return memberCouponRepository.findAllByMemberId(id);
+    }
 
     public List<Integer> findCouponIdByMember(Member member) {
         return memberCouponRepository.findCouponIdByMember(member);

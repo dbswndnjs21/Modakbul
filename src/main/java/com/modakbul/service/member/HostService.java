@@ -12,24 +12,6 @@ import org.springframework.stereotype.Service;
 public class HostService {
     @Autowired
     private HostRepository hostRepository;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private MemberService memberService;
-
-    public void saveHost(Host host) {
-//        Host entity = hostDto.toEntity(member);
-//        System.out.println("entity = " + entity);
-//        System.out.println("호스트서비스");
-//        System.out.println(entity.getId());
-//        System.out.println(entity.getAccount());
-
-//        System.out.println("member !@!!!");
-//        System.out.println(member.getId());
-//        System.out.println(member.getUserName());
-//        entity.setMember(member);
-        hostRepository.save(host);
-    }
 
     // Host 엔티티를 HostDto로 변환하는 메서드
     public HostDto findHostDtoById(Long id) {

@@ -53,10 +53,12 @@ public class CampgroundController {
                                        @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
                                        @AuthenticationPrincipal CustomUserDetails member,
                                        Model model) {
-    	Long memberId = member.getId();
+        if(member != null){
+            Long memberId = member.getId();
+            model.addAttribute("memberId", memberId);
+        }
         // 캠프사이트 정보
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
-        model.addAttribute("memberId", memberId);
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
 
@@ -121,7 +123,7 @@ public class CampgroundController {
                 filteredCampgrounds = campgroundService.searchCampgrounds(query);
             }
             else{
-                filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+                filteredCampgrounds = campgroundService.searchAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
             }
         }
 
@@ -133,14 +135,7 @@ public class CampgroundController {
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
         }
         filteredCampgrounds = campgroundService.getCampgroundWithImages(filteredCampgrounds);
-//        for (CampgroundDto filteredCampground : filteredCampgrounds) {
-//            List<CampgroundImage> CampgroundImages = filteredCampground.getCampgroundImages();
-//            System.out.println("campground Name : " + filteredCampground.getCampgroundName());
-//            for (CampgroundImage campgroundImage : CampgroundImages) {
-//                System.out.println("path : " + campgroundImage.getImagePath());
-//                System.out.println("saveFile : " + campgroundImage.getSaveFileName());
-//            }
-//        }
+
         model.addAttribute("totalLowestPrices", totalLowestPrices);
         model.addAttribute("campgrounds", filteredCampgrounds);
         return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지

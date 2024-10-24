@@ -23,13 +23,22 @@
             <tr>
                 <th>쿠폰이름</th>
                 <th>사용여부</th>
+                <th>시작일</th>
+                <th>마감일</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="coupon : ${coupons}">
-                <td th:text="${coupon.couponName}"></td>
-                <td th:text="${coupon.isActive ? '사용 가능' : '사용 불가'}"
-                    th:class="${coupon.isActive} ? 'coupon-active' : 'coupon-inactive'"></td>
+            <tr th:each="coupons : ${coupons}">
+                <td>
+                    <span th:if="${coupons.coupon.Id == 1}">[WELCOME] 5천원 할인</span>
+                    <span th:if="${coupons.coupon.Id == 2}">[GOLD] 6천원 할인</span>
+                    <span th:if="${coupons.coupon.Id == 3}">[VIP] 7천원 할인</span>
+                    <span th:if="${coupons.coupon.Id == 4}">[VVIP] 8천원 할인</span>
+                </td>
+                <td th:text="${coupons.isUsed ? '사용 불가' : '사용 가능'}"></td>
+                <td th:text="${coupons.startDate}"></td>
+                <td th:text="${coupons.endDate}"></td>
+
             </tr>
             </tbody>
         </table>
