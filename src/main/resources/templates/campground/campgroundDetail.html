@@ -14,6 +14,11 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <!--이미지 넣어야함-->
+<th:block th:if="${campground != null}">
+    <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
+        <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}" class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
+    </th:block>
+</th:block>
 
 <div class="container mt-4">
     <h2 class="text-center mb-4" th:text="${campground.campgroundName}">캠핑장 이름</h2>
