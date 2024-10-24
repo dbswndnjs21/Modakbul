@@ -19,66 +19,65 @@
 	<!-- 게시글 내용 영역 -->
 	<section class="container my-5">
 		<div class="card">
-			<div class="card-header">
-				<h4 class="card-title mb-3" th:text="${board.title}">게시글 제목</h4>
-				<div th:if="${board.userId == userId}">
-					<a th:href="@{/freeboard/freeBoardUpdate/{id}(id=${board.id})}"
-						class="btn btn-outline-warning btn-sm me-2">수정</a> <a
-						th:href="@{/freeboard/freeBoardDelete/{id}(id=${board.id})}"
-						class="btn btn-outline-danger btn-sm">삭제</a>
-				</div>
-				<ul class="list-inline">
-					<li class="list-inline-item"><strong>작성자:</strong> <span
-						th:text="${board.userId}">작성자명</span></li>
-					<li class="list-inline-item"><strong>작성일:</strong> <span
-						th:text="${board.createdAt != null ? #temporals.format(board.createdAt, 'yyyy-MM-dd') : '날짜 없음'}"></span></li>
-				</ul>
-			</div>
+    <div class="card-header">
+        <h4 class="card-title mb-3" th:text="${board.title}">게시글 제목</h4>
+        <div th:if="${board.userId == userId}">
+            <a th:href="@{/freeboard/freeBoardUpdate/{id}(id=${board.id})}"
+               class="btn btn-outline-warning btn-sm me-2">수정</a>
+            <a th:href="@{/freeboard/freeBoardDelete/{id}(id=${board.id})}"
+               class="btn btn-outline-danger btn-sm">삭제</a>
+        </div>
+        <ul class="list-inline">
+            <li class="list-inline-item"><strong>작성자:</strong> <span th:text="${board.userId}">작성자명</span></li>
+            <li class="list-inline-item"><strong>작성일:</strong> 
+                <span th:text="${board.createdAt != null ? #temporals.format(board.createdAt, 'yyyy-MM-dd') : '날짜 없음'}"></span>
+            </li>
+        </ul>
+    </div>
 
-			<div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-				<div class="carousel-indicators">
-					<th:block th:each="image, iterStat : ${board.images}">
-						<button type="button" data-bs-target="#postCarousel"
-							th:data-bs-slide-to="${iterStat.index}"
-							th:classappend="${iterStat.index == 0} ? 'active'"
-							th:aria-current="${iterStat.index == 0} ? 'true' : 'false'"
-							th:aria-label="'Slide ' + ${iterStat.index + 1}"></button>
-					</th:block>
-				</div>
-				
-				<div class="carousel-inner">
-					<th:block th:each="image, iterStat : ${board.images}">
-						<div class="carousel-item"
-							th:classappend="${iterStat.index == 0} ? 'active'">
-							<img
-								th:src="@{/upload/{fileName}(fileName=${image?.saveFileName ?: 'default.jpg'})}"
-								class="d-block w-100" th:alt="'Slide ' + ${iterStat.index + 1}">
-						</div>
-					</th:block>
-					<th:block th:if="${#lists.isEmpty(board.images)}">
-						<div class="carousel-item active">
-							<img th:src="@{/upload/default.jpg}" class="d-block w-100"
-								alt="기본 이미지">
-						</div>
-					</th:block>
-				</div>
+    <!-- 이미지가 있을 경우 -->
+    <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
+        <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <th:block th:each="image, iterStat : ${board.images}">
+                    <button type="button" data-bs-target="#postCarousel"
+                            th:data-bs-slide-to="${iterStat.index}"
+                            th:classappend="${iterStat.index == 0} ? 'active'"
+                            th:aria-current="${iterStat.index == 0} ? 'true' : 'false'"
+                            th:aria-label="'Slide ' + ${iterStat.index + 1}"></button>
+                </th:block>
+            </div>
 
-				<button class="carousel-control-prev" type="button"
-					data-bs-target="#postCarousel" data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">이전</span>
-				</button>
-				<button class="carousel-control-next" type="button"
-					data-bs-target="#postCarousel" data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">다음</span>
-				</button>
-			</div>
+            <div class="carousel-inner">
+                <th:block th:each="image, iterStat : ${board.images}">
+                    <div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'">
+                        <img th:src="@{/upload/{fileName}(fileName=${image?.saveFileName ?: 'default.jpg'})}"
+                             class="d-block w-100" th:alt="'Slide ' + ${iterStat.index + 1}">
+                    </div>
+                </th:block>
+            </div>
 
-			<div class="card-body">
-				<p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
-			</div>
-		</div>
+            <button class="carousel-control-prev" type="button"
+                    data-bs-target="#postCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">이전</span>
+            </button>
+            <button class="carousel-control-next" type="button"
+                    data-bs-target="#postCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">다음</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 이미지가 없을 경우 -->
+    <div th:if="${board.images == null || #lists.isEmpty(board.images)}">
+        <div class="card-body">
+            <p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
+        </div>
+    </div>
+</div>
+
 
 		<!-- 목록 버튼 추가 -->
 		<div class="text-center my-4">
