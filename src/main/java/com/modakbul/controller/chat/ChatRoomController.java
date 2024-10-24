@@ -54,6 +54,7 @@ public class ChatRoomController {
 	    model.addAttribute("campgroundName", campgroundName);
 	    model.addAttribute("userId", userId);
 	    model.addAttribute("memberId", memberId);
+	    model.addAttribute("member", member);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
 	}
@@ -70,6 +71,7 @@ public class ChatRoomController {
 	    ChatRoomDto chatRoomDto = chatRoomService.findById(chatRoomId);
 	    model.addAttribute("campgroundName", campgroundName);
 	    model.addAttribute("memberId", memberId);
+	    model.addAttribute("member", member);
 	    model.addAttribute("chatRoom", chatRoomDto);
 	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
 	}
@@ -120,7 +122,7 @@ public class ChatRoomController {
 	                }
 	            }
 	        }
-	        
+	        model.addAttribute("member", member);
 	        model.addAttribute("campgroundNames", campgroundNames);
 	        model.addAttribute("memberId", memberId);
 	        model.addAttribute("chatRooms", chatRooms.getContent());
