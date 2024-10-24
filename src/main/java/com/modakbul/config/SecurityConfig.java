@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/member/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/host/**").hasAnyAuthority("HOST", "MEMBERHOST") // HOST와 MEMBERHOST 권한 모두 허용
+                        .requestMatchers("/host/**").hasAuthority("HOST")
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin

@@ -66,6 +66,20 @@
         .faq-answer.active {
             display: block;
         }
+        .orange-button {
+            background-color: orange; /* 주황색 배경 */
+            color: white; /* 글씨 색상 */
+            padding: 10px 20px; /* 적당한 패딩 */
+            border-radius: 5px; /* 둥근 모서리 */
+            text-decoration: none; /* 밑줄 제거 */
+            font-weight: bold; /* 글씨 굵게 */
+            transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+        }
+
+        .orange-button:hover {
+            background-color: darkorange; /* 호버 시 색상 변화 */
+        }
+
     </style>
 </head>
 <body>
@@ -80,8 +94,16 @@
         <h4>어려움이나 궁금한 점이 있으신가요?</h4>
         <p>고객행복센터: <strong>1670-6250</strong> (오전 9시 ~ 새벽 3시 운영)</p>
         <p>카카오톡 문의: 24시간 운영</p>
-        <button class="btn btn-outline-success" th:href="@{/chat}">채팅 문의</button>
+        <div th:if="${member != null}">
+            <a th:if="${role == 'ADMIN'}" th:href="@{/chat/chatList(campgroundId=9999)}" class="chat-btn orange-button" style="margin-left: 10px;">
+                문의내역조회
+            </a>
+            <a th:if="${role != 'ADMIN'}" th:href="@{/chat/chatroom/9999}" class="chat-btn orange-button" style="margin-left: 10px;">
+                1:1문의하기
+            </a>
+        </div>
     </div>
+
 
     <!-- 버튼 그룹 -->
     <div class="btn-group mb-3" role="group" id="faqCategories">
@@ -99,12 +121,15 @@
     <ul class="list-group faq-list" id="faqList">
         <!-- 기본 TOP7 질문 -->
         <li class="list-group-item" data-answer="예약을 취소하려면 예약 내역에서 직접 취소하실 수 있습니다.">[숙박] 예약을 취소하고 싶어요.</li>
-        <li class="list-group-item" data-answer="천재지변 또는 감염병 발생 시, 고객센터로 문의해 주세요.">[공통] 천재지변/감염병으로 인한 예약취소는 어떻게 하나요?</li>
+        <li class="list-group-item" data-answer="천재지변 또는 감염병 발생 시, 고객센터로 문의해 주세요.">[공통] 천재지변/감염병으로 인한 예약취소는 어떻게 하나요?
+        </li>
         <li class="list-group-item" data-answer="예약 내역에서 취소 옵션을 선택하시면 됩니다.">[숙박] 예약내역에 건 예약취소하고 싶어요.</li>
         <li class="list-group-item" data-answer="체크인 날짜 또는 객실타입은 예약 내역에서 수정 가능합니다.">[숙박] 체크인 날짜/객실타입을 변경하고 싶어요.</li>
         <li class="list-group-item" data-answer="현금영수증은 결제 후 발급받을 수 있습니다.">[공통] 현금영수증 발급받고 싶어요.</li>
         <li class="list-group-item" data-answer="영수증/거래내역서는 결제 내역에서 발급 가능합니다.">[공통] 영수증/거래내역서 발급받고 싶어요.</li>
-        <li class="list-group-item" data-answer="결제 확인 후 이용 횟수가 자동으로 업데이트됩니다. 문제가 지속되면 고객센터로 문의하세요.">[멀티티] 상품을 결제했는데 이용 횟수가 올라가지 않아요.</li>
+        <li class="list-group-item" data-answer="결제 확인 후 이용 횟수가 자동으로 업데이트됩니다. 문제가 지속되면 고객센터로 문의하세요.">[멀티티] 상품을 결제했는데 이용
+            횟수가 올라가지 않아요.
+        </li>
     </ul>
 </div>
 <!-- 푸터 영역 -->
@@ -115,42 +140,42 @@
     // 질문 리스트 데이터
     const faqData = {
         top7: [
-            { question: "[숙박] 예약을 취소하고 싶어요.", answer: "예약을 취소하려면 예약 내역에서 직접 취소하실 수 있습니다." },
-            { question: "[공통] 천재지변/감염병으로 인한 예약취소는 어떻게 하나요?", answer: "천재지변 또는 감염병 발생 시, 고객센터로 문의해 주세요." },
-            { question: "[숙박] 예약내역에 건 예약취소하고 싶어요.", answer: "예약 내역에서 취소 옵션을 선택하시면 됩니다." },
-            { question: "[숙박] 체크인 날짜/객실타입을 변경하고 싶어요.", answer: "체크인 날짜 또는 객실타입은 예약 내역에서 수정 가능합니다." },
-            { question: "[공통] 현금영수증 발급받고 싶어요.", answer: "현금영수증은 결제 후 발급받을 수 있습니다." },
-            { question: "[공통] 영수증/거래내역서 발급받고 싶어요.", answer: "영수증/거래내역서는 결제 내역에서 발급 가능합니다." },
-            { question: "[멀티티] 상품을 결제했는데 이용 횟수가 올라가지 않아요.", answer: "결제 확인 후 이용 횟수가 자동으로 업데이트됩니다. 문제가 지속되면 고객센터로 문의하세요." }
+            {question: "[숙박] 예약을 취소하고 싶어요.", answer: "예약을 취소하려면 예약 내역에서 직접 취소하실 수 있습니다."},
+            {question: "[공통] 천재지변/감염병으로 인한 예약취소는 어떻게 하나요?", answer: "천재지변 또는 감염병 발생 시, 고객센터로 문의해 주세요."},
+            {question: "[숙박] 예약내역에 건 예약취소하고 싶어요.", answer: "예약 내역에서 취소 옵션을 선택하시면 됩니다."},
+            {question: "[숙박] 체크인 날짜/객실타입을 변경하고 싶어요.", answer: "체크인 날짜 또는 객실타입은 예약 내역에서 수정 가능합니다."},
+            {question: "[공통] 현금영수증 발급받고 싶어요.", answer: "현금영수증은 결제 후 발급받을 수 있습니다."},
+            {question: "[공통] 영수증/거래내역서 발급받고 싶어요.", answer: "영수증/거래내역서는 결제 내역에서 발급 가능합니다."},
+            {question: "[멀티티] 상품을 결제했는데 이용 횟수가 올라가지 않아요.", answer: "결제 확인 후 이용 횟수가 자동으로 업데이트됩니다. 문제가 지속되면 고객센터로 문의하세요."}
         ],
         usage: [
-            { question: "[이용] 예약 방법을 알고 싶어요.", answer: "예약은 홈페이지나 모바일 앱을 통해 가능합니다." },
-            { question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다." },
-            { question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다." }
+            {question: "[이용] 예약 방법을 알고 싶어요.", answer: "예약은 홈페이지나 모바일 앱을 통해 가능합니다."},
+            {question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다."},
+            {question: "[이용] 숙소를 변경하고 싶어요.", answer: "숙소 변경은 예약 내역에서 직접 수정 가능합니다."}
         ],
         payment: [
-            { question: "[결제] 카드 결제가 안 돼요.", answer: "카드 결제 문제 발생 시, 고객센터로 문의해주세요." },
-            { question: "[결제] 영수증을 받고 싶어요.", answer: "영수증은 결제 후 마이페이지에서 발급 가능합니다." }
+            {question: "[결제] 카드 결제가 안 돼요.", answer: "카드 결제 문제 발생 시, 고객센터로 문의해주세요."},
+            {question: "[결제] 영수증을 받고 싶어요.", answer: "영수증은 결제 후 마이페이지에서 발급 가능합니다."}
         ],
         coupon: [
-            { question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다." },
-            { question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다." }
+            {question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다."},
+            {question: "[쿠폰] 쿠폰 사용 방법을 알고 싶어요.", answer: "쿠폰은 결제 시 적용 가능합니다."}
         ],
         domestic: [
-            { question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다." },
-            { question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다." }
+            {question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다."},
+            {question: "[국내] 국내 숙소 예약이 가능한가요?", answer: "국내 숙소 예약은 상시 가능합니다."}
         ],
         overseas: [
-            { question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다." },
-            { question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다." }
+            {question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다."},
+            {question: "[해외] 해외 숙소 예약이 가능한가요?", answer: "해외 숙소는 현재 예약이 불가능합니다."}
         ],
         rental: [
-            { question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다." },
-            { question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다." }
+            {question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다."},
+            {question: "[대여] 공간 대여는 어떻게 하나요?", answer: "공간 대여는 홈페이지에서 예약 가능합니다."}
         ],
         leisure: [
-            { question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요." },
-            { question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요." }
+            {question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요."},
+            {question: "[레저] 티켓 구매 후 취소하고 싶어요.", answer: "티켓 구매 후 취소는 고객센터로 문의해 주세요."}
         ]
     };
 
