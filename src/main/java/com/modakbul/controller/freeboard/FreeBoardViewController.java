@@ -19,6 +19,10 @@ public class FreeBoardViewController {
 	
 	@GetMapping("/freeboard/freeBoardView")
 	public String boardView(@RequestParam("id") Long id, Model model,@AuthenticationPrincipal CustomUserDetails member) {
+		// 로그인되어 있지 않은 경우 로그인 페이지로 리다이렉트합니다.
+	    if (member == null) {
+	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
+	    }
 		FreeboardDto board = freeboardService.getPostWithImagesById(id);
 		
 		model.addAttribute("board", board);
