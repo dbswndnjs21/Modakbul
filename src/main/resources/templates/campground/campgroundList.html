@@ -6,78 +6,51 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
-    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet'/>
     <link rel="stylesheet" th:href="@{/css/campground/calendar.css}">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
-    
+
 
 </head>
 <body>
 <!-- 헤더 영역 -->
 <header th:replace="~{fragments/header :: header}"></header>
 
-<!--메인 콘텐츠 영역-->
-
-<form action="/campgrounds/list" method="get" onsubmit="return validateForm();">
-    <!-- Search input for campground name or location -->
-    <input type="text" name="query" placeholder="Search Campgrounds" required style="width: 300px; margin-bottom: 20px;">
-    <button type="submit" style="margin-top: 20px;">Search Campgrounds</button>
+<div class="d-flex flex-column align-items-center">
+<form action="/campgrounds/list" method="get" onsubmit="return validateForm();" class="d-flex mb-3">
+    <input type="text" name="query" class="form-control me-2" placeholder="Search Campgrounds" required
+           style="width: 300px; margin-bottom: 20px;">
+    <button type="submit" class="btn btn-primary">검색</button>
     <!-- Hidden inputs to hold selected dates -->
     <input type="hidden" id="checkInDate" name="checkInDate">
     <input type="hidden" id="checkOutDate" name="checkOutDate">
-    <div class="date-display">
-        <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
-        <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
-    </div>
 </form>
-<button id="toggleButton">보이기</button>
+<div class="date-display">
+    <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span>
+    <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
+    <button id="toggleButton" class="btn btn-secondary mb-3">보이기</button>
+</div>
+</div>
 <div id='calendar'></div>
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Images</th>
-        <th>Campground Name</th>
-        <th>Location</th>
-        <th>Details</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="campground : ${campgrounds}">
-        <td th:text="${campground.id}">1</td>
 
-        <!-- 캠핑장 이미지 슬라이드 (Bootstrap Carousel 사용) -->
-        <td>
-            <div id="carousel-${campground.id}" class="carousel slide">
-                <div class="carousel-inner">
-                    <!-- 이미지 반복 -->
-                    <div th:each="image, iterStat : ${campground.getCampgroundImages()}"
-                         th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
-                        <img th:src="@{/upload/{saveFileName}(saveFileName=${image.saveFileName})}"
-                             class="d-block w-100" alt="캠핑장 이미지" style="max-width: 150px; max-height: 150px;">
-
-                    </div>
+<section class="container my-5">
+    <div class="text-center mb-4">
+        <div id="campgroundList">
+            <div th:each="campground : ${campgrounds}" class="card mb-3" data-id="${campground.id">
+                <th:block th:if="${campground != null}">
+                    <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
+                        <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}" class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
+                    </th:block>
+                </th:block>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${campground.campgroundName}">캠핑장 이름</h5>
+                    <p class="card-text" th:text="${totalLowestPrices[campground.id]} + '원'">게시글 내용</p>
+                    <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link btn btn-success">객실정보</a>
                 </div>
-                <!-- 슬라이드 제어 버튼 -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-${campground.id}" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carousel-${campground.id}" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
             </div>
-        </td>
-
-        <td th:text="${campground.campgroundName}">Camp Name</td>
-        <td>
-            <a th:href="@{/campgrounds/{id}(id=${campground.id})}" class="details-link">객실정보</a>
-        </td>
-        <td th:text="'총가격 : ' + ${(totalLowestPrices[campground.id])} + ' 원'">Total Price</td>
-    </tr>
-    </tbody>
-</table>
+        </div>
+    </div>
+</section>
 
 <!-- 푸터 영역 -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
@@ -92,7 +65,7 @@
     let isCheckInSelected = false;
     let isCheckOutSelected = false;
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
 
         // URL에서 체크인, 체크아웃 날짜 가져오기
@@ -111,7 +84,7 @@
         calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             selectable: true,
-            select: function(info) {
+            select: function (info) {
                 var startDate = info.startStr;
 
                 // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
@@ -187,7 +160,7 @@
         calendar.render();
     });
 
-    toggleButton.addEventListener('click', function() {
+    toggleButton.addEventListener('click', function () {
         if (calendarDiv.style.display === 'none') {
             calendarDiv.style.display = 'block';
             calendar.render(); // FullCalendar를 다시 렌더링
@@ -207,7 +180,7 @@
 
 <script>
     document.querySelectorAll('.details-link').forEach(link => {
-        link.addEventListener('click', function(event) {
+        link.addEventListener('click', function (event) {
             // 체크인 및 체크아웃 날짜 가져오기
             const checkInDate = document.getElementById('checkInDate').value;
             const checkOutDate = document.getElementById('checkOutDate').value;
