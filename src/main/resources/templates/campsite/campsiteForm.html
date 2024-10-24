@@ -45,7 +45,7 @@
     <h2 class="text-center mb-4">새 캠프사이트 추가</h2>
 
     <form th:action="@{/campsite/add}" th:object="${campsite}" method="post" enctype="multipart/form-data">
-        <input type="text" th:value="${campgroundId}" name="campgroundId"/>
+        <input type="text" th:value="${campgroundId}" name="campgroundId" hidden/>
         <div class="mb-3">
             <label for="campsiteName" class="form-label">캠프사이트 이름:</label>
             <input type="text" id="campsiteName" th:field="*{campsiteName}" class="form-control" required/>
@@ -69,8 +69,6 @@
             <label for="weekendPrice" class="form-label">기본 주말 가격:</label>
             <input type="number" id="weekendPrice" th:field="*{weekendPrice}" class="form-control" required/>
         </div>
-
-
 
         <div class="mb-3">
             <label for="images" class="form-label">캠프사이트 이미지:</label>
@@ -185,6 +183,14 @@
             updatePreview();
         }
     }
+
+    // 버튼 비활성화 코드 추가
+    const form = document.querySelector('form'); // 폼 선택
+    const submitButton = form.querySelector('button[type="submit"]'); // 제출 버튼 선택
+
+    form.addEventListener('submit', function() {
+        submitButton.disabled = true; // 버튼 비활성화
+    });
 </script>
 
 </body>
