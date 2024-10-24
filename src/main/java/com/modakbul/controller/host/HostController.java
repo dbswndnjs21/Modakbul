@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,4 +77,12 @@ public class HostController {
     public String campground() {
         return "host/campground";
     }
+
+    @PostMapping("/campground/approve/{id}/{approve}")
+    public String updateCampgroundApprove(@PathVariable Long id, @PathVariable Integer approve) {
+        campgroundService.updateCampgroundApprove(id, approve);
+        return "redirect:/host"; // 목록 페이지로 리다이렉트
+    }
+
+
 }

@@ -16,16 +16,14 @@ import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
 import com.modakbul.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,6 +56,18 @@ public class CampgroundService {
     private CampgroundImageRepository campgroundImageRepository;
     @Autowired
     private CampsitePriceRepository campsitePriceRepository;
+    public void updateCampgroundApprove(Long id, int approve) {
+        // 캠핑장 찾기
+        Campground campground = campgroundRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("캠핑장을 찾을 수 없습니다."));
+
+        // approve 상태를 변경
+        campground.setApprove(approve);
+
+        // 변경된 캠핑장 저장
+        campgroundRepository.save(campground);
+    }
+
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
