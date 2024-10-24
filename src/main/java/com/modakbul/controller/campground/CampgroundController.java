@@ -133,14 +133,7 @@ public class CampgroundController {
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
         }
         filteredCampgrounds = campgroundService.getCampgroundWithImages(filteredCampgrounds);
-//        for (CampgroundDto filteredCampground : filteredCampgrounds) {
-//            List<CampgroundImage> CampgroundImages = filteredCampground.getCampgroundImages();
-//            System.out.println("campground Name : " + filteredCampground.getCampgroundName());
-//            for (CampgroundImage campgroundImage : CampgroundImages) {
-//                System.out.println("path : " + campgroundImage.getImagePath());
-//                System.out.println("saveFile : " + campgroundImage.getSaveFileName());
-//            }
-//        }
+
         model.addAttribute("totalLowestPrices", totalLowestPrices);
         model.addAttribute("campgrounds", filteredCampgrounds);
         return "campground/campgroundList"; // 필터링된 캠핑장을 보여줄 뷰 페이지

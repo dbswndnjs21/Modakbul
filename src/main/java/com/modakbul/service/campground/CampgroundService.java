@@ -4,13 +4,16 @@ import com.modakbul.dto.campground.*;
 import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.member.MemberDto;
 import com.modakbul.entity.campground.*;
+import com.modakbul.entity.campsite.CampsitePrice;
 import com.modakbul.entity.image.CampgroundImage;
 import com.modakbul.entity.member.Host;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campground.*;
+import com.modakbul.repository.campsite.CampsitePriceRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.campsite.CampsiteService;
+import com.modakbul.utils.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +55,8 @@ public class CampgroundService {
     private CampgroundImageService campgroundImageService;
     @Autowired
     private CampgroundImageRepository campgroundImageRepository;
+    @Autowired
+    private CampsitePriceRepository campsitePriceRepository;
 
     public List<CampgroundDto> getAllCampgrounds() {
         List<Campground> campgrounds = campgroundRepository.findAll();
@@ -283,5 +290,35 @@ public class CampgroundService {
         }
 
         campgroundOptionLinkRepository.saveAll(existingLinks);
+    }
+
+    public Map<LocalDate, Integer> getCampgroundLowestPrices(CampgroundDto campground) {
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = today.plusDays(92);
+
+        List<CampsiteDto> campsites = campsiteService.findCampsitesByCampgroundId(campground.getId());
+        if(campsites.isEmpty()){
+            return null;
+        }
+        Map<LocalDate, Integer> priceMap = new HashMap<>();
+
+        List<LocalDate> dateList = DateUtil.getDatesBetween(today, endDate);
+        for (LocalDate date : dateList) {
+            Integer price;
+            Integer lowestPrice = Integer.MAX_VALUE;
+            for (CampsiteDto campsite : campsites) {
+                CampsitePrice campsitePrice = campsitePriceRepository.findByCampsiteIdAndIdPriceDate(campsite.getId(), date);
+                if(campsitePrice != null){
+                    price = campsitePrice.getPrice();
+                    if(price <= lowestPrice){
+                        lowestPrice = price;
+                    }
+                }
+            }
+            if(lowestPrice != Integer.MAX_VALUE){
+                priceMap.put(date, lowestPrice);
+            }
+        }
+        return priceMap;
     }
 }
