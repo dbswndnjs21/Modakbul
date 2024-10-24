@@ -17,20 +17,18 @@
 <header th:replace="~{fragments/header :: header}"></header>
 
 <!--메인 콘텐츠 영역-->
-
-<form action="/campgrounds/list" method="get" onsubmit="return validateForm();">
-    <!-- Search input for campground name or location -->
-    <input type="text" name="query" placeholder="Search Campgrounds" required style="width: 300px; margin-bottom: 20px;">
-    <button type="submit" style="margin-top: 20px;">Search Campgrounds</button>
+<form action="/campgrounds/list" method="get" onsubmit="return validateForm();" class="d-flex mb-3">
+    <input type="text" name="query" class="form-control me-2" placeholder="Search Campgrounds" required style="width: 300px; margin-bottom: 20px;">
+    <button type="submit"  class="btn btn-primary">검색</button>
     <!-- Hidden inputs to hold selected dates -->
     <input type="hidden" id="checkInDate" name="checkInDate">
     <input type="hidden" id="checkOutDate" name="checkOutDate">
-    <div class="date-display">
-        <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
-        <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
-    </div>
 </form>
-<button id="toggleButton">보이기</button>
+<div class="date-display">
+    <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
+    <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
+</div>
+<button id="toggleButton"  class="btn btn-secondary mb-3">보이기</button>
 <div id='calendar'></div>
 <table border="1">
     <thead>
