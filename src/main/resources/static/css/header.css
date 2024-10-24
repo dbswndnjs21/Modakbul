@@ -7,7 +7,7 @@
 }
 
 .header-bg {
-  background: url('/images/4.png') no-repeat center center;
+  background: url('/images/12123.png') no-repeat center center;
   background-size: cover; /* 이미지를 헤더 영역에 맞춰서 크기 조정 */
   color: white;
   text-align: center;
@@ -95,3 +95,18 @@
 .header-bg p {
   font-size: 1.5rem;
 }
+
+#join-btn{
+  background-color: orange; /* 주황색 배경 */
+  color: white; /* 글씨는 흰색으로 설정 */
+  bottom: -3px;
+  padding: 5px 10px; /* 패딩 추가 */
+  border-radius: 5px; /* 모서리를 둥글게 */
+  font-weight: bold; /* 글씨 굵게 */
+  transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
+}
+#join-btn:hover{
+  background-color: darkorange; /* 호버 시 더 진한 주황색 */
+  color: white; /* 호버 시 글씨 색 유지 */
+}
+

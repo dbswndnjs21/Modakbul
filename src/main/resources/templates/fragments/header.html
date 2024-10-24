@@ -10,17 +10,14 @@
         <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
         <li th:if="${member != null}">
           <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
-          <form th:action="@{/logout}" method="post">
-            <input type="submit" value="로그아웃">
-          </form>
-        </li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/admin}">❤️️관리자페이지 테스트중❤️</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/host}">😎호스트페이지 테스트중😎</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/join/host}">호스트가입 테스트중!!!!</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/mypage}">마이페이지</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/joinCheck}">회원가입</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/order/kakaoForm}">결제 테스트</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/iamport}">아이포트 테스트</a></li>
+        <li th:if="${member != null}"><a class="nav-link" th:href="@{/logout}">로그아웃</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/admin}">관리자페이지</a></li>
+        <li th:if="${role == 'HOST'}" class="nav-item"><a class="nav-link" th:href="@{/host}">호스트페이지</a></li>
+        <li th:if="${role == 'MEMBER'}"class="nav-item"><a class="nav-link" th:href="@{/join/host}">호스트전환</a></li>
+        <li th:if="${role == 'MEMBER' }"class="nav-item"><a class="nav-link" th:href="@{/mypage}">마이페이지</a></li>
+        <li th:if="${member == null}" class="nav-item"><a class="nav-link" id="join-btn" th:href="@{/joinCheck}">회원가입</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/order/kakaoForm}">결제 테스트</a></li>
+        <li th:if="${role == 'ADMIN'}"  class="nav-item"><a class="nav-link" th:href="@{/iamport}">아이포트 테스트</a></li>
       </ul>
     </div>
     </div>

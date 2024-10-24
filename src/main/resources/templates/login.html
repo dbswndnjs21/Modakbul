@@ -18,7 +18,9 @@
 </head>
 <body>
 <div class="login-container">
-    <h2>모닥불</h2>
+    <h2>
+     <a th:href="@{/}">모닥불</a>
+    </h2>
     <form th:action="@{/login}" method="post" onsubmit="reCapt()">
         <div class="input-group">
             <label for="userId"></label>
