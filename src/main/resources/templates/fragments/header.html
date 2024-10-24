@@ -1,63 +1,28 @@
 <header class="header-bg">
   <img src="/images/header.png" alt="헤더 이미지" class="header-img">
-  <div class="search-container">
-    <input type="text" placeholder="여행지나 숙소를 검색해보세요." class="search-input">
-    <button class="search-button">검색</button>
-  </div>
   <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="menuButton" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              메뉴
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="menuButton">
-              <li><a class="dropdown-item" th:href="@{/mypage}">마이페이지</a></li>
-              <li th:if="${role == 'ADMIN'}"><a class="dropdown-item" th:href="@{/admin}">admin페이지</a></li>
-              <li th:if="${role == 'HOST'}"><a class="dropdown-item" th:href="@{/host}">host페이지</a></li>
-              <li th:if="${role == 'MEMBER'}"><a class="dropdown-item" th:href="@{/join/host}">비즈니스계정 전환</a></li>
-              <li th:if="${member == null}"><a class="dropdown-item" th:href="@{/joinCheck}">회원가입</a></li>
-              <li><a class="dropdown-item" th:href="@{/order/kakaoForm}">카카오페이</a></li>
-              <li><a class="dropdown-item" th:href="@{/iamport}">아임포트</a></li>
-              <li><a class="dropdown-item" th:href="@{/help}">고객센터</a></li>
-              <li><a class="dropdown-item" th:href="@{/freeboard/freeBoardList}">게시판</a></li>
-              <li th:if="${member != null}"><a class="dropdown-item" th:href="@{/campgrounds}">예약하기</a></li>
-            </ul>
-          </li>
-          <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
-          <li th:if="${member != null}">
-            <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
-            <span class="nav-link">
-            <span th:if="${membership == 1}">Welcome 회원</span>
-            <span th:if="${membership == 2}">Gold 회원</span>
-            <span th:if="${membership == 3}">VIP 회원</span>
-            <span th:if="${membership == 4}">VVIP 회원</span>
-              </span>
-          <li th:if="${member != null}"><a class="nav-link" th:href="@{/logout}">로그아웃</a></li>
-          </li>
-        </ul>
-      </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" id="home" th:href="@{/}">Modakbul</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/campgrounds}">예약하기</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/freeboard/freeBoardList}">게시판</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/help}">문의하기</a></li>
+        <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
+        <li th:if="${member != null}">
+          <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
+          <form th:action="@{/logout}" method="post">
+            <input type="submit" value="로그아웃">
+          </form>
+        </li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/admin}">❤️️관리자페이지 테스트중❤️</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/host}">😎호스트페이지 테스트중😎</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/join/host}">호스트가입 테스트중!!!!</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/mypage}">마이페이지</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/joinCheck}">회원가입</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/order/kakaoForm}">결제 테스트</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/iamport}">아이포트 테스트</a></li>
+      </ul>
+    </div>
     </div>
   </nav>
 </header>
-<script>
-  document.getElementById('menuButton').addEventListener('click', function(event) {
-    var dropdownMenu = this.nextElementSibling;
-    dropdownMenu.classList.toggle('show');
-  });
-
-  // 다른 부분 클릭 시 드롭다운 메뉴 닫기
-  window.onclick = function(event) {
-    if (!event.target.matches('#menuButton')) {
-      var dropdowns = document.getElementsByClassName("dropdown-menu");
-      for (var i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
-        }
-      }
-    }
-  }
-</script>
-

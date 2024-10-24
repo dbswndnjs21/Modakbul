@@ -1,7 +1,13 @@
 @charset "UTF-8";
+@font-face {
+  font-family: 'HakgyoansimDunggeunmisoTTF-B';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-B.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
 
 .header-bg {
-  background: url('/images/12123.png') no-repeat center center;
+  background: url('/images/4.png') no-repeat center center;
   background-size: cover; /* 이미지를 헤더 영역에 맞춰서 크기 조정 */
   color: white;
   text-align: center;
@@ -37,6 +43,14 @@
   color: black;
   text-decoration: none; /* 기본 밑줄 제거 */
   transition: color 0.3s ease; /* 글씨색 변환 애니메이션 */
+}
+#home{
+  font-family: 'HakgyoansimDunggeunmisoTTF-B';
+  font-size: 40px;
+  position: absolute;
+  left: 20px; /* 화면의 왼쪽 끝에 배치 */
+  padding-left: 20px; /* 적당한 좌측 패딩 추가 */
+  bottom: -10px;
 }
 
 .navbar-brand {
@@ -80,74 +94,4 @@
 
 .header-bg p {
   font-size: 1.5rem;
-}
-.dropdown-menu {
-  display: none; /* 기본적으로 숨김 */
-}
-
-.dropdown-menu.show {
-  display: block; /* 드롭다운 메뉴 표시 */
-}
-.search-container {
-  position: absolute; /* 절대 위치 지정 */
-  top: 50%; /* 세로 중앙 정렬 */
-  left: 50%; /* 가로 중앙 정렬 */
-  transform: translate(-50%, -50%); /* 중앙 정렬 */
-  z-index: 10; /* 다른 요소 위에 표시 */
-  display: flex; /* flexbox 사용 */
-}
-
-.search-input {
-  padding: 10px; /* 패딩 추가 */
-  border: 1px solid #ccc; /* 테두리 */
-  border-radius: 5px 0 0 5px; /* 둥근 모서리 */
-  width: 300px; /* 너비 설정 */
-}
-
-.search-button {
-  padding: 10px; /* 패딩 추가 */
-  background-color: orange; /* 버튼 배경색 */
-  color: white; /* 버튼 글자색 */
-  border: none; /* 테두리 제거 */
-  border-radius: 0 5px 5px 0; /* 둥근 모서리 */
-  cursor: pointer; /* 커서 모양 변경 */
-  transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
-}
-
-.search-button:hover {
-  background-color: darkorange; /* 호버 시 색상 변화 */
-}
-
-.dropdown-menu {
-  display: none; /* 기본적으로 숨김 */
-  background-color: white; /* 배경색 설정 */
-  border: 1px solid #ddd; /* 테두리 설정 */
-  border-radius: 5px; /* 둥근 모서리 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-  padding: 10px 0; /* 패딩 추가 */
-  z-index: 1000; /* 다른 요소보다 위에 표시 */
-}
-
-.dropdown-menu.show {
-  display: block; /* 드롭다운 메뉴 표시 */
-}
-
-.dropdown-item {
-  padding: 8px 20px; /* 항목 패딩 설정 */
-  color: #333; /* 텍스트 색상 */
-  text-decoration: none; /* 기본 밑줄 제거 */
-  transition: background-color 0.3s, color 0.3s; /* 배경색 및 글자색 변화 애니메이션 */
-}
-
-.dropdown-item:hover {
-  background-color: #f5f5f5; /* 호버 시 배경색 변경 */
-  color: #ff6600; /* 호버 시 텍스트 색상 변경 */
-}
-
-.nav-item {
-  position: relative; /* 드롭다운 메뉴 위치 설정 */
-}
-
-.nav-item:hover .dropdown-menu {
-  display: block; /* 마우스 오버 시 드롭다운 메뉴 표시 */
 }
