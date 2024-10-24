@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Campground List</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/header.css}">
   <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
@@ -14,218 +15,43 @@
 <!-- 헤더 영역 -->
 <header th:replace="~{fragments/header :: header}"></header>
 
+<!-- 메인 컨텐츠 -->
+<div class="container mt-4">
+  <div class="mb-3 d-flex">
+    <div class="me-2 flex-fill">
+      <label for="locationSelect" class="form-label">지역</label>
+      <select id="locationSelect" class="form-select">
+        <option value="">시도</option>
+        <!-- 옵션들 추가 -->
+      </select>
+    </div>
 
-<!--메인컨텐츠-->
-<div> 지역</div>
-<select id="locationSelect">
-  <option value="">시도</option>
-</select>
-
-<select id="locationDetailSelect">
-  <option value=""></option>
-</select>
-
-<form action="/campgrounds/list" method="get" onsubmit="return validateForm();">
-  <!-- Search input for campground name or location -->
-  <input type="text" name="query" placeholder="Search Campgrounds">
-  <button type="submit" style="margin-top: 20px;">Search Campgrounds</button>
-  <!-- Hidden inputs to hold selected dates -->
-  <input type="hidden" id="checkInDate" name="checkInDate">
-  <input type="hidden" id="checkOutDate" name="checkOutDate">
-  <input type="hidden" id="locationDetailId" name="locationDetailId">
-  <div class="date-display">
-    <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
-    <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
+    <div class="flex-fill">
+      <label for="locationDetailSelect" class="form-label">세부 지역</label>
+      <select id="locationDetailSelect" class="form-select">
+        <option value="">선택하세요</option>
+        <!-- 옵션들 추가 -->
+      </select>
+    </div>
   </div>
-</form>
-<button id="toggleButton">보이기</button>
+
+  <form action="/campgrounds/list" method="get" onsubmit="return validateForm();" class="d-flex mb-3">
+    <input type="text" name="query" class="form-control me-2" placeholder="글램핑, 가평" aria-label="Search Campgrounds">
+    <button type="submit" class="btn btn-primary">검색하기</button>
+    <!-- Hidden inputs to hold selected dates -->
+    <input type="hidden" id="checkInDate" name="checkInDate">
+    <input type="hidden" id="checkOutDate" name="checkOutDate">
+    <input type="hidden" id="locationDetailId" name="locationDetailId">
+  </form>
+    <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span>
+    <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
+  <button id="toggleButton" class="btn btn-secondary mb-3">보이기</button>
+</div>
 <div id='calendar'></div>
+
 <!-- 푸터 영역 -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-<script>
-  $(document).ready(function() {
-    // 페이지 로드 시 location 목록을 가져오는 AJAX 요청
-    $.ajax({
-      url: '/api/locations',  // 서버에서 location 목록을 반환하는 URL
-      type: 'GET',
-      success: function(data) {
-        console.log(data);
-
-        // 가져온 location 목록으로 locationSelect를 업데이트
-        $('#locationSelect').empty().append('<option value="">지역</option>');
-        $.each(data, function(index, location) {
-          $('#locationSelect').append(
-                  $('<option></option>').val(location.id).text(location.sido)
-          );
-        });
-      },
-      error: function(xhr, status, error) {
-        console.error('AJAX 요청 실패:', error);
-      }
-    });
-
-    $('#locationSelect').change(function() {
-      const selectedLocationId = $(this).val();
-
-      // 선택된 지역 ID가 비어있지 않은 경우 AJAX 요청
-      if (selectedLocationId) {
-        $.ajax({
-          url: '/api/locations/' + selectedLocationId + '/details',  // 서버에서 세부 지역을 가져오는 URL
-          type: 'GET',
-          data: { locationId: selectedLocationId },  // 선택한 지역 ID 전송
-          success: function(data) {
-            // 세부 지역 셀렉트 초기화
-            $('#locationDetailSelect').empty().append('<option value="">세부 지역 선택</option>');
-
-            // 받은 세부 지역 추가
-            $.each(data, function(index, locationDetail) {
-              $('#locationDetailSelect').append(
-                      $('<option></option>').val(locationDetail.id).text(locationDetail.sigungu)
-              );
-            });
-          },
-          error: function(xhr, status, error) {
-            console.error('AJAX 요청 실패:', error);
-          }
-        });
-      } else {
-        // 지역 선택이 해제된 경우 세부 지역 초기화
-        $('#locationDetailSelect').empty().append('<option value="">세부 지역 선택</option>');
-      }
-    });
-
-    $('#locationDetailSelect').change(function() {
-      const selectedLocationDetailId = $(this).val();
-      $('#locationDetailId').val(selectedLocationDetailId);  // 숨겨진 필드에 값 설정
-    });
-
-    // 페이지 로드 시 선택된 지역에 대한 세부 지역 로드
-    const initialLocationId = $('#locationSelect').val();
-    if (initialLocationId) {
-      $('#locationSelect').trigger('change'); // 지역 선택 이벤트 강제로 발생
-    }
-  });
-</script>
-
-<script>
-  const calendarDiv = document.getElementById('calendar');
-  const toggleButton = document.getElementById('toggleButton');
-
-  let calendar;
-  let checkInDate = '';
-  let checkOutDate = '';
-  let isCheckInSelected = false;
-  let isCheckOutSelected = false;
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-
-    // URL에서 체크인, 체크아웃 날짜 가져오기
-    const urlParams = new URLSearchParams(window.location.search);
-    checkInDate = urlParams.get('checkInDate') || new Date().toISOString().slice(0, 10); // 오늘 날짜
-    checkOutDate = urlParams.get('checkOutDate') || new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10); // 내일 날짜
-
-    // 날짜를 input 요소에 설정
-    document.getElementById('checkInDate').value = checkInDate;
-    document.getElementById('checkOutDate').value = checkOutDate;
-
-    // 화면에 표시될 날짜 설정
-    document.getElementById('checkInDisplay').innerText = checkInDate;
-    document.getElementById('checkOutDisplay').innerText = checkOutDate;
-
-    calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      selectable: true,
-      select: function(info) {
-        var startDate = info.startStr;
-
-        // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
-        if (isCheckOutSelected) {
-          checkInDate = startDate;
-          checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
-          isCheckOutSelected = false;
-        } else {
-          // 체크인 날짜가 아직 선택되지 않은 경우 체크인 날짜로 설정
-          if (!isCheckInSelected) {
-            checkInDate = startDate;
-            checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10); // 체크아웃을 1박 2일 후로 설정
-            isCheckInSelected = true; // 체크인 날짜가 설정되었음을 표시
-          } else {
-            // 체크아웃 날짜는 체크인 이후 날짜만 선택 가능
-            if (new Date(startDate) > new Date(checkInDate)) {
-              checkOutDate = startDate;
-              isCheckOutSelected = true; // 체크아웃이 선택되었음을 표시
-            }
-          }
-        }
-
-        // 날짜 업데이트
-        document.getElementById('checkInDate').value = checkInDate;
-        document.getElementById('checkOutDate').value = checkOutDate;
-
-        document.getElementById('checkInDisplay').innerText = checkInDate;
-        document.getElementById('checkOutDisplay').innerText = checkOutDate;
-
-        // 선택된 날짜 스타일링을 초기화하고 새롭게 반영
-        calendar.getEvents().forEach(event => event.remove());
-
-        if (checkInDate) {
-          // 체크인 날짜 표시
-          calendar.addEvent({
-            start: checkInDate,
-            end: new Date(new Date(checkOutDate).setDate(new Date(checkOutDate).getDate() + 1)).toISOString().slice(0, 10),
-            display: 'background',
-            classNames: ['selected']
-          });
-        }
-
-        if (checkInDate && checkOutDate) {
-          // 체크인과 체크아웃 사이의 날짜 범위 표시
-          calendar.addEvent({
-            start: new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10),
-            end: new Date(checkOutDate).toISOString().slice(0, 10),
-            display: 'background',
-            classNames: ['selected']
-          });
-        }
-      },
-      unselectAuto: false
-    });
-
-    // 초기 상태에서 체크인 및 체크아웃 날짜 반영
-    calendar.addEvent({
-      start: checkInDate,
-      end: new Date(new Date(checkOutDate).setDate(new Date(checkOutDate).getDate() + 1)).toISOString().slice(0, 10),
-      display: 'background',
-      classNames: ['selected']
-    });
-
-    if (checkInDate && checkOutDate) {
-      calendar.addEvent({
-        start: new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10),
-        end: new Date(checkOutDate).toISOString().slice(0, 10),
-        display: 'background',
-        classNames: ['selected']
-      });
-    }
-
-    calendar.render();
-  });
-
-  toggleButton.addEventListener('click', function() {
-    if (calendarDiv.style.display === 'none') {
-      calendarDiv.style.display = 'block';
-      calendar.render(); // FullCalendar를 다시 렌더링
-      toggleButton.textContent = '숨기기'; // 버튼 텍스트 변경
-    } else {
-      calendarDiv.style.display = 'none';
-      toggleButton.textContent = '보이기'; // 버튼 텍스트 변경
-    }
-  });
-
-  function validateForm() {
-    return true; // 폼을 제출할 수 있도록 true 반환
-  }
-</script>
+<script src="/js/campgroundSearch.js"></script>
+<script src="/js/calendar.js"></script>
 </body>
 </html>
