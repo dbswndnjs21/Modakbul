@@ -56,7 +56,7 @@
                     </div>
                 </th:block>
             </div>
-
+		
             <button class="carousel-control-prev" type="button"
                     data-bs-target="#postCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -156,7 +156,13 @@ $(document).ready(function () {
             success: function (comments) {
                 const commentSection = $('.comment-section');
                 commentSection.empty(); // 기존 댓글 제거
-
+				
+           		  // 댓글이 없을 경우 메시지 추가
+                if (comments.length === 0) {
+                    commentSection.append('<p>첫 번째 댓글을 달아주세요</p>');
+                    return; // 더 이상 진행하지 않음
+                }
+                
                 // 댓글을 깊이에 따라 구조화
                 const commentMap = {};
                 comments.forEach(comment => {
@@ -202,7 +208,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                         `);
-
+						
                         commentSection.append(commentElement);
 
                         // 대댓글이 있을 경우 재귀적으로 렌더링
