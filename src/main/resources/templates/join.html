@@ -10,11 +10,12 @@
 </head>
 <body>
 <div class="container">
-    <button id="join1">회원가입</button>
-    <button id="join2">관리자가입</button>
 
     <div id="memberjoin">
-        <h1>가입</h1>
+        <h1>
+        <a th:href="@{/}">모닥불</a>
+        </h1>
+        <h3>회원가입</h3>
         <form id="memberJoinForm" th:action="@{/join}" method="post">
             <div class="form-group">
                 <label for="userName1">이름*</label>
