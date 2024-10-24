@@ -77,7 +77,8 @@
                     appendPosts(data);
                     page++; // 다음 페이지로 넘어감
                 } else {
-                    console.log("더 이상 불러올 게시글이 없습니다.");
+                    alert("더 이상 불러올 게시글이 없습니다.");
+                    isLoading = true;
                 }
             })
             .catch(error => {
