@@ -123,7 +123,7 @@ public class CampgroundController {
                 filteredCampgrounds = campgroundService.searchCampgrounds(query);
             }
             else{
-                filteredCampgrounds = campgroundService.getAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
+                filteredCampgrounds = campgroundService.searchAllCampgrounds(); // 쿼리가 없을 경우 모든 캠핑장 목록 반환
             }
         }
 

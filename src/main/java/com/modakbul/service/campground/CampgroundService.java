@@ -67,6 +67,19 @@ public class CampgroundService {
                 .collect(Collectors.toList());
         return campgroundDtos;
     }
+    public List<CampgroundDto> searchAllCampgrounds() {
+        List<Campground> campgrounds = campgroundRepository.findAll();
+
+        // approve가 2인 캠핑장만 필터링
+        campgrounds = campgrounds.stream()
+                .filter(campground -> campground.getApprove() == 2)
+                .collect(Collectors.toList());
+
+        List<CampgroundDto> campgroundDtos = campgrounds.stream()
+                .map(campground -> new CampgroundDto(campground))
+                .collect(Collectors.toList());
+        return campgroundDtos;
+    }
 
     public CampgroundDto getCampgroundById(Long id) {
         Campground campground = campgroundRepository.findById(id).orElse(null);
@@ -155,6 +168,11 @@ public class CampgroundService {
         // 캠핑장 목록을 가져오고, 이름 또는 설명으로 필터링
         List<Campground> campgrounds = campgroundRepository.findByCampgroundNameContainingIgnoreCase(query);
 
+        // approve가 2인 캠핑장만 필터링
+        campgrounds = campgrounds.stream()
+                .filter(campground -> campground.getApprove() == 2)
+                .collect(Collectors.toList());
+
         List<CampgroundDto> campgroundDtos = campgrounds.stream()
                 .map(campground -> new CampgroundDto(campground))
                 .collect(Collectors.toList());
@@ -164,6 +182,11 @@ public class CampgroundService {
 
     public List<CampgroundDto> searchCampgrounds(String query, Integer locationDetailId) {
         List<Campground> campgrounds = campgroundRepository.findByCampgroundNameContainingAndLocationDetail(query, locationDetailId);
+
+        // approve가 2인 캠핑장만 필터링
+        campgrounds = campgrounds.stream()
+                .filter(campground -> campground.getApprove() == 2)
+                .collect(Collectors.toList());
 
         List<CampgroundDto> campgroundDtos = campgrounds.stream()
                 .map(campground -> new CampgroundDto(campground))
