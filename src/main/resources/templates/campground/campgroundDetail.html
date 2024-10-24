@@ -10,15 +10,13 @@
 <h2>Campground Detail</h2>
 
  예약 폼
-<form action="/booking/new" method="get" onsubmit="return validateForm();">
-    <input type="hidden" id="checkInDate" name="checkInDate">
-    <input type="hidden" id="checkOutDate" name="checkOutDate">
-    <input type="hidden" id="campsiteId" name="campsiteId">
 
     <div class="date-display">
         <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span><br>
         <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
     </div>
+    <button id="toggleButton">보이기</button>
+    <div id='calendar'></div>
 
 <!--    옵션 -->
     <h4>Campground Options</h4>
@@ -37,7 +35,6 @@
         </tr>
         </tbody>
     </table>
-    <div id='calendar'></div>
 
     <!-- 캠핑장 정보 -->
     <p>
@@ -53,7 +50,10 @@
 	</p>
     <p><strong>Address:</strong> <span th:text="${campground.address}">Address</span></p>
     <p><strong>Phone:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>
-
+<form action="/booking/new" method="get" onsubmit="return validateForm();">
+    <input type="hidden" id="checkInDate" name="checkInDate">
+    <input type="hidden" id="checkOutDate" name="checkOutDate">
+    <input type="hidden" id="campsiteId" name="campsiteId">
     <h3>Campsite List</h3>
     <table>
         <thead>
@@ -82,6 +82,6 @@
     </table>
 </form>
 
-<script src="/js/calendar.js"></script>
+<script src="/js/calendarWithPrice.js"></script>
 </body>
 </html>
