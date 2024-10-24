@@ -53,10 +53,12 @@ public class CampgroundController {
                                        @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
                                        @AuthenticationPrincipal CustomUserDetails member,
                                        Model model) {
-    	Long memberId = member.getId();
+        if(member != null){
+            Long memberId = member.getId();
+            model.addAttribute("memberId", memberId);
+        }
         // 캠프사이트 정보
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
-        model.addAttribute("memberId", memberId);
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
 
