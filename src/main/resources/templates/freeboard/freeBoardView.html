@@ -69,13 +69,14 @@
             </button>
         </div>
     </div>
-
+	
     <!-- 이미지가 없을 경우 -->
-    <div th:if="${board.images == null || #lists.isEmpty(board.images)}">
-        <div class="card-body">
-            <p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
-        </div>
+    <div class="card-body">
+    <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
+        <!-- 이미지가 있을 경우 이미지를 출력하는 부분 -->
     </div>
+    <p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
+	</div>
 </div>
 
 
