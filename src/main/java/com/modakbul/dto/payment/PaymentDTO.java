@@ -36,7 +36,11 @@ public class PaymentDTO {
         this.id = payment.getId();
         this.bookingId = payment.getBooking().getId();
         this.memberId = payment.getMember().getId();
-        this.memberCouponId = (long) payment.getMemberCoupon().getId();
+        if (payment.getMemberCoupon() == null) {
+            this.memberCouponId = 0L;
+        } else {
+            this.memberCouponId = (long) payment.getMemberCoupon().getId();
+        }
         this.orderNumber = payment.getOrderNumber();
         this.amount = payment.getAmount();
         this.productName = payment.getProductName();
