@@ -20,12 +20,13 @@ document.addEventListener('DOMContentLoaded', function () {
     maxDate.setDate(today.getDate() + 92); // 오늘 날짜로부터 92일 후
 
     // 날짜를 input 요소에 설정
-    document.getElementById('checkInDate').value = checkInDate;
-    document.getElementById('checkOutDate').value = checkOutDate;
+    document.getElementById('checkInDate').value = formatDate(new Date(checkInDate));
+    document.getElementById('checkOutDate').value = formatDate(new Date(checkOutDate));
 
     // 화면에 표시될 날짜 설정
     document.getElementById('checkInDisplay').innerText = formatDate(new Date(checkInDate));
     document.getElementById('checkOutDisplay').innerText = formatDate(new Date(checkOutDate));
+
 
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
