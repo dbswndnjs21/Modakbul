@@ -19,6 +19,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     int countByMemberAndBookingStatusAndCheckOutDateBefore(Member member, int bookingStatus, LocalDateTime checkOutDate);
     List<Booking> findAllByMemberId(Long memberId);
 
+    //1인 것만 체크
     @Query("SELECT b.campsite FROM Booking b WHERE b.campground.id = :campgroundId " +
             "AND b.bookingStatus = 1 " + // 예약 상태가 확정된 경우
             "AND (b.checkInDate < :checkOutDate AND b.checkOutDate > :checkInDate)")
