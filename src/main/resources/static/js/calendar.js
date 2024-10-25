@@ -15,6 +15,10 @@ document.addEventListener('DOMContentLoaded', function () {
     checkInDate = urlParams.get('checkInDate') || new Date().toISOString().slice(0, 10); // 오늘 날짜
     checkOutDate = urlParams.get('checkOutDate') || new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10); // 내일 날짜
 
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 92); // 오늘 날짜로부터 92일 후
+
     // 날짜를 input 요소에 설정
     document.getElementById('checkInDate').value = checkInDate;
     document.getElementById('checkOutDate').value = checkOutDate;
@@ -27,23 +31,26 @@ document.addEventListener('DOMContentLoaded', function () {
         initialView: 'dayGridMonth',
         selectable: true,
         select: function (info) {
-            var startDate = info.startStr;
-
+            var startDateStr = info.startStr;
+            var startDate = new Date(info.startStr);
+            if (startDate < today || startDate > maxDate) {
+                return;
+            }
             // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
             if (isCheckOutSelected) {
-                checkInDate = startDate;
+                checkInDate = startDateStr;
                 checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
                 isCheckOutSelected = false;
             } else {
                 // 체크인 날짜가 아직 선택되지 않은 경우 체크인 날짜로 설정
                 if (!isCheckInSelected) {
-                    checkInDate = startDate;
+                    checkInDate = startDateStr;
                     checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10); // 체크아웃을 1박 2일 후로 설정
                     isCheckInSelected = true; // 체크인 날짜가 설정되었음을 표시
                 } else {
                     // 체크아웃 날짜는 체크인 이후 날짜만 선택 가능
                     if (new Date(startDate) > new Date(checkInDate)) {
-                        checkOutDate = startDate;
+                        checkOutDate = startDateStr;
                         isCheckOutSelected = true; // 체크아웃이 선택되었음을 표시
                     }
                 }
