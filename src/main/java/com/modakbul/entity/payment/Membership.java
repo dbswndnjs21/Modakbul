@@ -19,7 +19,6 @@ public class Membership {
     private int id;
     private String membershipName;
     private int discountRate;
-    private int validPeriod;
 
     @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
     private List<Member> members;

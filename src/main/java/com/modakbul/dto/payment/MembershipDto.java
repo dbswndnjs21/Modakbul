@@ -14,7 +14,6 @@ public class MembershipDto {
     private int id; // PK
     private String membershipName; // 멤버십 이름
     private int discountRate; // 할인율
-    private int validPeriod; // 유효 기간
 
     // DTO에서 엔티티로 변환하는 메서드
     public Membership toEntity() {
@@ -22,7 +21,6 @@ public class MembershipDto {
                 .id(this.id) // PK
                 .membershipName(this.membershipName)
                 .discountRate(this.discountRate)
-                .validPeriod(this.validPeriod)
                 .build();
     }
 
@@ -31,6 +29,5 @@ public class MembershipDto {
         this.id = membership.getId();
         this.membershipName = membership.getMembershipName();
         this.discountRate = membership.getDiscountRate();
-        this.validPeriod = membership.getValidPeriod();
     }
 }

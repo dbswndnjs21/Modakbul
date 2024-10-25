@@ -45,6 +45,11 @@ public class CampgroundController {
         this.campgroundOptionLinkService = campgroundOptionLinkService;
         this.campgroundSuboptionService = campgroundSuboptionService1;
     }
+
+    @ModelAttribute
+    public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
+        model.addAttribute("member", member);
+    }
     
     @GetMapping("/{id}")
     public String showCampgroundDetail(@PathVariable("id") Long id,

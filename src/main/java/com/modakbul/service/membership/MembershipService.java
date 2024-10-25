@@ -65,6 +65,7 @@ public class MembershipService {
                         memberCoupon.setCoupon(coupon);
                         memberCoupon.setStartDate(startDateTime);
                         memberCoupon.setEndDate(endDateTime);
+                        memberCoupon.setUsedAt(LocalDateTime.of(1970, 1, 1, 0, 0));
 
                         // MemberCoupon 저장
                         memberCouponRepository.save(memberCoupon);

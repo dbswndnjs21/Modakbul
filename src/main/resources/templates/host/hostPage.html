@@ -38,13 +38,14 @@
 
     <hr>
     <h1>캠핑장 목록</h1>
+    <a href="/campgrounds/add">캠핑장 추가하기</a>
     <table border="1">
         <thead>
         <tr>
             <th>ID</th>
             <th>캠핑장 이름</th>
             <th>주소</th>
-            <th>전화번호</th>
+            <th>객실 관리</th>
             <th>승인 상태</th>
             <th>작업</th>
         </tr>
@@ -53,9 +54,15 @@
         <!-- campgroundsByHostId 리스트를 순회하며 각 캠핑장 정보를 출력 -->
         <tr th:each="camp, iterStat : ${campground}" th:if="${iterStat.index < 10}">
             <td th:text="${camp.id}"></td>
-            <td th:text="${camp.campgroundName}"></td>
+            <td>
+                <a th:href="@{'/campgrounds/edit/' + ${camp.id}}" th:text="${camp.campgroundName}"></a>
+            </td>
+
             <td th:text="${camp.address}"></td>
-            <td th:text="${camp.phone}"></td>
+            <td>
+            <a th:href="@{'/campsite/list?campgroundId=' + ${camp.id}}" th:text="객실수정"></a>
+            </td>
+
             <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
             <!-- approve가 0일 때 승인신청 버튼 표시 -->
             <td th:if="${camp.approve == 0}">

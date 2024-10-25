@@ -54,6 +54,11 @@ public class JoinController {
                                            @RequestParam String accountHolder) {
         // 현재 로그인한 사용자 정보를 가져와 Member 객체를 찾음
         Member member = memberService.findByUserId(user.getUsername());
+        member.getId();
+        member.getMembership();
+        member.getUserName();
+        user.getUsername();
+
 
         if (member == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Member not found");
@@ -72,7 +77,9 @@ public class JoinController {
         Host host = Host.builder().member(member).bankName(bankName).account(account).accountHolder(accountHolder).build();
 
         // Host 정보를 저장
+        hostService.save(host);
         memberService.saveHost(host.getMember());
+
 
         return ResponseEntity.ok("호스트 등록이 완료되었습니다."); // 성공 시 메시지를 포함한 HTTP 200 응답
     }
