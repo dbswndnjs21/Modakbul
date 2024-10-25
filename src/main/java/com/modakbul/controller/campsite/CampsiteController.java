@@ -2,19 +2,20 @@ package com.modakbul.controller.campsite;
 
 import com.modakbul.dto.campground.CampgroundDto;
 import com.modakbul.dto.campsite.CampsiteDto;
-import com.modakbul.entity.campground.Campground;
-import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.dto.campsite.CampsitePriceDto;
+import com.modakbul.entity.campsite.CampsitePrice;
 import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CampsiteController {
@@ -38,6 +39,19 @@ public class CampsiteController {
         model.addAttribute("campsite", campsite); // 모델에 추가
         model.addAttribute("campgroundId", campgroundId);
         return "campsite/campsiteForm";  // CampsiteForm.html 뷰
+    }
+
+    @GetMapping("/api/campsite/list")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getCampsiteList(@RequestParam("campgroundId") Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate) {
+        List<CampsiteDto> campsites = campsiteService.findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
+        List<CampsitePriceDto> campsitePrices = campsiteService.findPricesDtoByCampsiteIdAndDateRange(campgroundId, checkInDate, checkOutDate);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("campsites", campsites);
+        response.put("campsitePrices", campsitePrices);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/campsite/add")

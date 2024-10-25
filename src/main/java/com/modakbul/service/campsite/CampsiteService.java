@@ -1,6 +1,7 @@
 package com.modakbul.service.campsite;
 
 import com.modakbul.dto.campsite.CampsiteDto;
+import com.modakbul.dto.campsite.CampsitePriceDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.campsite.CampsitePrice;
@@ -102,6 +103,13 @@ public class CampsiteService {
     public List<CampsitePrice> findPricesByCampsiteIdAndDateRange(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate) {
         return campsitePriceRepository.findByCampsiteIdAndIdPriceDateBetween(campsiteId, checkInDate, checkOutDate.minusDays(1));
     }
+    public List<CampsitePriceDto> findPricesDtoByCampsiteIdAndDateRange(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate) {
+        List<CampsitePrice> campsitePrices = campsitePriceRepository.findByCampsiteIdAndIdPriceDateBetween(campsiteId, checkInDate, checkOutDate.minusDays(1));
+        return campsitePrices.stream()
+                .map(CampsitePriceDto::new)
+                .collect(Collectors.toList());
+    }
+
 
     public int calculateTotalPrice(Long campsiteId, LocalDate checkInDate, LocalDate checkOutDate){
         List<CampsitePrice> prices = findPricesByCampsiteIdAndDateRange(campsiteId, checkInDate, checkOutDate);

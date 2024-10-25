@@ -51,6 +51,7 @@
     <!-- 캠핑장 정보 -->
     <div class="mb-4">
         <p><strong>캠핑장 이름:</strong>
+        <input type="hidden" id="campgroundId" th:value="${campground.id}">캠핑장 이름</input>
             <span th:text="${campground.campgroundName}">Camp Name</span>
             <a th:if="${memberId == null}" class="btn btn-link" style="margin-left: 10px;">
             </a>
@@ -82,17 +83,17 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="campsite : ${campsites}">
+            <tr th:each="campsite : ${campsites}" id="campsite-row-${campsite.id}">
                 <td th:text="${campsite.id}">Campsite ID</td>
                 <td th:text="${campsite.campsiteName}">Campsite Name</td>
                 <td th:text="${campsite.campsiteDescription}">Description</td>
-                <td th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
+                <td class="total-price" th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
                 <td>
-                    <button type="button" class="btn btn-primary"
+                    <button type="button" class="btn btn-primary booking-btn"
                             th:if="${!#lists.contains(bookedCampsites, campsite)}"
                             th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
                     <span th:if="${#lists.contains(bookedCampsites, campsite)}"
-                          class="text-danger">예약 불가</span>
+                          class="text-danger booking-status">예약 불가</span>
                 </td>
             </tr>
             </tbody>
@@ -102,5 +103,62 @@
 <!-- 푸터 영역 -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
 <script src="/js/calendar.js"></script>
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- AJAX 요청을 보낼 함수 -->
+<script>
+    $(document).ready(function () {
+        $('#checkOutDate').on('change', function () {
+            var checkInDate = $('#checkInDate').val();
+            var checkOutDate = $(this).val();
+            var campgroundId = $('#campgroundId').val();
+
+            // checkInDate 유효성 확인
+            if (!checkInDate) {
+                alert("먼저 체크인 날짜를 선택해 주세요.");
+                return;
+            }
+
+            $.ajax({
+                url: '/api/campsite/list',
+                type: 'GET',
+                data: {
+                    checkInDate: checkInDate,
+                    checkOutDate: checkOutDate,
+                    campgroundId: campgroundId
+                },
+                success: function (response) {
+                    console.log(response)
+                    updateCampsiteTable(response.campsites, response.campsitePrices);
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+
+    function updateCampsiteTable(campsites, campsitePrices) {
+        campsites.forEach(campsite => {
+            let row = $('#campsite-row-' + campsite.id);
+            let price = campsitePrices.find(price => price.campsiteId === campsite.id);
+
+            // 가격 업데이트
+            row.find('.total-price').text('총가격: ' + (price ? price.totalPrice + ' 원' : '가격 없음'));
+
+            // 예약 가능 여부 업데이트
+            if (campsite.isBooked) {
+                row.find('.booking-status').text('예약 불가').addClass('text-danger').show();
+                row.find('.booking-btn').hide();
+            } else {
+                row.find('.booking-status').hide();
+                row.find('.booking-btn').show();
+            }
+        });
+    }
+
+</script>
+
+
 </body>
 </html>
