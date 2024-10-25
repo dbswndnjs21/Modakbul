@@ -83,7 +83,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="campsite : ${campsites}" id="campsite-row-${campsite.id}">
+            <tr th:each="campsite : ${campsites}" th:id="'campsite-row-' + ${campsite.id}">
                 <td th:text="${campsite.id}">Campsite ID</td>
                 <td th:text="${campsite.campsiteName}">Campsite Name</td>
                 <td th:text="${campsite.campsiteDescription}">Description</td>
@@ -102,62 +102,9 @@
 </div>
 <!-- 푸터 영역 -->
 <footer th:replace="~{fragments/footer :: footer}"></footer>
-<script src="/js/calendar.js"></script>
-<!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- AJAX 요청을 보낼 함수 -->
-<script>
-    $(document).ready(function () {
-        $('#checkOutDate').on('change', function () {
-            var checkInDate = $('#checkInDate').val();
-            var checkOutDate = $(this).val();
-            var campgroundId = $('#campgroundId').val();
-
-            // checkInDate 유효성 확인
-            if (!checkInDate) {
-                alert("먼저 체크인 날짜를 선택해 주세요.");
-                return;
-            }
-
-            $.ajax({
-                url: '/api/campsite/list',
-                type: 'GET',
-                data: {
-                    checkInDate: checkInDate,
-                    checkOutDate: checkOutDate,
-                    campgroundId: campgroundId
-                },
-                success: function (response) {
-                    console.log(response)
-                    updateCampsiteTable(response.campsites, response.campsitePrices);
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
-    });
-
-    function updateCampsiteTable(campsites, campsitePrices) {
-        campsites.forEach(campsite => {
-            let row = $('#campsite-row-' + campsite.id);
-            let price = campsitePrices.find(price => price.campsiteId === campsite.id);
-
-            // 가격 업데이트
-            row.find('.total-price').text('총가격: ' + (price ? price.totalPrice + ' 원' : '가격 없음'));
-
-            // 예약 가능 여부 업데이트
-            if (campsite.isBooked) {
-                row.find('.booking-status').text('예약 불가').addClass('text-danger').show();
-                row.find('.booking-btn').hide();
-            } else {
-                row.find('.booking-status').hide();
-                row.find('.booking-btn').show();
-            }
-        });
-    }
-
-</script>
+<script src="/js/calendarWithPrice.js"></script>
+<!-- jQuery -->
 
 
 </body>

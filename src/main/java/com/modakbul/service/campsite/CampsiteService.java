@@ -10,11 +10,15 @@ import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campsite.CampsitePriceRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,5 +121,25 @@ public class CampsiteService {
         return prices.stream()
                 .mapToInt(CampsitePrice::getPrice)  // 각 가격을 추출
                 .sum();  // 총합 계산
+    }
+
+    public Map<Long, Integer> getCampsiteTotalPrices(Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate){
+        List<CampsiteDto> bookedCampsiteDtos = findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
+        List<CampsiteDto> campsiteDtos = findCampsitesByCampgroundId(campgroundId);
+
+        // 예약된 캠프사이트 ID를 Set으로 변환하여 빠른 조회 가능
+        Set<Long> bookedCampsiteIds = bookedCampsiteDtos.stream()
+                .map(CampsiteDto::getId)
+                .collect(Collectors.toSet());
+
+        Map<Long, Integer> map = new HashMap<>();
+        for (CampsiteDto campsiteDto : campsiteDtos) {
+            if (bookedCampsiteIds.contains(campsiteDto.getId())) {
+                map.put(campsiteDto.getId(), null);
+            }else{
+                map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
+            }
+        }
+        return map;
     }
 }

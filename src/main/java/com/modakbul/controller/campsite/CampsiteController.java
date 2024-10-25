@@ -5,6 +5,7 @@ import com.modakbul.dto.campsite.CampsiteDto;
 import com.modakbul.dto.campsite.CampsitePriceDto;
 import com.modakbul.entity.campsite.CampsitePrice;
 import com.modakbul.service.campground.CampgroundService;
+import com.modakbul.service.campsite.CampsitePriceService;
 import com.modakbul.service.campsite.CampsiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ public class CampsiteController {
     private CampsiteService campsiteService;
     @Autowired
     private CampgroundService campgroundService;
+    @Autowired
+    private CampsitePriceService campsitePriceService;
 
     @GetMapping("/campsite/list")
     public String showCampsiteList(@RequestParam("campgroundId") Long campgroundId, Model model) {
@@ -43,15 +46,10 @@ public class CampsiteController {
 
     @GetMapping("/api/campsite/list")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> getCampsiteList(@RequestParam("campgroundId") Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate) {
-        List<CampsiteDto> campsites = campsiteService.findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
-        List<CampsitePriceDto> campsitePrices = campsiteService.findPricesDtoByCampsiteIdAndDateRange(campgroundId, checkInDate, checkOutDate);
+    public ResponseEntity<Map<Long, Integer>> getCampsiteList(@RequestParam("campgroundId") Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate) {
+        Map<Long, Integer> map = campsiteService.getCampsiteTotalPrices(campgroundId,checkInDate,checkOutDate);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("campsites", campsites);
-        response.put("campsitePrices", campsitePrices);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(map);
     }
 
     @PostMapping("/campsite/add")
