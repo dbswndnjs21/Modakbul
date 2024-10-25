@@ -11,7 +11,6 @@ import com.modakbul.service.campground.CampgroundService;
 import com.modakbul.service.campground.CampgroundSuboptionService;
 import com.modakbul.service.campground.LocationService;
 import com.modakbul.service.campsite.CampsiteService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;  // 여기서 @Controller 사용
@@ -62,8 +61,11 @@ public class CampgroundController {
             Long memberId = member.getId();
             model.addAttribute("memberId", memberId);
         }
-        // 캠프사이트 정보
+
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
+        List<CampsiteDto> bookedCampsites = campsiteService.findBookedCampsitesByCampgroundId(id,checkInDate,checkOutDate);
+
+        model.addAttribute("bookedCampsites", bookedCampsites); // 예약 가능한 캠프사이트 추가
         model.addAttribute("campground", campgroundService.getCampgroundById(id));
         model.addAttribute("campsites", campsites);
 

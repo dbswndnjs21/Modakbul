@@ -88,7 +88,11 @@
                 <td th:text="${campsite.campsiteDescription}">Description</td>
                 <td th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
                 <td>
-                    <button type="button" class="btn btn-primary" th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
+                    <button type="button" class="btn btn-primary"
+                            th:if="${!#lists.contains(bookedCampsites, campsite)}"
+                            th:onclick="'setSelectedCampsite(' + ${campsite.id} + ');'">예약</button>
+                    <span th:if="${#lists.contains(bookedCampsites, campsite)}"
+                          class="text-danger">예약 불가</span>
                 </td>
             </tr>
             </tbody>

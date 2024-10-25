@@ -1,20 +1,19 @@
 package com.modakbul.service.campsite;
 
 import com.modakbul.dto.campsite.CampsiteDto;
-import com.modakbul.dto.campsite.CampsitePriceDto;
 import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.campsite.CampsitePrice;
 import com.modakbul.entity.campsite.CampsitePriceId;
+import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.repository.campsite.CampsitePriceRepository;
 import com.modakbul.repository.campsite.CampsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +22,8 @@ public class CampsiteService {
     private CampsiteRepository campsiteRepository;
     @Autowired
     private CampsitePriceRepository campsitePriceRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<CampsiteDto> CampsiteListToCampsiteDtoList(List<Campsite> campsites){
         return campsites.stream()
@@ -32,6 +33,19 @@ public class CampsiteService {
 
     public List<CampsiteDto> findByCampgroundId(Long CampgroundId) {
         List<Campsite> campsites = campsiteRepository.findByCampgroundId(CampgroundId);
+        return campsites.stream()
+                .map(CampsiteDto::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<CampsiteDto> findBookedCampsitesByCampgroundId(Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate) {
+        // 이미 예약된 campsite들의 ID를 조회
+        // LocalDate를 LocalDateTime으로 변환
+        LocalDateTime checkInDateTime = checkInDate.atStartOfDay();
+        LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay().plusDays(1); // 체크아웃 날짜는 그날 00:00을 의미하므로 +1일 추가
+
+        List<Campsite> campsites = bookingRepository.findBookingByCampsiteIds(campgroundId, checkInDateTime, checkOutDateTime);
+
         return campsites.stream()
                 .map(CampsiteDto::new)
                 .collect(Collectors.toList());
