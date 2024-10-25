@@ -59,23 +59,30 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="camp : ${camp}" th:if="${camp.approve != 0}">
+        <tr th:each="camp : ${camp}">
             <td th:text="${camp.id}"></td>
             <td>
-                <a th:href="@{/campgrounds/{id}(id=${camp.id}, checkInDate=${today}, checkOutDate=${tomorrow})}" target="_blank" th:text="${camp.campgroundName}"></a>
+                <a th:href="@{/campgrounds/{id}(id=${camp.id}, checkInDate=${today}, checkOutDate=${tomorrow})}"
+                   target="_blank" th:text="${camp.campgroundName}"></a>
             </td>
             <td th:text="${camp.address}"></td>
             <td th:text="${camp.phone}"></td>
             <td th:text="${camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : '')}"></td>
             <td>
-                <form th:action="@{/admin/approve/{id}(id=${camp.id})}" method="post" onsubmit="return confirm('이 캠핑장을 승인하시겠습니까?');">
-                    <input type="hidden" name="_method" value="POST"/> <!-- 필요한 경우 -->
-                    <button type="submit" th:if="${camp.approve == 1}">승인</button>
+                <form th:action="@{/admin/approve/{id}(id=${camp.id})}" method="post" th:if="${camp.approve == 1}" onsubmit="return confirm('이 캠핑장을 승인하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <button type="submit">승인</button>
+                </form>
+                <form th:action="@{/admin/approveCancel/{id}(id=${camp.id})}" method="post" th:if="${camp.approve == 2}" onsubmit="return confirm('이 캠핑장 승인을 취소하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <button type="submit">승인 취소</button>
                 </form>
             </td>
         </tr>
         </tbody>
     </table>
+
+
 
 
 

@@ -85,4 +85,9 @@ public class AdminPageController {
         campgroundService.approveCampground(id);  // 캠핑장 승인 처리
         return "redirect:/admin";  // 처리 결과 반환
     }
+    @PostMapping("/approveCancel/{id}")
+    public String disApproveCampground(@PathVariable Long id) {
+        campgroundService.disApproveCampgorund(id);  // 캠핑장 승인 처리
+        return "redirect:/admin";  // 처리 결과 반환
+    }
 }

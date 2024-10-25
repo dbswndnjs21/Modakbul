@@ -254,6 +254,13 @@ public class CampgroundService {
         campgroundRepository.save(campground);  // 변경된 상태를 저장
     }
 
+    public void disApproveCampgorund(Long id){
+        Campground campground = campgroundRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid campground ID: " + id));
+        campground.setApprove(1);  // 승인 상태를 1로 변경
+        campgroundRepository.save(campground);  // 변경된 상태를 저장
+    }
+
     public String getLocationDetailSigungu(Long campgroundId) {
         CampgroundDto campgroundDto = getCampgroundById(campgroundId);
         LocationDetail locationDetail = locationDetailRepository.findById(campgroundDto.getLocationDetailId());
