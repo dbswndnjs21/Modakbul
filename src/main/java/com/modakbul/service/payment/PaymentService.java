@@ -138,15 +138,20 @@ public class PaymentService {
         log.info("결제승인 응답객체: " + approveResponse);
 
         Booking booking = bookingRepository.findById(bookingId);
-        Coupon coupon = couponService.findById(couponId);
-        MemberCoupon memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
+        
+        MemberCoupon memberCoupon = null;
+        if (couponId != 0) {
+            Coupon coupon = couponService.findById(couponId);
+            memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
 
-        memberCoupon.setUsed(isCouponUsed);
-        memberCouponService.save(memberCoupon);
+            memberCoupon.setUsed(isCouponUsed);
+            memberCoupon.setUsedAt(LocalDateTime.now());
+            memberCouponService.save(memberCoupon);
+        }
 
         Payment payment = Payment.builder()
                 .member(member)                                          // 결제한 회원
-                .memberCoupon(memberCoupon)
+                .memberCoupon(memberCoupon)                                 //
                 .orderNumber(Long.parseLong(orderNumber))                // 주문번호 설정
                 .amount(approveResponse.getAmount().getTotal())          // 총 결제 금액
                 .productName(approveResponse.getItem_name())             // 승인 응답에서 받은 상품명
@@ -188,11 +193,15 @@ public class PaymentService {
         Optional<Booking> byId = bookingRepository.findById(bookingId);
         Booking booking = byId.get();
 
-        Coupon coupon = couponService.findById(couponId);
-        MemberCoupon memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
+        MemberCoupon memberCoupon = null;
+        if (couponId != 0) {
+            Coupon coupon = couponService.findById(couponId);
+            memberCoupon = memberCouponService.findByMemberAndCoupon(member, coupon);
 
-        memberCoupon.setUsed(isCouponUsed);
-        memberCouponService.save(memberCoupon);
+            memberCoupon.setUsed(isCouponUsed);
+            memberCoupon.setUsedAt(LocalDateTime.now());
+            memberCouponService.save(memberCoupon);
+        }
 
         Payment paymentEntity = new Payment();
         paymentEntity.setProductName(paymentData.getName());
