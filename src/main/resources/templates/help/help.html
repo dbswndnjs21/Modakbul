@@ -95,10 +95,10 @@
         <p>고객행복센터: <strong>070-8240-3211</strong> (오전 9시 ~ 오후 6시 운영)</p>
         <p>카카오톡 문의: <strong>Modakbul</strong> (24시간 운영)</p>
         <div th:if="${member != null}">
-            <a th:if="${role == 'ADMIN'}" th:href="@{/chat/chatList(campgroundId=9999)}" class="chat-btn orange-button" style="margin-left: 10px;">
+            <a th:if="${role == 'ADMIN'}" th:href="@{/chat/chatList(campgroundId=1)}" class="chat-btn orange-button" style="margin-left: 10px;">
                 문의내역조회
             </a>
-            <a th:if="${role != 'ADMIN'}" th:href="@{/chat/chatroom/9999}" class="chat-btn orange-button" style="margin-left: 10px;">
+            <a th:if="${role != 'ADMIN'}" th:href="@{/chat/chatroom/1}" class="chat-btn orange-button" style="margin-left: 10px;">
                 1:1문의하기
             </a>
         </div>

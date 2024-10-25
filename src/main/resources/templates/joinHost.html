@@ -49,6 +49,7 @@
                 success: function(response) {
                     alert("호스트 등록이 완료되었습니다."); // 성공 시 알림
                     // 필요시 페이지 리다이렉션 추가
+                    window.location.href = "/"; // 성공 시 home으로 리다이렉션
                 },
                 error: function(xhr) {
                     alert("오류 발생: " + xhr.responseText); // 오류 처리
