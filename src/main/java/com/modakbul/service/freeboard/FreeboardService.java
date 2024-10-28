@@ -146,7 +146,7 @@ public class FreeboardService {
 	                .build();
 	    }
 	    
-	    public void deleteBoard(Long id, String filePath) {
+	    public void deleteBoard(Long id) {
 	    	
 	    	 // 게시글 조회
 	        Optional<Freeboard> freeboardOpt = freeboardRepository.findById(id);
@@ -159,9 +159,8 @@ public class FreeboardService {
 	        // 관련 이미지 삭제 (옵션)
 	        List<FreeboardImage> images = freeboardImageRepository.findByFreeboardId(freeboard.getId());
 	        for (FreeboardImage image : images) {
-	            // 이미지 파일 시스템에서 삭제 (필요 시)
-	             File file = new File(filePath +"\\"+ image.getSaveFileName());
-	             file.delete();
+	        	// S3에서 이미지 삭제
+	            fileUploadService.deleteFile(image.getSaveFileName());
 	            // 데이터베이스에서 이미지 삭제
 	            freeboardImageRepository.delete(image);
 	        }
@@ -321,7 +320,7 @@ public class FreeboardService {
 	        freeboard.setTitle(freeboardDto.getTitle());
 	        freeboard.setContent(freeboardDto.getContent());
 	        // 추가적으로 필요한 필드 업데이트
-
+	        
 	        // 파일 저장
 	        if (files != null && !files.isEmpty()) {
 	            saveFiles(files, freeboard, filePath); // 저장 메소드 호출
