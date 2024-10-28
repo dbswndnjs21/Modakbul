@@ -17,16 +17,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FreeboardDeleteController {
 	private final FreeboardService freeboardService;
-	@Value("${file.path}")
-	private String filePath;
 	
 	@GetMapping("/freeboard/freeBoardDelete/{id}")
     public String board(@AuthenticationPrincipal CustomUserDetails member, Model model, @PathVariable("id") Long id) {
         if (member != null) {
             model.addAttribute("member", member);
         }
-        freeboardService.deleteBoard(id, filePath);
-
+        freeboardService.deleteBoard(id);
+        
         // 서비스 메서드 호출하여 게시판 리스트 및 이미지 가져오기
         
         return "redirect:/freeboard/freeBoardList";

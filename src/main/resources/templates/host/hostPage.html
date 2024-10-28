@@ -24,7 +24,7 @@
         <tr th:each="paymentSearch : ${paymentSearch}">
             <td th:text="${paymentSearch.getProductName()}"></td>
             <td th:text="${paymentSearch.getApproveDate()}"></td>
-            <td th:text="${paymentSearch.getAmount()}"></td>
+            <td th:text="${paymentSearch.getAmount()} + 원"></td>
         </tr>
         </tbody>
         <tfoot>
@@ -38,7 +38,7 @@
 
     <hr>
     <h1>캠핑장 목록</h1>
-    <a href="/campgrounds/add">캠핑장 추가하기</a>
+    <a class="add-btn" href="/campgrounds/add">캠핑장 추가하기</a>
     <table border="1">
         <thead>
         <tr>

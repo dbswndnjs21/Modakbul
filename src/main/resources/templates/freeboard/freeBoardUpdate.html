@@ -59,12 +59,11 @@
 			<div id="preview" class="d-flex flex-wrap">
 				<div th:each="image : ${board.images}" class="preview-container">
 					<img th:if="${board.images != null and board.images.size() > 0}"
-						th:src="@{/upload/{saveFileName}(saveFileName=${image.saveFileName})}"
-						alt="미리보기 이미지" th:alt="${image.fileName}" />
+						th:src="${image.imagePath}" alt="미리보기 이미지"
+						th:alt="${image.fileName}" />
 					<button type="button" class="remove-btn"
 						th:data-image-name="${image.saveFileName}"
 						onclick="removeImage(this)">X</button>
-					<!-- 이미지 삭제 버튼 -->
 				</div>
 			</div>
 

@@ -35,27 +35,27 @@
         </ul>
     </div>
 
-    <!-- 이미지가 있을 경우 -->
-    <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
-        <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <th:block th:each="image, iterStat : ${board.images}">
-                    <button type="button" data-bs-target="#postCarousel"
-                            th:data-bs-slide-to="${iterStat.index}"
-                            th:classappend="${iterStat.index == 0} ? 'active'"
-                            th:aria-current="${iterStat.index == 0} ? 'true' : 'false'"
-                            th:aria-label="'Slide ' + ${iterStat.index + 1}"></button>
-                </th:block>
-            </div>
-
-            <div class="carousel-inner">
-                <th:block th:each="image, iterStat : ${board.images}">
-                    <div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'">
-                        <img th:src="@{/upload/{fileName}(fileName=${image?.saveFileName ?: 'default.jpg'})}"
-                             class="d-block w-100" th:alt="'Slide ' + ${iterStat.index + 1}">
-                    </div>
-                </th:block>
-            </div>
+    <!-- S3에 저장된 이미지가 있을 경우 -->
+        <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
+            <div id="postCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <th:block th:each="image, iterStat : ${board.images}">
+                        <button type="button" data-bs-target="#postCarousel"
+                                th:data-bs-slide-to="${iterStat.index}"
+                                th:classappend="${iterStat.index == 0} ? 'active'"
+                                th:aria-current="${iterStat.index == 0} ? 'true' : 'false'"
+                                th:aria-label="'Slide ' + ${iterStat.index + 1}"></button>
+                    </th:block>
+                </div>
+				
+                <div class="carousel-inner">
+                    <th:block th:each="image, iterStat : ${board.images}">
+                        <div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'">
+                            <!-- S3에서 이미지 가져오기 -->
+                            <img th:src="${image.imagePath}" class="d-block w-100 clickable-image" th:alt="'Slide ' + ${iterStat.index + 1}">
+                        </div>
+                    </th:block>
+                </div>
 		
             <button class="carousel-control-prev" type="button"
                     data-bs-target="#postCarousel" data-bs-slide="prev">
@@ -75,7 +75,7 @@
     <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
         <!-- 이미지가 있을 경우 이미지를 출력하는 부분 -->
     </div>
-    <p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
+    <p class="card-text" id="boardContent" th:text="${board.content}">게시글 상세 내용</p>
 	</div>
 </div>
 
@@ -109,7 +109,21 @@
 			<div class="comment-section mt-4"></div>
 		</div>
 	</section>
-
+	<!-- 이미지 확대보기 모달 -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">이미지 확대보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" class="img-fluid" alt="확대된 이미지">
+                </div>
+            </div>
+        </div>
+    </div>
+	
 	<footer th:replace="~{fragments/footer :: footer}"></footer>
 
 	<script
@@ -119,6 +133,19 @@ $(document).ready(function () {
     const boardId = /*[[${board.id}]]*/ null;
     const memberId = /*[[${member.id}]]*/ null;
     const userId = /*[[${userId}]]*/ null; 
+    
+ 	// 게시글 내용을 개행 및 공백 변환
+    const content = $("#boardContent").text();
+    const formattedContent = content
+        .replace(/\n/g, "<br>")         // 줄바꿈을 <br>로 변환
+        .replace(/  /g, "&nbsp;&nbsp;"); // 공백 두 칸을 &nbsp;로 변환
+    $("#boardContent").html(formattedContent);
+	 // 이미지 클릭 시 모달 열기
+    $('.clickable-image').on('click', function () {
+        const imageUrl = $(this).attr('src'); // 클릭한 이미지의 URL
+        $('#modalImage').attr('src', imageUrl); // 모달 이미지 설정
+        $('#imageModal').modal('show'); // 모달 열기
+    });
     
 	 // 댓글 보기 버튼 클릭 이벤트
     $("#toggle-comments-btn").click(function () {
