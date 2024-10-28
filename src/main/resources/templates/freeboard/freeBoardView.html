@@ -75,7 +75,7 @@
     <div th:if="${board.images != null && !#lists.isEmpty(board.images)}">
         <!-- 이미지가 있을 경우 이미지를 출력하는 부분 -->
     </div>
-    <p class="card-text" th:text="${board.content}">게시글 상세 내용</p>
+    <p class="card-text" id="boardContent" th:text="${board.content}">게시글 상세 내용</p>
 	</div>
 </div>
 
@@ -134,6 +134,12 @@ $(document).ready(function () {
     const memberId = /*[[${member.id}]]*/ null;
     const userId = /*[[${userId}]]*/ null; 
     
+ 	// 게시글 내용을 개행 및 공백 변환
+    const content = $("#boardContent").text();
+    const formattedContent = content
+        .replace(/\n/g, "<br>")         // 줄바꿈을 <br>로 변환
+        .replace(/  /g, "&nbsp;&nbsp;"); // 공백 두 칸을 &nbsp;로 변환
+    $("#boardContent").html(formattedContent);
 	 // 이미지 클릭 시 모달 열기
     $('.clickable-image').on('click', function () {
         const imageUrl = $(this).attr('src'); // 클릭한 이미지의 URL
