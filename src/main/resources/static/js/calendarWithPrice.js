@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // URL에서 체크인, 체크아웃 날짜 가져오기
     const urlParams = new URLSearchParams(window.location.search);
-    checkInDate = urlParams.get('checkInDate') || new Date().toISOString().slice(0, 10);
-    checkOutDate = urlParams.get('checkOutDate') || new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10);
+    checkInDate = urlParams.get('checkInDate') || new Date().toISOString().slice(0, 10); // 오늘 날짜
+    checkOutDate = urlParams.get('checkOutDate') || new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().slice(0, 10); // 내일 날짜
 
     const today = new Date();
     const maxDate = new Date();
@@ -24,47 +24,68 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('checkOutDate').value = checkOutDate;
 
     // 화면에 표시될 날짜 설정
-    document.getElementById('checkInDisplay').innerText = formatDate(new Date(checkInDate));
-    document.getElementById('checkOutDisplay').innerText = formatDate(new Date(checkOutDate));
+    document.getElementById('checkInDisplay').innerText = checkInDate;
+    document.getElementById('checkOutDisplay').innerText = checkOutDate;
 
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         selectable: true,
         select: function (info) {
+            var startDateStr = info.startStr;
             var startDate = new Date(info.startStr);
             if (startDate < today || startDate > maxDate) {
                 return;
             }
-
             // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
             if (isCheckOutSelected) {
-                checkInDate = startDate;
+                checkInDate = startDateStr;
                 checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
                 isCheckOutSelected = false;
             } else {
                 // 체크인 날짜가 아직 선택되지 않은 경우 체크인 날짜로 설정
                 if (!isCheckInSelected) {
-                    checkInDate = startDate;
+                    checkInDate = startDateStr;
                     checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10); // 체크아웃을 1박 2일 후로 설정
                     isCheckInSelected = true; // 체크인 날짜가 설정되었음을 표시
                 } else {
                     // 체크아웃 날짜는 체크인 이후 날짜만 선택 가능
                     if (new Date(startDate) > new Date(checkInDate)) {
-                        checkOutDate = startDate;
+                        checkOutDate = startDateStr;
                         isCheckOutSelected = true; // 체크아웃이 선택되었음을 표시
                     }
                 }
             }
-
+            $.ajax({
+                url:'/api/campsite/list',
+                type: 'GET',
+                data:{
+                    campgroundId: document.getElementById('campgroundId').value,
+                    checkInDate,
+                    checkOutDate
+                },
+                success:function (data){
+                    $.each(data, function(campsiteId, totalPrice) {
+                        // 해당 캠프사이트의 행을 찾기
+                        var campsiteRow = document.getElementById('campsite-row-' + campsiteId);
+                        if (campsiteRow) {
+                            // 총 가격을 업데이트
+                            var totalPriceCell = campsiteRow.querySelector('.total-price');
+                            if (totalPriceCell) {
+                                totalPriceCell.textContent = '총가격 : ' + totalPrice + ' 원'; // 총 가격 업데이트
+                            }
+                        }
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX 요청 오류:', status, error);
+                }
+            })
             // 날짜 업데이트
             document.getElementById('checkInDate').value = checkInDate;
             document.getElementById('checkOutDate').value = checkOutDate;
 
-            // 체크인 날짜 업데이트
-            document.getElementById('checkInDisplay').innerText = formatDate(new Date(checkInDate));
-
-            // 체크아웃 날짜 업데이트
-            document.getElementById('checkOutDisplay').innerText = formatDate(new Date(checkOutDate));
+            document.getElementById('checkInDisplay').innerText = checkInDate;
+            document.getElementById('checkOutDisplay').innerText = checkOutDate;
 
             // 선택된 날짜 스타일링을 초기화하고 새롭게 반영
             calendar.getEvents().forEach(event => event.remove());
@@ -123,19 +144,12 @@ toggleButton.addEventListener('click', function () {
     }
 });
 
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 0부터 시작하므로 +1
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`; // "YYYY-MM-DD" 형식
-}
-
 function validateForm() {
     return true; // 폼을 제출할 수 있도록 true 반환
 }
+
 function setSelectedCampsite(campsiteId) {
     // Set the campsite ID in the hidden input field
-    console.log("select campsite", campsiteId);
     document.getElementById('campsiteId').value = campsiteId;
     // Automatically submit the form
     document.querySelector('form').submit();
