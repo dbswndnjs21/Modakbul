@@ -72,3 +72,18 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+.add-btn{
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    margin-bottom: 15px;
+    display: inline-block; /* 블록 요소로 설정 */
+}
+.add-btn:hover {
+    background-color: #0056b3; /* 호버 시 색상 변경 */
+}
