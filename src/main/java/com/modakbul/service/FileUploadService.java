@@ -22,9 +22,8 @@ public class FileUploadService {
     @Value("${cloud.aws.region.static}") // 리전 추가
     private String region;
 
-    public String uploadFile(MultipartFile file) throws IOException {
-        String fileName = file.getOriginalFilename();
-
+    // UUID를 포함한 파일 이름으로 업로드
+    public String uploadFile(MultipartFile file, String fileName) throws IOException {
         // S3에 파일 업로드
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());

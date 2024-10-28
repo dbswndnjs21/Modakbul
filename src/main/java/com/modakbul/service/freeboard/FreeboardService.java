@@ -54,13 +54,21 @@ public class FreeboardService {
 				continue; // 비어있는 파일은 건너뜀
 			}
 			try {
+				// 원래 파일 이름의 확장자 추출
+	            String originalFilename = mf.getOriginalFilename();
+	            String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+
+	            // UUID 생성
+	            String uuidFileName = UUID.randomUUID().toString() + extension; // UUID + 원래 확장자
+
+				
 				// S3에 파일 업로드
-				String fileUrl = fileUploadService.uploadFile(mf); // S3에 파일 업로드
+				String fileUrl = fileUploadService.uploadFile(mf,uuidFileName); // S3에 파일 업로드
 
 				// FreeboardImage DTO 생성
 				FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
 						.fileName(mf.getOriginalFilename())
-						.saveFileName(fileUrl) // S3의 파일 URL
+						.saveFileName(uuidFileName) // S3의 파일 URL
 						.imagePath(fileUrl) // S3의 파일 URL
 						.imageOrder(imageOrder++) // 이미지 순서
 						.build();
@@ -270,13 +278,21 @@ public class FreeboardService {
 	            String orgFileName = mf.getOriginalFilename(); // 전송된 파일명
 	            
 	            try {
+	            	// 원래 파일 이름의 확장자 추출
+	                String originalFileName = mf.getOriginalFilename();
+	                String extension = originalFileName != null ? originalFileName.substring(originalFileName.lastIndexOf(".")) : "";
+
+	                // UUID 생성
+	                String uuidFileName = UUID.randomUUID().toString() + extension; // UUID + 원래 확장자
+
 	                // S3에 파일 업로드
-	                String fileUrl = fileUploadService.uploadFile(mf); // S3에 파일 업로드 및 URL 반환
+	            	
+	                String fileUrl = fileUploadService.uploadFile(mf, uuidFileName);  // S3에 파일 업로드 및 URL 반환
 
 	                // FreeboardImage DTO 생성
 	                FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
 	                        .fileName(orgFileName)
-	                        .saveFileName(fileUrl) // S3의 파일 URL
+	                        .saveFileName(uuidFileName) // S3의 파일 URL
 	                        .imagePath(fileUrl)     // S3의 파일 URL
 	                        .imageOrder(imageOrder++) // 이미지 순서
 	                        .build();
