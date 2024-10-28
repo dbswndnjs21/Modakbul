@@ -261,31 +261,26 @@ public class FreeboardService {
 	        return "게시글 수정이 완료되었습니다.";
 	    }
 	    
-	    private void saveFiles(List<MultipartFile> files, Freeboard savedFreeboard, String filePath) {
-	        // 파일 저장 경로 확인 및 생성
-	        File destDir = new File(filePath);
-	        if (!destDir.exists()) {
-	            destDir.mkdirs(); // 부모 디렉토리도 포함하여 모든 경로 생성
-	        }
-
+	    private void saveFilesToS3(List<MultipartFile> files, Freeboard savedFreeboard) {
 	        int imageOrder = 1; // 이미지 순서 변수 초기화
 	        for (MultipartFile mf : files) {
 	            if (mf.isEmpty()) {
 	                continue; // 비어있는 파일은 건너뜀
 	            }
 	            String orgFileName = mf.getOriginalFilename(); // 전송된 파일명
-	            String saveFileName = UUID.randomUUID() + "_" + orgFileName; // 저장할 파일명
+	            
 	            try {
-	                // 파일 저장
-	                File f = new File(destDir, saveFileName); // 저장할 정보를 갖는 파일 객체
-	                mf.transferTo(f); // 업로드한 파일을 f에 복사하기
+	                // S3에 파일 업로드
+	                String fileUrl = fileUploadService.uploadFile(mf); // S3에 파일 업로드 및 URL 반환
+
 	                // FreeboardImage DTO 생성
 	                FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
 	                        .fileName(orgFileName)
-	                        .saveFileName(saveFileName)
-	                        .imagePath(filePath)
+	                        .saveFileName(fileUrl) // S3의 파일 URL
+	                        .imagePath(fileUrl)     // S3의 파일 URL
 	                        .imageOrder(imageOrder++) // 이미지 순서
 	                        .build();
+
 	                // FreeboardImage 엔티티 생성 및 저장
 	                FreeboardImage freeboardImage = freeboardImageDto.toEntity(savedFreeboard); // savedFreeboard 연결
 	                freeboardImageRepository.save(freeboardImage);
@@ -295,41 +290,34 @@ public class FreeboardService {
 	        }
 	    }
 	    
-	    private void deleteFile(String saveFileName,String filePath,Long id) {
-	        // 파일 삭제 로직 구현
-	        // 예: 파일 시스템에서 지정된 파일 삭제하기
-	        File fileToDelete = new File(filePath,saveFileName);
-	        if (fileToDelete.exists()) {
-	            boolean deleted = fileToDelete.delete(); // 파일 삭제 시도
-	            if (!deleted) {
-	                System.out.println("파일 삭제 실패: " + saveFileName);
-	            } else {
-	                // 파일 삭제가 성공한 경우, 데이터베이스에서도 해당 파일 정보 삭제
-	            	System.out.println("Deleting file: " + saveFileName + " for Freeboard ID: " + id);
-	            	freeboardImageRepository.deleteBySaveFileNameAndFreeboardId(saveFileName, id);
-	            }
-	        }
+	    public void deleteFile(String saveFileName, Long freeboardId) {
+	        // S3에서 파일 삭제
+	        fileUploadService.deleteFile(saveFileName); // S3에서 파일 삭제
+
+	        // 데이터베이스에서 파일 정보 삭제
+	        System.out.println("Deleting file: " + saveFileName + " for Freeboard ID: " + freeboardId);
+	        freeboardImageRepository.deleteBySaveFileNameAndFreeboardId(saveFileName, freeboardId);
 	    }
 	    
-	    public void updateImageFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String[] removedImages, String filePath) {
-	        // 게시글 정보 업데이트
+	    public void updateImageFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String[] removedImages) {
+	        // 게시글 정보 조회 및 업데이트
 	        Freeboard freeboard = freeboardRepository.findById(freeboardDto.getId())
 	                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
-
+	        
 	        // 게시글 필드 업데이트
 	        freeboard.setTitle(freeboardDto.getTitle());
 	        freeboard.setContent(freeboardDto.getContent());
-	        // 추가적으로 필요한 필드 업데이트
-	        
-	        // 파일 저장
+
+	        // S3 파일 저장 처리
 	        if (files != null && !files.isEmpty()) {
-	            saveFiles(files, freeboard, filePath); // 저장 메소드 호출
+	            saveFilesToS3(files, freeboard); // S3에 저장 메소드 호출
 	        }
-	        
-	        // 삭제할 이미지 처리
+
+	        // S3 이미지 삭제 처리
 	        if (removedImages != null && removedImages.length > 0) {
 	            for (String removedImage : removedImages) {
-	                deleteFile(removedImage,filePath, freeboard.getId()); // 파일 삭제 메소드 호출
+	                // 데이터베이스에서 이미지 삭제 및 S3에서 파일 삭제
+	                deleteFile(removedImage, freeboard.getId());
 	            }
 	        }
 

@@ -54,7 +54,7 @@ public class FreeboardUpdateController {
 	            System.out.println("삭제할 이미지가 없습니다.");
 	        }
 	        
-	        freeboardService.updateImageFreeboard(freeboardDto, member.getId(), files, removedImages, filePath);
+	        freeboardService.updateImageFreeboard(freeboardDto, member.getId(), files, removedImages);
 	    } else {
 	        // 파일이 없고 삭제할 파일도 없는 경우
 	        freeboardService.updateFreeboard(freeboardDto, member.getId());
