@@ -55,7 +55,7 @@ public class FreeboardWriteController {
                         @RequestParam("files") List<MultipartFile> files, 
                         Model model) {
         // 서비스 호출하여 게시글 작성 및 파일 업로드 처리
-        String result = freeboardService.writeFreeboard(freeboardDto, member.getId(), files, filePath);
+		String result = freeboardService.writeFreeboard(freeboardDto, member.getId(), files); // filePath 제거
         
         model.addAttribute("result", result); // 결과 메시지 추가
         

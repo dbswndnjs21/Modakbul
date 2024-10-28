@@ -16,13 +16,13 @@ public class FreeboardImage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "freeboard_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "freeboard_id")  // 외래 키
     @JsonIgnore
     private Freeboard freeboard;
 
-    private String fileName;
-    private String saveFileName;
-    private String imagePath;
-    private int imageOrder;
+    private String fileName; // 원본 파일 이름
+    private String saveFileName; // S3에 저장된 파일 이름 (URL)
+    private String imagePath; // S3 URL
+    private int imageOrder; // 이미지 순서
 }

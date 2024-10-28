@@ -8,47 +8,47 @@
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}">
-    
 </head>
 <body>
-    <!-- 헤더 영역 -->
-    <header th:replace="~{fragments/header :: header}"></header>
+<!-- 헤더 영역 -->
+<header th:replace="~{fragments/header :: header}"></header>
 
-    <!-- 메인 콘텐츠 영역 -->
-    <section class="container my-5">
-        <div class="text-center mb-4">
-            <h2>게시판</h2>
-            <a th:href="@{/freeboard/freeBoardWrite}" class="btn btn-success mt-2">글 등록</a>
-        </div>
+<!-- 메인 콘텐츠 영역 -->
+<section class="container my-5">
+    <div class="text-center mb-4">
+        <h2>게시판</h2>
+        <a th:href="@{/freeboard/freeBoardWrite}" class="btn btn-success mt-2">글 등록</a>
+    </div>
 
-        <div id="postList">
-            <div th:each="post : ${list}" class="card mb-3" data-id="${post.id}">
-                <th:block th:if="${post != null}">
-                    <th:block th:if="${post.images != null and post.images.size() > 0}">
-                        <img th:src="@{/upload/{saveFileName}(saveFileName=${post.images[0].saveFileName})}" class="card-img-top" alt="게시글 사진" style="height: 300px; object-fit: cover;" th:alt="${post.images[0].fileName}">
-                    </th:block>
+    <div id="postList">
+        <div th:each="post : ${list}" class="card mb-3" data-id="${post.id}">
+            <th:block th:if="${post != null}">
+                <th:block th:if="${post.images != null and post.images.size() > 0}">
+                    <!-- S3 URL을 사용하여 이미지 표시 -->
+                    <img th:src="${post.images[0].imagePath}" class="card-img-top" alt="게시글 사진" style="height: 300px; object-fit: cover;" th:alt="${post.images[0].fileName}">
                 </th:block>
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
-                    <p class="card-text" th:text="${post.content}">게시글 내용</p>
-                    <a th:href="@{/freeboard/freeBoardView(id=${post.id})}" class="btn btn-success">자세히 보기</a>
-                </div>
+            </th:block>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
+                <p class="card-text" th:text="${post.content}">게시글 내용</p>
+                <a th:href="@{/freeboard/freeBoardView(id=${post.id})}" class="btn btn-success">자세히 보기</a>
             </div>
         </div>
+    </div>
 
-        <div id="loading" class="text-center my-4">
-            <p>Loading...</p>
-        </div>
+    <div id="loading" class="text-center my-4">
+        <p>Loading...</p>
+    </div>
 
-        <div class="sentinel"></div> <!-- Sentinel 요소 추가 -->
-    </section>
-    <button class="side-button" type="button" onclick="scrollToTop()">⬆️</button>
-    <!-- 푸터 영역 -->
-    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div class="sentinel"></div> <!-- Sentinel 요소 추가 -->
+</section>
+<button class="side-button" type="button" onclick="scrollToTop()">⬆️</button>
+<!-- 푸터 영역 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/scripts.js"></script>
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script>
     let page = 1;
     const size = 5; // 한 번에 5개씩 불러옴
     let isLoading = false; // 로딩 상태 추적
@@ -105,7 +105,7 @@
                 postCard.setAttribute('data-id', post.id);  // 게시글 ID 설정
 
                 postCard.innerHTML = `
-                    <img src="/upload/${post.images[0]?.saveFileName}" class="card-img-top" alt="${post.images[0]?.fileName}" style="height: 300px; object-fit: cover;">
+                    <img src="${post.images[0]?.imagePath}" class="card-img-top" alt="${post.images[0]?.fileName}" style="height: 300px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">${post.title}</h5>
                         <p class="card-text">${post.content}</p>
@@ -127,19 +127,19 @@
     }, {
         root: null, // 기본 뷰포트 사용
         rootMargin: '0px',
-        threshold: 0.8 
+        threshold: 0.8
     });
 
     const sentinel = document.querySelector('.sentinel'); // sentinel 요소를 옵저버로 관찰
     observer.observe(sentinel);
 </script>
-    <script>
+<script>
     function scrollToTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth' // 부드럽게 스크롤
-      });
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // 부드럽게 스크롤
+        });
     }
-    </script>
+</script>
 </body>
 </html>

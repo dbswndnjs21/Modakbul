@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.modakbul.service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -35,49 +36,48 @@ import lombok.RequiredArgsConstructor;
 public class FreeboardService {
 	private final FreeboardRepository freeboardRepository;
 	private final FreeboardImageRepository freeboardImageRepository;
-	
-	public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files, String filePath) {
-	        // Freeboard 엔티티 생성
-	        Freeboard freeboard = freeboardDto.toEntity(memberId);
-	        freeboard.setCreatedAt(LocalDateTime.now());
-	        freeboard.setUpdatedAt(LocalDateTime.now());
-	        // Freeboard 저장
-	        Freeboard savedFreeboard = freeboardRepository.save(freeboard);
-	        // 파일 저장 경로 확인 및 생성
-	        File destDir = new File(filePath);
-	        if (!destDir.exists()) {
-	            destDir.mkdirs(); // 부모 디렉토리도 포함하여 모든 경로 생성
-	        }
-	        // 이미지 처리
-	        int imageOrder = 1; // 이미지 순서 변수 초기화
-	        for (MultipartFile mf : files) {
-	            if (mf.isEmpty()) {
-	                continue; // 비어있는 파일은 건너뜀
-	            }
-	            String orgFileName = mf.getOriginalFilename(); // 전송된 파일명
-	            String saveFileName = UUID.randomUUID() + "_" + orgFileName; // 저장할 파일명
-	            try {
-	                // 파일 저장
-	                File f = new File(destDir, saveFileName); // 저장할 정보를 갖는 파일 객체
-	                mf.transferTo(f); // 업로드한 파일을 f에 복사하기
-	                // FreeboardImage DTO 생성
-	                FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
-	                        .fileName(orgFileName)
-	                        .saveFileName(saveFileName)
-	                        .imagePath(filePath)
-	                        .imageOrder(imageOrder++) // 이미지 순서
-	                        .build();
-	                // FreeboardImage 엔티티 생성 및 저장
-	                FreeboardImage freeboardImage = freeboardImageDto.toEntity(savedFreeboard); // savedFreeboard 연결
-	                freeboardImageRepository.save(freeboardImage);
-	            } catch (IOException e) {
-	                e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
-	                return "파일 업로드 실패: " + e.getMessage(); // 실패 메시지 반환
-	            }
-	        }
+	private final FileUploadService fileUploadService; // 추가
 
-	        return "파일 업로드 성공"; // 성공 메시지 반환
-	    }
+	public String writeFreeboard(FreeboardDto freeboardDto, Long memberId, List<MultipartFile> files) {
+		// Freeboard 엔티티 생성
+		Freeboard freeboard = freeboardDto.toEntity(memberId);
+		freeboard.setCreatedAt(LocalDateTime.now());
+		freeboard.setUpdatedAt(LocalDateTime.now());
+
+		// Freeboard 저장
+		Freeboard savedFreeboard = freeboardRepository.save(freeboard);
+
+		// 이미지 처리
+		int imageOrder = 1; // 이미지 순서 변수 초기화
+		for (MultipartFile mf : files) {
+			if (mf.isEmpty()) {
+				continue; // 비어있는 파일은 건너뜀
+			}
+			try {
+				// S3에 파일 업로드
+				String fileUrl = fileUploadService.uploadFile(mf); // S3에 파일 업로드
+
+				// FreeboardImage DTO 생성
+				FreeboardImageDto freeboardImageDto = FreeboardImageDto.builder()
+						.fileName(mf.getOriginalFilename())
+						.saveFileName(fileUrl) // S3의 파일 URL
+						.imagePath(fileUrl) // S3의 파일 URL
+						.imageOrder(imageOrder++) // 이미지 순서
+						.build();
+
+				// FreeboardImage 엔티티 생성 및 저장
+				FreeboardImage freeboardImage = freeboardImageDto.toEntity(savedFreeboard); // savedFreeboard 연결
+				freeboardImageRepository.save(freeboardImage);
+			} catch (IOException e) {
+				e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
+				return "파일 업로드 실패: " + e.getMessage(); // 실패 메시지 반환
+			}
+		}
+
+		return "파일 업로드 성공"; // 성공 메시지 반환
+	}
+
+
 	 
 	public List<FreeboardDto> findWithImagesPaged(int page, int size) {
 	    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updatedAt"));
@@ -307,7 +307,7 @@ public class FreeboardService {
 	            } else {
 	                // 파일 삭제가 성공한 경우, 데이터베이스에서도 해당 파일 정보 삭제
 	            	System.out.println("Deleting file: " + saveFileName + " for Freeboard ID: " + id);
-	            	freeboardImageRepository.deleteBysaveFileNameAndFreeboardId(saveFileName, id);
+	            	freeboardImageRepository.deleteBySaveFileNameAndFreeboardId(saveFileName, id);
 	            }
 	        }
 	    }
