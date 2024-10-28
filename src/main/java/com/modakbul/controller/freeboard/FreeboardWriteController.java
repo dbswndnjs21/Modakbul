@@ -34,8 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class FreeboardWriteController {
 	private final FreeboardService freeboardService;
 
-	@Value("${file.path}")
-	private String filePath;
 	
 	@GetMapping("/freeboard/freeBoardWrite")
 	public String writeForm(@AuthenticationPrincipal CustomUserDetails member, Model model) {
