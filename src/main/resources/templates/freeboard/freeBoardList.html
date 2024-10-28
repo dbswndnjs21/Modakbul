@@ -103,9 +103,15 @@
                 const postCard = document.createElement("div");
                 postCard.className = "card mb-3";
                 postCard.setAttribute('data-id', post.id);  // 게시글 ID 설정
-
+				
+             	// 게시글 내용에 이미지가 있는지 확인
+                let imgTag = "";
+                if (post.images && post.images.length > 0) {
+                    imgTag = `<img src="${post.images[0].imagePath}" class="card-img-top" alt="${post.images[0].fileName}" style="height: 300px; object-fit: cover;">`;
+                }
+                
                 postCard.innerHTML = `
-                    <img src="${post.images[0]?.imagePath}" class="card-img-top" alt="${post.images[0]?.fileName}" style="height: 300px; object-fit: cover;">
+                    ${imgTag} <!-- 이미지가 있을 때만 표시 -->
                     <div class="card-body">
                         <h5 class="card-title">${post.title}</h5>
                         <p class="card-text">${post.content}</p>
