@@ -31,6 +31,7 @@ public class HostController {
     private HostService hostService;
     @Autowired
     private PaymentService paymentService;
+
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         model.addAttribute("member", member);
@@ -49,9 +50,15 @@ public class HostController {
 
         for (BookingDto booking : bookings) {
             // 각 예약에 대한 결제 정보 조회
-            PaymentDTO payment = paymentService.findByBookingId(booking.getId());
-                paymentAmount += payment.getAmount();  // 결제 금액 합산
-                paymentSearch.add(payment);  // 결제 내역을 리스트에 추가
+            if (booking.getBookingStatus() == 1) {
+                PaymentDTO payment = paymentService.findByBookingId(booking.getId());
+                if (payment.getPaymentStatus().equals("paid")) {
+                    paymentAmount += payment.getAmount();  // 결제 금액 합산
+                    paymentSearch.add(payment);  // 결제 내역을 리스트에 추가
+                }
+            }
+
+
         }
 
         model.addAttribute("host", hostId);
@@ -69,10 +76,12 @@ public class HostController {
 
         return "host/hostPage";
     }
+
     @GetMapping("/amount")
     public String amount() {
         return "host/amountPage";
     }
+
     @GetMapping("/campground")
     public String campground() {
         return "host/campground";
