@@ -19,6 +19,7 @@ public class CampsiteDto {
     private int headCount;
     private int weekdayPrice;
     private int weekendPrice;
+    private int campsiteNumber;
 
     // CampsiteDto를 Campsite 엔티티로 변환하는 메서드
     public Campsite toEntity(Campground campground) {
@@ -30,6 +31,7 @@ public class CampsiteDto {
                 .headCount(this.headCount)
                 .weekdayPrice(this.weekdayPrice)
                 .weekendPrice(this.weekendPrice)
+                .campsiteNumber(this.campsiteNumber)
                 .build();
     }
 
@@ -42,5 +44,6 @@ public class CampsiteDto {
         this.headCount = campsite.getHeadCount();
         this.weekdayPrice = campsite.getWeekdayPrice();
         this.weekendPrice = campsite.getWeekendPrice();
+        this.campsiteNumber = campsite.getCampsiteNumber();
     }
 }
