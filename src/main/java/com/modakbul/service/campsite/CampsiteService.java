@@ -47,7 +47,7 @@ public class CampsiteService {
         // 이미 예약된 campsite들의 ID를 조회
         // LocalDate를 LocalDateTime으로 변환
         LocalDateTime checkInDateTime = checkInDate.atStartOfDay();
-        LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay().plusDays(1); // 체크아웃 날짜는 그날 00:00을 의미하므로 +1일 추가
+        LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay();
 
         List<Campsite> campsites = bookingRepository.findBookingByCampsiteIds(campgroundId, checkInDateTime, checkOutDateTime);
 
