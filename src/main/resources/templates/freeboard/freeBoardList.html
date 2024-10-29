@@ -1,58 +1,81 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>모닥불 게시판</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
-    <link rel="stylesheet" th:href="@{/css/footer.css}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>모닥불 게시판</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
-<!-- 헤더 영역 -->
-<header th:replace="~{fragments/header :: header}"></header>
+	<!-- 헤더 영역 -->
+	<header th:replace="~{fragments/header :: header}"></header>
 
-<!-- 메인 콘텐츠 영역 -->
-<section class="container my-5">
-    <div class="text-center mb-4">
-        <h2>게시판</h2>
-        <a th:href="@{/freeboard/freeBoardWrite}" class="btn btn-success mt-2">글 등록</a>
-    </div>
+	<!-- 메인 콘텐츠 영역 -->
+	<section class="container my-5">
+		<div class="text-center mb-4">
+			<h2>게시판</h2>
+			<a th:href="@{/freeboard/freeBoardWrite}"
+				class="btn btn-success mt-2">글 등록</a>
+		</div>
 
-    <div id="postList">
-        <div th:each="post : ${list}" class="card mb-3" data-id="${post.id}">
-            <th:block th:if="${post != null}">
-                <th:block th:if="${post.images != null and post.images.size() > 0}">
-                    <!-- S3 URL을 사용하여 이미지 표시 -->
-                    <img th:src="${post.images[0].imagePath}" class="card-img-top" alt="게시글 사진" style="height: 300px; object-fit: cover;" th:alt="${post.images[0].fileName}">
-                </th:block>
-            </th:block>
-            <div class="card-body">
-                <h5 class="card-title" th:text="${post.title}">게시글 제목</h5>
-                <p class="card-text" th:text="${post.content}">게시글 내용</p>
-                <a th:href="@{/freeboard/freeBoardView(id=${post.id})}" class="btn btn-success">자세히 보기</a>
-            </div>
-        </div>
-    </div>
+		<div id="postList">
+			<div th:each="post : ${list}" class="card mb-3" data-id="${post.id}">
+				<th:block th:if="${post != null}">
+					<th:block th:if="${post.images != null and post.images.size() > 0}">
+						<!-- S3 URL을 사용하여 이미지 표시 -->
+						<img th:src="${post.images[0].imagePath}" class="card-img-top"
+							alt="게시글 사진" style="height: 300px; object-fit: cover;"
+							th:alt="${post.images[0].fileName}">
+					</th:block>
+				</th:block>
+				<div class="card-body">
+					<h5 class="card-title">
+						<th:block
+							th:if="${post.createdAt != null && post.createdAt.isAfter(T(java.time.LocalDateTime).now().minusHours(24))}">
+							<img th:src="@{/images/new5.png}"
+								style="width: 50px; height: 30px;" alt="새 게시글">
+						</th:block>
+						<span th:text="${post.title}">게시글 제목</span> 
+					</h5>
+					<p class="card-text" th:text="${post.content}"
+						onload="showFirstLine(this)">게시글 내용</p>
+					<a th:href="@{/freeboard/freeBoardView(id=${post.id})}"
+						class="btn btn-success">자세히 보기</a>
+				</div>
+			</div>
+		</div>
 
-    <div id="loading" class="text-center my-4">
-        <p>Loading...</p>
-    </div>
+		<div id="loading" class="text-center my-4">
+			<p>Loading...</p>
+		</div>
 
-    <div class="sentinel"></div> <!-- Sentinel 요소 추가 -->
-</section>
-<button class="side-button" type="button" onclick="scrollToTop()">⬆️</button>
-<!-- 푸터 영역 -->
-<footer th:replace="~{fragments/footer :: footer}"></footer>
+		<div class="sentinel"></div>
+		<!-- Sentinel 요소 추가 -->
+	</section>
+	<button class="side-button" type="button" onclick="scrollToTop()">⬆️</button>
+	<!-- 푸터 영역 -->
+	<footer th:replace="~{fragments/footer :: footer}"></footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/scripts.js"></script>
-<script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="/js/scripts.js"></script>
+	<script>
     let page = 1;
     const size = 5; // 한 번에 5개씩 불러옴
     let isLoading = false; // 로딩 상태 추적
-
+	
+    //게시글첫줄만보이게
+    document.querySelectorAll('.card-text').forEach(element => {
+        const fullText = element.textContent;
+        const firstLine = fullText.split('\n')[0];
+        element.textContent = `${firstLine}`;
+    });
+    
     const loadMorePosts = () => {
         if (isLoading) return; // 이미 로딩 중이면 함수 종료
         isLoading = true; // 로딩 시작
@@ -103,17 +126,24 @@
                 const postCard = document.createElement("div");
                 postCard.className = "card mb-3";
                 postCard.setAttribute('data-id', post.id);  // 게시글 ID 설정
-				
-             	// 게시글 내용에 이미지가 있는지 확인
+
+                // 게시글 내용에 이미지가 있는지 확인
                 let imgTag = "";
                 if (post.images && post.images.length > 0) {
                     imgTag = `<img src="${post.images[0].imagePath}" class="card-img-top" alt="${post.images[0].fileName}" style="height: 300px; object-fit: cover;">`;
                 }
-                
+		
+                // NEW 이미지 표시 여부 결정
+                const isNew = post.createdAt && new Date(post.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000);
+                const newTag = isNew ? `<img src="/images/new5.png" style="width: 50px; height: 30px;" alt="새 게시글">` : '';
+				
                 postCard.innerHTML = `
                     ${imgTag} <!-- 이미지가 있을 때만 표시 -->
                     <div class="card-body">
-                        <h5 class="card-title">${post.title}</h5>
+                        <h5 class="card-title">
+                            ${newTag} <!-- NEW 이미지를 제목 옆에 표시 -->
+                            ${post.title}
+                        </h5>
                         <p class="card-text">${post.content}</p>
                         <a href="/freeboard/freeBoardView?id=${post.id}" class="btn btn-success">자세히 보기</a>
                     </div>
@@ -139,7 +169,7 @@
     const sentinel = document.querySelector('.sentinel'); // sentinel 요소를 옵저버로 관찰
     observer.observe(sentinel);
 </script>
-<script>
+	<script>
     function scrollToTop() {
         window.scrollTo({
             top: 0,
