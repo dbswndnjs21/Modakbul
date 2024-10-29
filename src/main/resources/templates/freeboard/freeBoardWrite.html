@@ -64,7 +64,14 @@
     // 선택된 파일을 Array로 변환
     var fileArray = Array.from(files);
     var validFiles = []; // 유효한 파일을 저장할 배열
-
+	
+ 	// 파일 개수가 3개를 초과할 경우 경고 메시지 표시
+    if (fileArray.length > 5) {
+      alert('최대 3개의 이미지만 업로드할 수 있습니다.');
+      filesInput.value = ''; // 파일 선택 초기화
+      return;
+    }
+    
     // 파일 개수만큼 미리보기 생성
     fileArray.forEach(function(file, index) {
       // 이미지 파일 형식 체크 (MIME 타입 확인)

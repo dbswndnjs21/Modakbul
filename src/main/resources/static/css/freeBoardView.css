@@ -218,3 +218,23 @@ form textarea {
     border-left: 1px solid #ccc; /* 선택적으로 왼쪽에 경계선 추가 */
 }
 
+.carousel-control-prev-icon {
+    background-color: #ff7f50; /* 이전 화살표 색상 */
+}
+
+.carousel-control-next-icon {
+    background-color: #ff7f50; /* 다음 화살표 색상 */
+}
+
+.carousel-indicators button {
+    background-color: #007bff; /* 기본 버튼 색상 (파란색) */
+    border: 1px solid #ff7f50; /* 외곽선 추가 */
+    opacity: 1; /* 투명도 설정: 완전 불투명 */
+    transition: background-color 0.3s; /* 마우스 오버 효과를 위해 추가 */
+}
+
+.carousel-indicators .active {
+    background-color: #ff7f50; /* 활성화된 버튼 색상 */
+    border: 1px solid #ff7f50; /* 활성화된 버튼 외곽선 */
+    opacity: 1; /* 투명도 제거 */
+}

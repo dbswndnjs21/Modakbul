@@ -113,6 +113,7 @@ public class FreeboardService {
 	        return FreeboardDto.builder()
 	                .id(freeboard.getId())
 	                .memberId(freeboard.getMember().getId())
+	                .userId(freeboard.getMember().getUserId()) 
 	                .title(freeboard.getTitle())
 	                .content(freeboard.getContent())
 	                .createdAt(freeboard.getCreatedAt())
