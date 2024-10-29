@@ -8,7 +8,10 @@ import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.repository.booking.BookingRepository;
 import com.modakbul.service.campsite.CampsiteService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class BookingService {
     private final BookingRepository bookingRepository;
     private final CampsiteService campsiteService;
@@ -69,5 +73,18 @@ public class BookingService {
         List<Booking> allById = bookingRepository.findAllByMemberId(memberId);
         List<BookingReservationsDto> BookingReservationsDtoList = allById.stream().map(m -> new BookingReservationsDto(m)).toList();
         return BookingReservationsDtoList;
+    }
+
+    // 매일 자정에 실행
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void deleteBookingsWithoutPayment() {
+        List<Booking> bookingsWithoutPayment = bookingRepository.findBookingsWithoutPayment();
+        if (!bookingsWithoutPayment.isEmpty()) {
+            bookingRepository.deleteAll(bookingsWithoutPayment);
+            log.info("삭제된 에약 개수 : {}", bookingsWithoutPayment.size());
+        } else {
+            log.info("삭제할 예약이 없습니다");
+        } 
     }
 }

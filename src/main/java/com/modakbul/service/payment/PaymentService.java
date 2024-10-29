@@ -83,7 +83,7 @@ public class PaymentService {
         parameters.put("tax_free_amount", "0");                                      // 상품 비과세 금액
         parameters.put("approval_url", "http://localhost:8080/order/pay/completed?orderNumber="+ orderNumber + "&bookingId="+bookingId + "&isCouponUsed=" + isCouponUsed + "&couponId=" + couponId); // 결제 성공 시 URL
         parameters.put("cancel_url", "http://localhost:8080/order/pay/cancel");      // 결제 취소 시 URL
-        parameters.put("fail_url", "http://localhost:8080/order/pay/fail");          // 결제 실패 시 URL
+        parameters.put("fail_url", "http://localhost:8080/order/pay/fail?bookingId="+bookingId);          // 결제 실패 시 URL
 
         // HttpEntity : HTTP 요청 또는 응답에 해당하는 Http Header와 Http Body를 포함하는 클래스
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -165,10 +165,15 @@ public class PaymentService {
 
         paymentRepository.save(payment); // 결제 정보 DB에 저장
 
+        // 결제까지 완료가 되어야만 1로 변경됨
+        booking.setBookingStatus(1);
+        bookingRepository.save(booking);
+
         /*
         여기서 해야할일
         1. memberCoupon 테이블에 사용 여부 true로 변경 ->  쿠폰 id로 세션의 memberID와 같이 조회 하면 맴버쿠폰ID가 나오겠지
         2. payment 테이블에 사용한 쿠폰 ID 추가 -
+        3. HttpClientErrorException$BadRequest 오류 예외처리
         * */
 
         return approveResponse;
@@ -220,6 +225,9 @@ public class PaymentService {
         paymentEntity.setBooking(booking);
 
         paymentRepository.save(paymentEntity);
+
+        booking.setBookingStatus(1);
+        bookingRepository.save(booking);
     }
 
     public void iamportCancel (Long orderNumber, com.siot.IamportRestClient.response.Payment res) {
@@ -238,7 +246,7 @@ public class PaymentService {
 
         Optional<Booking> byId = bookingRepository.findById(paymentEntity.getBooking().getId());
         Booking booking = byId.get();
-        booking.setBookingStatus(1);
+        booking.setBookingStatus(2);
         bookingRepository.save(booking);
     }
 
@@ -278,7 +286,7 @@ public class PaymentService {
         paymentCancelRepository.save(paymentCancel);
 
         Optional<Booking> booking = bookingRepository.findById(bookingId);
-        booking.get().setBookingStatus(1);
+        booking.get().setBookingStatus(2);
         bookingRepository.save(booking.get());
 
         return res;
