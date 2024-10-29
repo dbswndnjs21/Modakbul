@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,6 +46,7 @@ public class CampsiteService {
         LocalDateTime checkInDateTime = checkInDate.atStartOfDay();
         LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay();
 
+        //booking정보값 가져오기
         List<Campsite> campsites = bookingRepository.findBookingByCampsiteIds(campgroundId, checkInDateTime, checkOutDateTime);
 
         return campsites.stream()
