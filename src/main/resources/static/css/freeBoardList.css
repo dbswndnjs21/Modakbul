@@ -82,3 +82,20 @@ h2 {
 .side-button:hover {
   background-color: #ff6347; /* 호버 시 색상 변화 */
 }
+
+.card-title {
+    display: flex;
+    justify-content: space-between; /* 요소 사이에 공간을 둡니다. */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+.post-date-container {
+    display: flex; /* Flexbox 사용 */
+    justify-content: space-between; /* 공간 분배 */
+    align-items: center; /* 수직 정렬 */
+}
+
+.post-date {
+    font-size: 0.8rem; /* 글자 크기 조정 */
+    color: #888; /* 날짜 색상 조정 (선택 사항) */
+    margin-left: auto; /* 날짜를 오른쪽으로 밀기 위한 자동 마진 사용 */
+}
