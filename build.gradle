@@ -6,8 +6,6 @@ plugins {
 
 group = 'com.modakbul'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17' // Java 버전을 17로 설정합니다.
-targetCompatibility = '17'
 
 java {
     toolchain {
