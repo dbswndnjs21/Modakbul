@@ -28,8 +28,8 @@
 .nav-link {
   font-family: 'Lora', sans-serif;
   font-size: 15px;
-  position: relative;
   color: black;
+  position: relative;
   text-decoration: none; /* 기본 밑줄 제거 */
   transition: color 0.3s ease; /* 글씨색 변환 애니메이션 */
 }
