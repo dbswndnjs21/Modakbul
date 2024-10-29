@@ -75,6 +75,42 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         }
                     });
+
+// 예약된 캠프사이트 데이터를 받아와 상태를 설정
+                    $.ajax({
+                        url: '/api/campsite/booked',
+                        type: 'GET',
+                        data: {
+                            campgroundId: document.getElementById('campgroundId').value,
+                            checkInDate,
+                            checkOutDate
+                        },
+                        success: function (bookedCampsites) {
+                            // 예약된 캠프사이트를 기반으로 버튼 및 상태 표시 업데이트
+                            var allCampsiteRows = document.querySelectorAll('tr[id^="campsite-row-"]');
+                            allCampsiteRows.forEach(function(campsiteRow) {
+                                var campsiteId = campsiteRow.id.split('-')[2]; // 'campsite-row-<id>'에서 id 추출
+                                var bookingBtn = campsiteRow.querySelector('.booking-btn');
+                                var bookingStatus = campsiteRow.querySelector('.booking-status');
+
+                                // 현재 캠프사이트가 예약된 상태인지 확인
+                                if (bookedCampsites.some(campsite => campsite.id == campsiteId)) {
+                                    // 예약된 경우
+                                    if (bookingBtn) bookingBtn.style.display = 'none'; // 예약 버튼 숨기기
+                                    if (bookingStatus) bookingStatus.style.display = 'inline'; // 예약 불가 표시 보이기
+                                } else {
+                                    // 예약 가능 상태
+                                    if (bookingBtn) bookingBtn.style.display = 'inline-block'; // 예약 버튼 보이기
+                                    if (bookingStatus) bookingStatus.style.display = 'none'; // 예약 불가 숨기기
+                                }
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('예약된 캠프사이트 요청 오류:', status, error);
+                        }
+                    });
+
+
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX 요청 오류:', status, error);

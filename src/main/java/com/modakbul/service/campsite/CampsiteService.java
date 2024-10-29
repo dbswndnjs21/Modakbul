@@ -124,22 +124,26 @@ public class CampsiteService {
     }
 
     public Map<Long, Integer> getCampsiteTotalPrices(Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate){
-        List<CampsiteDto> bookedCampsiteDtos = findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
+//        List<CampsiteDto> bookedCampsiteDtos = findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
         List<CampsiteDto> campsiteDtos = findCampsitesByCampgroundId(campgroundId);
 
-        // 예약된 캠프사이트 ID를 Set으로 변환하여 빠른 조회 가능
-        Set<Long> bookedCampsiteIds = bookedCampsiteDtos.stream()
-                .map(CampsiteDto::getId)
-                .collect(Collectors.toSet());
+//        // 예약된 캠프사이트 ID를 Set으로 변환하여 빠른 조회 가능
+//        Set<Long> bookedCampsiteIds = bookedCampsiteDtos.stream()
+//                .map(CampsiteDto::getId)
+//                .collect(Collectors.toSet());
 
         Map<Long, Integer> map = new HashMap<>();
+
         for (CampsiteDto campsiteDto : campsiteDtos) {
-            if (bookedCampsiteIds.contains(campsiteDto.getId())) {
-                map.put(campsiteDto.getId(), null);
-            }else{
-                map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
-            }
+            map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
         }
+//        for (CampsiteDto campsiteDto : campsiteDtos) {
+//            if (bookedCampsiteIds.contains(campsiteDto.getId())) {
+//                map.put(campsiteDto.getId(), null);
+//            }else{
+//                map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
+//            }
+//        }
         return map;
     }
 }
