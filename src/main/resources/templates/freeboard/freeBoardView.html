@@ -213,11 +213,16 @@ $(document).ready(function () {
                         // comment.userId와 userId가 일치하는지 확인 (작성자와 로그인한 사용자 비교)
                         const isOwner = comment.userId === userId;
 
+                        // 댓글이 24시간 이내에 작성된 경우
+                        const isNew = date > new Date(Date.now() - 24 * 60 * 60 * 1000);
+
                         // 댓글 요소에 수정/삭제 버튼을 조건부로 추가
                         const commentElement = $(`
                             <div class="comment mb-3" style="margin-left: ${depth * 20}px;" data-comment-id="${comment.id}">
                                 <strong>${comment.userId}</strong> <span>${formattedDate}</span>
+                                ${isNew ? '<img src="/images/new5.png" style="width: 50px; height: 30px;" alt="새 댓글">' : ''}
                                 <p class="comment-content">${comment.content}</p>
+                                
                                 ${isOwner ? `
                                     <button class="btn btn-sm btn-outline-warning edit-btn" data-comment-id="${comment.id}">수정</button>
                                     <button class="btn btn-sm btn-outline-danger delete-btn" data-comment-id="${comment.id}">삭제</button>
@@ -236,7 +241,7 @@ $(document).ready(function () {
                                 </div>
                             </div>
                         `);
-						
+                        
                         commentSection.append(commentElement);
 
                         // 대댓글이 있을 경우 재귀적으로 렌더링
