@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,8 +44,9 @@ public class CampsiteService {
         // 이미 예약된 campsite들의 ID를 조회
         // LocalDate를 LocalDateTime으로 변환
         LocalDateTime checkInDateTime = checkInDate.atStartOfDay();
-        LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay().plusDays(1); // 체크아웃 날짜는 그날 00:00을 의미하므로 +1일 추가
+        LocalDateTime checkOutDateTime = checkOutDate.atStartOfDay();
 
+        //booking정보값 가져오기
         List<Campsite> campsites = bookingRepository.findBookingByCampsiteIds(campgroundId, checkInDateTime, checkOutDateTime);
 
         return campsites.stream()
@@ -124,22 +122,26 @@ public class CampsiteService {
     }
 
     public Map<Long, Integer> getCampsiteTotalPrices(Long campgroundId, LocalDate checkInDate, LocalDate checkOutDate){
-        List<CampsiteDto> bookedCampsiteDtos = findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
+//        List<CampsiteDto> bookedCampsiteDtos = findBookedCampsitesByCampgroundId(campgroundId,checkInDate, checkOutDate);
         List<CampsiteDto> campsiteDtos = findCampsitesByCampgroundId(campgroundId);
 
-        // 예약된 캠프사이트 ID를 Set으로 변환하여 빠른 조회 가능
-        Set<Long> bookedCampsiteIds = bookedCampsiteDtos.stream()
-                .map(CampsiteDto::getId)
-                .collect(Collectors.toSet());
+//        // 예약된 캠프사이트 ID를 Set으로 변환하여 빠른 조회 가능
+//        Set<Long> bookedCampsiteIds = bookedCampsiteDtos.stream()
+//                .map(CampsiteDto::getId)
+//                .collect(Collectors.toSet());
 
         Map<Long, Integer> map = new HashMap<>();
+
         for (CampsiteDto campsiteDto : campsiteDtos) {
-            if (bookedCampsiteIds.contains(campsiteDto.getId())) {
-                map.put(campsiteDto.getId(), null);
-            }else{
-                map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
-            }
+            map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
         }
+//        for (CampsiteDto campsiteDto : campsiteDtos) {
+//            if (bookedCampsiteIds.contains(campsiteDto.getId())) {
+//                map.put(campsiteDto.getId(), null);
+//            }else{
+//                map.put(campsiteDto.getId(), calculateTotalPrice(campsiteDto.getId(), checkInDate, checkOutDate));
+//            }
+//        }
         return map;
     }
 }

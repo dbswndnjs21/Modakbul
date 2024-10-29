@@ -28,6 +28,7 @@ public class Campsite {
     private int headCount;
     private int weekdayPrice;
     private int weekendPrice;
+    private int campsiteNumber;
 
     @OneToMany(mappedBy = "campsite", cascade = CascadeType.ALL)
     private List<CampsitePrice> campsitePrices;

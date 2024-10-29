@@ -61,4 +61,12 @@ public class CampsiteController {
         campsiteService.saveCampsite(campsiteDto);
         return "redirect:/campgrounds";  // 캠프사이트 목록으로 리다이렉트
     }
+
+    @GetMapping("/api/campsite/booked")
+    @ResponseBody
+    public List<CampsiteDto> getBookedCampsites(@RequestParam("campgroundId") Long campgroundId,
+                                                @RequestParam("checkInDate") LocalDate checkInDate,
+                                                @RequestParam("checkOutDate") LocalDate checkOutDate) {
+        return campsiteService.findBookedCampsitesByCampgroundId(campgroundId, checkInDate, checkOutDate);
+    }
 }
