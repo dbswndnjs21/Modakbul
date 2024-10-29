@@ -94,7 +94,7 @@
             <a th:href="@{/campgrounds}" class="btn-new">새 예약</a>
             <span class="bookingStatus">
                 예약 정보 :
-                <span>완료 / 취소 </span>
+                <span>예약 / 취소 / 예약 실패 (삭제될 내역입니다) </span>
             </span>
         </header>
 
@@ -118,12 +118,13 @@
                 <td th:text="${booking.checkInDate}"></td>
                 <td th:text="${booking.checkOutDate}"></td>
                 <td>
-                    <span th:if="${booking.bookingStatus == 0}" class="status-complete">완료</span>
+                    <span th:if="${booking.bookingStatus == 0}" class="status-complete">예약 실패</span>
 <!--                    <span th:if="${booking.bookingStatus == 1}" class="status-pending">대기 중</span>-->
-                    <span th:if="${booking.bookingStatus == 1}" class="status-cancelled">취소됨</span>
+                    <span th:if="${booking.bookingStatus == 1}" class="status-pending">예약</span>
+                    <span th:if="${booking.bookingStatus == 2}" class="status-cancelled">취소</span>
                 </td>
                 <td>
-                    <button th:if="${booking.bookingStatus == 0}" class="btn-cancel" th:onclick="|cancelBooking(${booking.id})|">취소</button>
+                    <button th:if="${booking.bookingStatus == 1}" class="btn-cancel" th:onclick="|cancelBooking(${booking.id})|">취소</button>
                 </td>
             </tr>
             </tbody>

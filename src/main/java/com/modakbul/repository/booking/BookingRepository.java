@@ -27,4 +27,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                      @Param("checkInDate") LocalDateTime checkInDate,
                                      @Param("checkOutDate") LocalDateTime checkOutDate);
 
+    @Query("SELECT b FROM Booking b WHERE b.id NOT IN (SELECT p.booking.id FROM Payment p)")
+    List<Booking> findBookingsWithoutPayment();
+
 }
