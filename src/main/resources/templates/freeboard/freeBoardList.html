@@ -40,7 +40,7 @@
 							<img th:src="@{/images/new5.png}"
 								style="width: 50px; height: 30px;" alt="새 게시글">
 						</th:block>
-						<span th:text="${post.title}">게시글 제목</span> 
+						<span th:text="${post.title}">게시글 제목</span>
 					</h5>
 					<p class="card-text" th:text="${post.content}"
 						onload="showFirstLine(this)">게시글 내용</p>
@@ -51,7 +51,8 @@
 		</div>
 
 		<div id="loading" class="text-center my-4">
-			<p>Loading...</p>
+			<p><img th:src="@{/images/loading.png}"
+								style="width: 50px; height: 30px;" alt="로딩중"></p>
 		</div>
 
 		<div class="sentinel"></div>
@@ -98,9 +99,10 @@
                     page++; // 다음 페이지로 넘어감
                 } else {
                     // 더 이상 불러올 게시글이 없을 경우
-                    alert("더 이상 불러올 게시글이 없습니다.");
-                    isLoading = false; // 로딩 종료
-                    return; // 더 이상 로드하지 않도록 종료
+                    if (page > 1) { // 페이지가 1보다 클 때만 알림 표시
+                        alert("더 이상 불러올 게시글이 없습니다.");
+                    }
+                    observer.unobserve(sentinel); // 더 이상 불러오지 않도록 옵저버 해제
                 }
                 isLoading = false; // 로딩 종료
             })
@@ -132,7 +134,7 @@
                 if (post.images && post.images.length > 0) {
                     imgTag = `<img src="${post.images[0].imagePath}" class="card-img-top" alt="${post.images[0].fileName}" style="height: 300px; object-fit: cover;">`;
                 }
-		
+			
                 // NEW 이미지 표시 여부 결정
                 const isNew = post.createdAt && new Date(post.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000);
                 const newTag = isNew ? `<img src="/images/new5.png" style="width: 50px; height: 30px;" alt="새 게시글">` : '';
@@ -155,19 +157,19 @@
 
     // Intersection Observer 설정
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                loadMorePosts(); // 요소가 뷰포트에 들어오면 더 불러오기
-            }
-        });
-    }, {
-        root: null, // 기본 뷰포트 사용
-        rootMargin: '0px',
-        threshold: 0.8
+    entries.forEach(entry => {
+        if (entry.isIntersecting && !isLoading) { // 로딩 중이 아닐 때만
+            loadMorePosts(); // 요소가 뷰포트에 들어오면 더 불러오기
+        }
     });
+}, {
+    root: null, // 기본 뷰포트 사용
+    rootMargin: '0px',
+    threshold: 0.8
+});
 
-    const sentinel = document.querySelector('.sentinel'); // sentinel 요소를 옵저버로 관찰
-    observer.observe(sentinel);
+const sentinel = document.querySelector('.sentinel'); // sentinel 요소를 옵저버로 관찰
+observer.observe(sentinel);
 </script>
 	<script>
     function scrollToTop() {
