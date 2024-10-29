@@ -41,8 +41,8 @@ application.yml
 application.properties
 
 # 환경별 파일 무시 (예: application-dev.yml, application-prod.properties)
-*.yml
-*.properties
+#*.yml
+#*.properties
 
 #이미지 파일 올리는 곳 이그노어 추가
 /Users/kimjiwoong/modakbul/campgroundImage/
