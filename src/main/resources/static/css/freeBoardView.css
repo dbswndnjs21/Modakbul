@@ -227,11 +227,14 @@ form textarea {
 }
 
 .carousel-indicators button {
-    background-color: #ff7f50; /* 하단 버튼 색상 */
-    opacity: 0.7; /* 투명도 설정 */
+    background-color: #007bff; /* 기본 버튼 색상 (파란색) */
+    border: 1px solid #ff7f50; /* 외곽선 추가 */
+    opacity: 1; /* 투명도 설정: 완전 불투명 */
+    transition: background-color 0.3s; /* 마우스 오버 효과를 위해 추가 */
 }
 
 .carousel-indicators .active {
-    background-color: #ff7f50; /* 활성화된 하단 버튼 색상 */
-    opacity: 1; /* 활성화된 버튼은 투명도 제거 */
+    background-color: #ff7f50; /* 활성화된 버튼 색상 */
+    border: 1px solid #ff7f50; /* 활성화된 버튼 외곽선 */
+    opacity: 1; /* 투명도 제거 */
 }
