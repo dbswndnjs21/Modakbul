@@ -87,3 +87,19 @@ button:hover {
 .add-btn:hover {
     background-color: #0056b3; /* 호버 시 색상 변경 */
 }
+
+a.btn-chat-list {
+    background-color: #ff7f50; /* 주황빛 버튼 */
+    border: none;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none !important; /* 밑줄 제거 우선순위 증가 */
+}
+
+a.btn-chat-list:hover {
+    background-color: #ff6347; /* 호버 시 더 진한 주황색 */
+}

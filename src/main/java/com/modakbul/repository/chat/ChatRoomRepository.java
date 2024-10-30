@@ -18,4 +18,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
     // 호스트(캠핑장 관리자의) 채팅 목록을 가져옴 (campgroundId로 조회)
     Page<ChatRoom> findByCampgroundId(Long campgroundId,Pageable pageable);
+    
+    List<ChatRoom> findByMemberId(Long memberId);
 }

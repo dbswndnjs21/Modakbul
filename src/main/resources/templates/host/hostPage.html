@@ -8,7 +8,7 @@
 </head>
 <body>
 <!-- 사이드바 포함 -->
-<div th:replace="host/fragments/sidebar :: sidebar"></div>
+<div th:replace="~{host/fragments/sidebar :: sidebar}"></div>
 
 <div class="main-content">
     <h1>수익</h1>
@@ -35,12 +35,12 @@
         </tr>
         </tfoot>
     </table>
-
+	
     <hr>
     <h1>캠핑장 목록</h1>
     <a class="add-btn" href="/campgrounds/add">캠핑장 추가하기</a>
     <table border="1">
-        <thead>
+    <thead>
         <tr>
             <th>ID</th>
             <th>캠핑장 이름</th>
@@ -48,44 +48,33 @@
             <th>객실 관리</th>
             <th>승인 상태</th>
             <th>작업</th>
+            <th>채팅 목록</th> <!-- 새로운 "채팅 목록" 열 추가 -->
         </tr>
-        </thead>
-        <tbody>
-        <!-- campgroundsByHostId 리스트를 순회하며 각 캠핑장 정보를 출력 -->
+    </thead>
+    <tbody>
         <tr th:each="camp, iterStat : ${campground}" th:if="${iterStat.index < 10}">
             <td th:text="${camp.id}"></td>
             <td>
                 <a th:href="@{'/campgrounds/edit/' + ${camp.id}}" th:text="${camp.campgroundName}"></a>
             </td>
-
             <td th:text="${camp.address}"></td>
             <td>
-            <a th:href="@{'/campsite/list?campgroundId=' + ${camp.id}}" th:text="객실수정"></a>
+                <a th:href="@{'/campsite/list?campgroundId=' + ${camp.id}}" th:text="객실수정"></a>
             </td>
-
             <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
-            <!-- approve가 0일 때 승인신청 버튼 표시 -->
-            <td th:if="${camp.approve == 0}">
-                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=1)}" method="post">
-                    <button type="submit">승인신청</button>
+            <td>
+                <!-- approve 상태에 따라 작업 버튼 표시 -->
+                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=${camp.approve == 1 ? 0 : 3})}" method="post">
+                    <button type="submit" th:text="${camp.approve == 0 ? '승인신청' : '수정하기'}"></button>
                 </form>
             </td>
-            <!-- approve가 1일 때 수정하기 버튼 표시 -->
-            <td th:if="${camp.approve == 1}">
-                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=0)}" method="post">
-                    <button type="submit">수정하기</button>
-                </form>
+            <!-- 채팅 목록 버튼 열 -->
+            <td>
+                <a th:href="@{/chat/chatList(campgroundId=${camp.id})}" class="btn btn-chat-list" style="margin-left: 10px;">채팅 목록</a>
             </td>
-            <!-- approve가 2일 때 수정하기 버튼 표시 -->
-            <td th:if="${camp.approve == 2}">
-                <form th:action="@{/host/campground/approve/{id}/{approve}(id=${camp.id}, approve=3)}" method="post">
-                    <button type="submit">수정하기</button>
-                </form>
-            </td>
-
         </tr>
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
 </div>
 </body>

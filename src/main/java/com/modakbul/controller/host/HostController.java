@@ -2,6 +2,7 @@ package com.modakbul.controller.host;
 
 import com.modakbul.dto.booking.BookingDto;
 import com.modakbul.dto.campground.CampgroundDto;
+import com.modakbul.dto.chat.ChatRoomDto;
 import com.modakbul.dto.member.HostDto;
 import com.modakbul.dto.payment.PaymentDTO;
 import com.modakbul.entity.member.Host;
@@ -9,6 +10,7 @@ import com.modakbul.entity.payment.Payment;
 import com.modakbul.security.CustomUserDetails;
 import com.modakbul.service.booking.BookingService;
 import com.modakbul.service.campground.CampgroundService;
+import com.modakbul.service.chat.ChatRoomService;
 import com.modakbul.service.member.HostService;
 import com.modakbul.service.payment.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,9 @@ public class HostController {
     private HostService hostService;
     @Autowired
     private PaymentService paymentService;
-
+    @Autowired
+    private ChatRoomService chatRoomService;
+    
     @ModelAttribute
     public void addAttributes(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         model.addAttribute("member", member);
@@ -39,6 +43,7 @@ public class HostController {
         List<CampgroundDto> campgroundsByHostId = campgroundService.getCampgroundsByHostId(hostId.getId());
         List<Long> campgroundIds = new ArrayList<>();
         List<PaymentDTO> paymentSearch = new ArrayList<>(); // Payment 리스트로 변경
+        List<ChatRoomDto> chatList = chatRoomService.findByMemberId(member.getId());
 
         int paymentAmount = 0;
 
@@ -60,7 +65,9 @@ public class HostController {
 
 
         }
-
+        
+        
+        model.addAttribute("chatList", chatList);
         model.addAttribute("host", hostId);
         model.addAttribute("campground", campgroundsByHostId);
         model.addAttribute("bookings", bookings);

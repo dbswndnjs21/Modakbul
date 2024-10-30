@@ -35,6 +35,7 @@ a.btn-chat-list {
     text-align: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none !important; /* 밑줄 제거 우선순위 증가 */
 }
 
 a.btn-chat-list:hover {

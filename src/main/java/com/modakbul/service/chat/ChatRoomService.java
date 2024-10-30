@@ -37,6 +37,15 @@ public class ChatRoomService {
         return chatRoomOptional.map(ChatRoomDto::new).orElse(null);
     }
     
+    public List<ChatRoomDto> findByMemberId(Long memberId){
+    	List<ChatRoom> list = chatRoomRepository.findByMemberId(memberId);
+    	
+    	return  list.stream()
+    			.map(ChatRoomDto::new) // DTO 생성자로 변환
+                .collect(Collectors.toList());
+    	}
+    
+    
     // 캠프장 ID로 채팅 방 생성
     public ChatRoomDto createChatRoom(Long campgroundId, Long memberId) {
         Campground campground = campgroundRepository.findById(campgroundId)
@@ -90,6 +99,7 @@ public class ChatRoomService {
         // ChatRoom 엔티티를 ChatRoomDto로 변환하여 반환
         return new ChatRoomDto(chatRoom);
     }
+    
     
     
 }
