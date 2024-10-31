@@ -36,7 +36,6 @@ public class ChatController {
     @MessageMapping("/chat/sendMessage")
     public ChatMessageDto sendMessage(ChatMessageDto chatMessageDto) {
         // ChatRoom과 Member 엔티티 찾기
-    	System.out.println("dto확인" + chatMessageDto);
         ChatRoomDto chatRoomDto = chatRoomService.findById(chatMessageDto.getChatRoomId());
         Member member = memberService.findById(chatMessageDto.getMemberId());
         // DTO를 엔티티로 변환하고 메시지를 저장

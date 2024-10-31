@@ -40,15 +40,8 @@ public class FreeboardListController {
 	@GetMapping("/freeboard/loadMore")
 	@ResponseBody
 	public List<FreeboardDto> loadMorePosts(@RequestParam("page") int page) {
-	    System.out.println("Requested page: " + page);  // 요청한 페이지 번호 로그
 	    int size = 5; // 한 번에 가져올 게시글 개수
 	    List<FreeboardDto> posts = freeboardService.findWithImagesPaged(page, size);
-
-	    System.out.println("Loaded Posts Count: " + posts.size()); // 로드된 게시글 수 확인
-	    for (FreeboardDto post : posts) {
-	        System.out.println("Post ID: " + post.getId() + ", Title: " + post.getTitle()); // 로드된 게시글 로그
-	    }
-	    
 	    return posts;
 	}
 }
