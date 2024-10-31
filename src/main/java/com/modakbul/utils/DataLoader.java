@@ -2,9 +2,15 @@ package com.modakbul.utils;
 
 import com.modakbul.entity.campground.CampgroundOption;
 import com.modakbul.entity.campground.CampgroundSuboption;
+import com.modakbul.entity.campsite.Campsite;
+import com.modakbul.entity.campsite.CampsiteOption;
+import com.modakbul.entity.campsite.CampsiteSuboption;
 import com.modakbul.repository.campground.CampgroundOptionRepository;
 import com.modakbul.repository.campground.CampgroundSuboptionRepository;
+import com.modakbul.repository.campsite.CampsiteOptionRepository;
+import com.modakbul.repository.campsite.CampsiteSuboptionRepository;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +21,13 @@ import java.util.List;
 public class DataLoader implements CommandLineRunner {
     private final CampgroundOptionRepository campgroundOptionRepository;
     private final CampgroundSuboptionRepository campgroundSuboptionRepository;
-    public DataLoader(CampgroundOptionRepository campgroundOptionRepository, CampgroundSuboptionRepository campgroundSuboptionRepository) {
+    private final CampsiteOptionRepository campsiteOptionRepository;
+    private final CampsiteSuboptionRepository campsiteSuboptionRepository;
+    public DataLoader(CampgroundOptionRepository campgroundOptionRepository, CampgroundSuboptionRepository campgroundSuboptionRepository, CampsiteOptionRepository campsiteOptionRepository, CampsiteSuboptionRepository campsiteSuboptionRepository) {
         this.campgroundOptionRepository = campgroundOptionRepository;
         this.campgroundSuboptionRepository = campgroundSuboptionRepository;
+        this.campsiteOptionRepository = campsiteOptionRepository;
+        this.campsiteSuboptionRepository = campsiteSuboptionRepository;
     }
 
     @Override
@@ -25,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
         addCampgroundOption();
         addCampgroundSuboptions();
         addCampsiteOption();
-        addCampsiteSubOption();
+//        addCampsiteSuboptions();
     }
 
     @Transactional // 모든 삽입 작업을 하나의 트랜잭션으로 묶음
@@ -49,8 +59,8 @@ public class DataLoader implements CommandLineRunner {
                 campgroundOptionRepository.save(option);
             }
         }
-
     }
+
     public void addCampgroundSuboptions(){
         CampgroundOption campType = campgroundOptionRepository.findByOptionName("캠핑유형");
         CampgroundOption enviroment = campgroundOptionRepository.findByOptionName("환경");
@@ -103,10 +113,69 @@ public class DataLoader implements CommandLineRunner {
     }
 
     public void addCampsiteOption(){
+        List<String> options = Arrays.asList(
+                "유형",
+                "바닥",
+                "기본 크기",
+                "주차형태"
+        );
 
+        // 각 옵션에 대해 중복 여부를 확인하고 삽입
+        for (String optionName : options) {
+            if (campsiteOptionRepository.findByOptionName(optionName) == null) {
+                CampsiteOption option = new CampsiteOption();
+                option.setOptionName(optionName);
+                campsiteOptionRepository.save(option);
+            }
+        }
     }
 
-    public void addCampsiteSubOption(){
-
+    public void addCampsiteSuboption(int optionId, List<String> subOptions){
+        for (String subOptionName : subOptions) {
+            if (campsiteSuboptionRepository.findByOptionNameAndCampsiteOptionId(subOptionName, optionId) == null) {
+                CampsiteSuboption subOption = new CampsiteSuboption();
+                subOption.setOptionName(subOptionName);
+                subOption.setCampsiteOption(campsiteOptionRepository.findById(optionId).orElse(null)); // 해당 옵션에 연결
+                campsiteSuboptionRepository.save(subOption);
+            }
+        }
     }
+
+//    public void addCampsiteSuboptions(){
+//        CampgroundOption campType = campgroundOptionRepository.findByOptionName("캠핑유형");
+//        CampgroundOption basicFacilitie = campgroundOptionRepository.findByOptionName("기본시설");
+//        CampgroundOption additionalFacilitie = campgroundOptionRepository.findByOptionName("부가시설");
+//        CampgroundOption parkingType = campgroundOptionRepository.findByOptionName("주차형태");
+//        CampgroundOption numberOfStays = campgroundOptionRepository.findByOptionName("숙박일수");
+//
+//        addCampgroundSuboption(campType.getId(), Arrays.asList(
+//                "오토캠핑", "글램핑", "카라반", "팬션", "방갈로", "차박"
+//        ));
+//
+//        addCampgroundSuboption(enviroment.getId(), Arrays.asList(
+//                "바다", "산", "숲", "강", "호수", "계곡", "섬", "평야", "기타"
+//        ));
+//
+//        addCampgroundSuboption(basicFacilitie.getId(), Arrays.asList(
+//                "파쇄석", "데크", "잔디", "마사토", "모래", "자갈", "혼합", "기타"
+//        ));
+//
+//        addCampgroundSuboption(additionalFacilitie.getId(), Arrays.asList(
+//                "화장실", "샤워실", "개별샤워실", "개수대", "매점", "카페", "와이파이", "전기차충전소", "바베큐장"
+//        ));
+//
+//        addCampgroundSuboption(leisure.getId(), Arrays.asList(
+//                "놀이시설", "체험활동", "수영장", "트램펄린", "산책로", "장비대여", "반려동물",
+//                "트레일러진입", "카라반진입", "찜질방", "짚라인", "온수수영장", "썰매장",
+//                "농장체험", "동물체험", "장비보관"
+//        ));
+//
+//        addCampgroundSuboption(parkingType.getId(), Arrays.asList(
+//                "텐트 옆 주차", "주차장 주차"
+//        ));
+//
+//        addCampgroundSuboption(numberOfStays.getId(), Arrays.asList(
+//                "캠프닉", "1박이상"
+//        ));
+//    }
 }
