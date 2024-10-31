@@ -56,7 +56,7 @@ public class ChatRoomController {
 	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("member", member);
 	    model.addAttribute("chatRoom", chatRoomDto);
-	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
+	    return "chat/chatRoom"; // 채팅 방 HTML 템플릿의 경로
 	}
 	
 	@GetMapping("/chatroombyid/{chatRoomId}")
@@ -73,7 +73,7 @@ public class ChatRoomController {
 	    model.addAttribute("memberId", memberId);
 	    model.addAttribute("member", member);
 	    model.addAttribute("chatRoom", chatRoomDto);
-	    return "chat/chatroom"; // 채팅 방 HTML 템플릿의 경로
+	    return "chat/chatRoom"; // 채팅 방 HTML 템플릿의 경로
 	}
 	
 	@GetMapping("/chatList")
