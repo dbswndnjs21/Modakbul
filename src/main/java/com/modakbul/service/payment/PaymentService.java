@@ -60,15 +60,11 @@ public class PaymentService {
         String userId = null;
         Object principal = authentication.getPrincipal();
         if (principal instanceof CustomUserDetails) {
-            System.out.println("TEST1 CustomUserDetails: " + principal);
             CustomUserDetails userDetails = (CustomUserDetails) principal;
             userId = userDetails.getUsername();  // 사용자 ID 추출
-            System.out.println(userId);
         } else if (principal instanceof OAuth2User) {
-            System.out.println("TEST1 OAuth2User: " + principal);
             OAuth2User oauthUser = (OAuth2User) principal;
             userId = oauthUser.getName();  // OAuth 사용자 이름 추출
-            System.out.println(userId);
         } else {
             throw new IllegalStateException("Unexpected principal type: " + principal.getClass().getName());
         }
@@ -111,12 +107,10 @@ public class PaymentService {
         String userId;
         Member member = null;
         if (principal instanceof CustomUserDetails) {
-            System.out.println("TEST2 CustomUserDetails: " + principal);
             CustomUserDetails userDetails = (CustomUserDetails) principal;
             userId = userDetails.getUsername();
             member = userDetails.getMember();
         } else if (principal instanceof OAuth2User) {
-            System.out.println("TEST2 OAuth2User: " + principal);
             OAuth2User oauthUser = (OAuth2User) principal;
             userId = oauthUser.getName();
         } else {
@@ -255,7 +249,6 @@ public class PaymentService {
         Payment findTidPayment = paymentRepository.findByBookingId(bookingId);
         String paymentTid = findTidPayment.getPaymentTid();
         int amount = findTidPayment.getAmount();
-        System.out.println(paymentTid);
         Map<String, Object> payParams = new HashMap<>();
         payParams.put("cid", "TC0ONETIME");                     //가맹점코드
         payParams.put("tid", paymentTid);                       //결제고유번호

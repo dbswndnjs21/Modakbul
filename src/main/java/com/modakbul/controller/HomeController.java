@@ -38,9 +38,6 @@ public class HomeController {
             model.addAttribute("member", member);
             model.addAttribute("role", member.getRole());
 
-            System.out.println("UserDetails member: " + member.getUserName());
-        } else {
-            System.out.println("No valid authentication found.");
         }
 
         return "home";

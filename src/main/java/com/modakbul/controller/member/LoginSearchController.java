@@ -23,11 +23,9 @@ public class LoginSearchController {
     @PostMapping("/login/search")
     @ResponseBody
     public ResponseEntity<String> search(@RequestBody MemberDto dto) {
-        System.out.println("Received request: " + dto);
 
         // 사용자 정보를 DB에서 찾기
         Member member = memberService.findByUserNameAndMail(dto.getUserName(), dto.getMail());
-        System.out.println("Found member: " + member);
 
         // 사용자 정보를 찾지 못한 경우
         if (member == null) {

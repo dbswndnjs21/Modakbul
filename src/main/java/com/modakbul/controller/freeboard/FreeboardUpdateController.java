@@ -48,12 +48,6 @@ public class FreeboardUpdateController {
 		// 게시글 정보 업데이트
 	    if ((files != null && !files.isEmpty()) || (removedImages != null && removedImages.length > 0)) {
 	        // 파일이 있거나 삭제할 파일이 있는 경우
-	        if (removedImages != null && removedImages.length > 0) {
-	            System.out.println(removedImages[0]); // 이제 배열 접근 전에 체크함
-	        } else {
-	            System.out.println("삭제할 이미지가 없습니다.");
-	        }
-	        
 	        freeboardService.updateImageFreeboard(freeboardDto, member.getId(), files, removedImages);
 	    } else {
 	        // 파일이 없고 삭제할 파일도 없는 경우

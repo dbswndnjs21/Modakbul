@@ -58,7 +58,6 @@ public class MyPageController {
     @GetMapping("")
     public String myPage(@AuthenticationPrincipal CustomUserDetails member, Model model) {
         if (member == null) {
-            System.out.println("No valid authentication found.");
             return "redirect:/login";
         }
         return "mypage/myPage";
@@ -77,11 +76,9 @@ public class MyPageController {
             model.addAttribute("member", member);
             model.addAttribute("bookings", bookings);
             // 예약 내역 가져오기
-        } else {
-            System.out.println("No valid authentication found.");
         }
+
         // KakapayController에서 redirectAttributes로 보낸 메세지
-        System.out.println("받아온 메세지 : "  +  successMessage);
         model.addAttribute("successMessage", successMessage);
         
         return "mypage/reservations";
@@ -93,7 +90,6 @@ public class MyPageController {
         if (member != null) {
             model.addAttribute("member", member);
         } else {
-            System.out.println("No valid authentication found.");
             return "redirect:/login"; // 인증되지 않은 경우 로그인 페이지로 리다이렉트
         }
         return "mypage/personalInfo"; // 개인 정보 수정 폼 뷰 반환
@@ -112,7 +108,6 @@ public class MyPageController {
             memberService.updateMemberInfo(member, username, password);
 
             // 업데이트 후 로그
-            System.out.println("회원 정보 업데이트: " + username);
 
             // 업데이트 완료 후 마이페이지로 리다이렉트
             return "redirect:/mypage/personalInfo";

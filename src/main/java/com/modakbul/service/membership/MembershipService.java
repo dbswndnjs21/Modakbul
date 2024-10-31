@@ -69,14 +69,8 @@ public class MembershipService {
 
                         // MemberCoupon 저장
                         memberCouponRepository.save(memberCoupon);
-                    } else {
-                        System.out.println("Member already has the coupon with ID " + couponId);
                     }
-                } else {
-                    System.out.println("Coupon with ID " + couponId + " not found.");
                 }
-            } else {
-                System.out.println("Membership with ID " + membershipId + " not found.");
             }
         }
     }

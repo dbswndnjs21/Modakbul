@@ -45,8 +45,6 @@ public class KaKaoPayController {
         String couponUsed = orderCreateForm.getCouponUsed();
         int couponId = orderCreateForm.getCouponId();
         boolean isCouponUsed = !"N".equals(couponUsed); // N 이면 false 그 외는 true
-        System.out.println("예약 아이디 : " + bookingId);
-        System.out.println("isCouponUsed = " + isCouponUsed);
 
         log.info("주문 상품 이름: " + name);
         log.info("주문 금액: " + totalPrice);
@@ -83,7 +81,6 @@ public class KaKaoPayController {
 // 결제 취소 후 마이페이지의 예약내역으로가기
 //    @PostMapping("/pay/cancel")
 //    public ResponseEntity<String> payCancel(@RequestParam("orderNumber") Long orderNumber) {
-//        System.out.println("orderNumber : " + orderNumber);
 //        KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.KakaoPayCancel(orderNumber);
 //        String url = "/mypage/reservations";
 //        return new ResponseEntity<>(url, HttpStatus.OK);
@@ -92,7 +89,6 @@ public class KaKaoPayController {
     // 결제 취소 후 버튼이있던 곳에 취소 내역 뿌리기
     @PostMapping("/pay/cancel")
     public ResponseEntity<KaKaoPayCancelDto> payCancel(@RequestParam("bookingId") Long bookingId) {
-        System.out.println("bookingId : " + bookingId);
 
         // 결제 취소 로직 수행
         KaKaoPayCancelDto kaKaoPayCancelDto = paymentService.kakaoPayCancel(bookingId);

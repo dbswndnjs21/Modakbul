@@ -38,6 +38,8 @@ public class PaymentDTO {
         this.memberId = payment.getMember().getId();
         if (payment.getMemberCoupon() == null) {
             this.memberCouponId = 0L;
+        } else if (payment.getMemberCoupon().equals("undefined") ) {
+            this.memberCouponId= 0L;
         } else {
             this.memberCouponId = (long) payment.getMemberCoupon().getId();
         }

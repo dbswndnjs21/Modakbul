@@ -20,8 +20,6 @@ public class LocationDetailService {
 
     public LocationDetailDto findOrCreateLocationDetail(String sigungu, LocationDto locationDto){
         Location location = locationDto.toEntity();
-        System.out.println("location : " + location.getId());
-        System.out.println("location sido: " + location.getSido());
         LocationDetail locationDetail = locationDetailRepository.findBySigunguAndLocation(sigungu, locationDto.toEntity())
                 .orElseGet(()->{
                     LocationDetail newLocationDetail = new LocationDetail();

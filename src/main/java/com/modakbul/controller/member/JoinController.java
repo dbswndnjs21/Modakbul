@@ -71,8 +71,6 @@ public class JoinController {
 //        host.setAccount(account);
 //        host.setAccountHolder(accountHolder);
 //
-//        System.out.println(host.getId());
-//        System.out.println(host.getBankName());
 
         Host host = Host.builder().member(member).bankName(bankName).account(account).accountHolder(accountHolder).build();
 

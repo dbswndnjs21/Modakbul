@@ -31,8 +31,6 @@ public class MemberService {
     }
     public void saveHost(Member member){
         Optional<Member> byId = memberRepository.findById(member.getId());
-        System.out.println(member);
-        System.out.println("member.getid() + " + member.getId());
 
         Member member1 = byId.get();
 
