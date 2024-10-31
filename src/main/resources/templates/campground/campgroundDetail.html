@@ -16,7 +16,8 @@
 <!--이미지 넣어야함-->
 <th:block th:if="${campground != null}">
     <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
-        <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}" class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
+        <img th:src="${campground.campgroundImages[0].imagePath}"
+             class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
     </th:block>
 </th:block>
 

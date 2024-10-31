@@ -26,8 +26,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/campgrounds")
 public class CampgroundController {
-    @Value("${file.path}")
-    private String filePath;
 
     private final CampgroundService campgroundService;
     private final CampsiteService campsiteService;
@@ -64,9 +62,9 @@ public class CampgroundController {
 
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
         List<CampsiteDto> bookedCampsites = campsiteService.findBookedCampsitesByCampgroundId(id,checkInDate,checkOutDate);
-
+        CampgroundDto campground = campgroundService.getCampgroundById(id);
         model.addAttribute("bookedCampsites", bookedCampsites); // 예약 가능한 캠프사이트 추가
-        model.addAttribute("campground", campgroundService.getCampgroundById(id));
+        model.addAttribute("campground", campground);
         model.addAttribute("campsites", campsites);
 
         Map<Long, Integer> totalPrices = new HashMap<>();
@@ -103,7 +101,7 @@ public class CampgroundController {
                                 @RequestParam("sigungu") String sigungu,
                                 @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
 
-        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images, filePath);
+        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 
