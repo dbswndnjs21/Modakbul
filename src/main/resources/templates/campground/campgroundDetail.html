@@ -71,7 +71,7 @@
         <p><strong>전화번호:</strong> <span th:text="${campground.phone}">123-456-7890</span></p>
     </div>
 
-    <form action="/booking/new" method="get" onsubmit="return validateForm();" class="mb-4">
+    <form id="bookingForm" action="/booking/new" method="get" onsubmit="return validateForm();" class="mb-4">
         <input type="hidden" id="checkInDate" name="checkInDate">
         <input type="hidden" id="checkOutDate" name="checkOutDate">
         <input type="hidden" id="campsiteId" name="campsiteId">
