@@ -8,6 +8,7 @@ import com.modakbul.service.payment.PaymentService;
 import com.modakbul.utils.SessionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class KaKaoPayController {
 
     private final PaymentService PaymentService;
     private final PaymentService paymentService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     @GetMapping("/kakaoForm")
     public String kakaoForm(){
@@ -48,7 +52,7 @@ public class KaKaoPayController {
         log.info("주문 금액: " + totalPrice);
 
         // 카카오 결제 준비하기
-        ReadyResponse readyResponse = PaymentService.payReady(name, totalPrice, orderNumber, bookingId, isCouponUsed,couponId);
+        ReadyResponse readyResponse = PaymentService.payReady(name, totalPrice, orderNumber, bookingId, isCouponUsed,couponId, baseUrl);
         // 세션에 결제 고유번호(tid) 저장
         SessionUtils.addAttribute("tid", readyResponse.getTid());
         log.info("결제 고유번호: " + readyResponse.getTid());
