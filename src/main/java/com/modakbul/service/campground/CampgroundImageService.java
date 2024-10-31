@@ -4,6 +4,7 @@ import com.modakbul.entity.campground.Campground;
 import com.modakbul.entity.image.CampgroundImage;
 import com.modakbul.repository.campground.CampgroundImageRepository;
 import com.modakbul.repository.campground.CampgroundRepository;
+import com.modakbul.service.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,8 @@ public class CampgroundImageService {
     private CampgroundImageRepository campgroundImageRepository;
     @Autowired
     private CampgroundRepository campgroundRepository;
+    @Autowired
+    private FileUploadService fileUploadService;
 
     public String saveCampgroundImages(Long campgroundId, List<MultipartFile> images, String filePath) {
         campgroundImageRepository.findByCampgroundId(campgroundId);
@@ -35,26 +38,31 @@ public class CampgroundImageService {
         // 파일 저장
         for (MultipartFile image : images) {
             if (!image.isEmpty()) {
-                String originalFileName = image.getOriginalFilename();
-                String saveFileName = UUID.randomUUID() + "_" + originalFileName; // 저장할 파일명 생성
+                // 원래 파일 이름의 확장자 추출
+                String originalFilename = image.getOriginalFilename();
+                String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
 
-                // 실제 파일 저장
-                File savedFile = new File(destDir, saveFileName);
+                // UUID 생성
+                String uuidFileName = UUID.randomUUID().toString() + extension; // UUID + 원래 확장자
+
+
+                // S3에 파일 업로드
                 try {
-                    image.transferTo(savedFile);
+                    String fileUrl = fileUploadService.uploadFile(image,uuidFileName); // S3에 파일 업로드
+                    Campground campground = new Campground();
+                    campground.setId(campgroundId);
+                    CampgroundImage campgroundImage = CampgroundImage.builder()
+                            .fileName(originalFilename)
+                            .saveFileName(uuidFileName)
+                            .imagePath(filePath)
+                            .imageOrder(imageOrder++)
+                            .campground(campground)
+                            .build();
+
+                    campgroundImageRepository.save(campgroundImage);
                 } catch (IOException e) {
-                    System.err.println("파일업로드실패" + originalFileName + "- " + e.getMessage());
+                    throw new RuntimeException(e);
                 }
-                Campground campground = new Campground();
-                campground.setId(campgroundId);
-                CampgroundImage campgroundImage = CampgroundImage.builder()
-                        .fileName(originalFileName)
-                        .saveFileName(saveFileName)
-                        .imagePath(filePath)
-                        .imageOrder(imageOrder++)
-                        .campground(campground)
-                        .build();
-                campgroundImageRepository.save(campgroundImage);
             }
         }
 
