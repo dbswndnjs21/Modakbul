@@ -29,7 +29,7 @@
 					<th:block th:if="${post.images != null and post.images.size() > 0}">
 						<!-- S3 URL을 사용하여 이미지 표시 -->
 						<img th:src="${post.images[0].imagePath}" class="card-img-top"
-							alt="게시글 사진" style="height: 300px; object-fit: fill;"
+							alt="게시글 사진" style="height: 300px; object-fit: contain;"
 							th:alt="${post.images[0].fileName}">
 					</th:block>
 				</th:block>
@@ -136,7 +136,7 @@
                 // 게시글 내용에 이미지가 있는지 확인
                 let imgTag = "";
                 if (post.images && post.images.length > 0) {
-                    imgTag = `<img src="${post.images[0].imagePath}" class="card-img-top" alt="${post.images[0].fileName}" style="height: 300px; object-fit: fill;">`;
+                    imgTag = `<img src="${post.images[0].imagePath}" class="card-img-top" alt="${post.images[0].fileName}" style="height: 300px; object-fit: contain;">`;
                 }
 			
                 // NEW 이미지 표시 여부 결정

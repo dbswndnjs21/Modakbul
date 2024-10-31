@@ -52,7 +52,7 @@
                     <th:block th:each="image, iterStat : ${board.images}">
                         <div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'">
                             <!-- S3에서 이미지 가져오기 -->
-                            <img th:src="${image.imagePath}" class="d-block w-100 clickable-image" th:alt="'Slide ' + ${iterStat.index + 1}" style="height: 100%; object-fit: fill;">
+                            <img th:src="${image.imagePath}" class="d-block w-100 clickable-image" th:alt="'Slide ' + ${iterStat.index + 1}" style="height: 100%; object-fit: contain;">
                         </div>
                     </th:block>
                 </div>
