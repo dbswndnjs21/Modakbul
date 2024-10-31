@@ -1,11 +1,17 @@
 package com.modakbul.dto.campsite;
 
+import com.modakbul.entity.booking.Booking;
 import com.modakbul.entity.campsite.Campsite;
 import com.modakbul.entity.campground.Campground;
+import com.modakbul.entity.campsite.CampsiteOptionLink;
+import com.modakbul.entity.campsite.CampsitePrice;
+import com.modakbul.entity.image.CampsiteImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +27,10 @@ public class CampsiteDto {
     private int weekendPrice;
     private int campsiteNumber;
 
+    private List<CampsiteOptionLink> campsiteOptionLinks;
+    private List<CampsiteImage> campsiteImages;
+    private List<Booking> bookings;
+
     // CampsiteDto를 Campsite 엔티티로 변환하는 메서드
     public Campsite toEntity(Campground campground) {
         return Campsite.builder()
@@ -32,6 +42,9 @@ public class CampsiteDto {
                 .weekdayPrice(this.weekdayPrice)
                 .weekendPrice(this.weekendPrice)
                 .campsiteNumber(this.campsiteNumber)
+                .campsiteOptionLinks(this.campsiteOptionLinks)
+                .campsiteImages(this.campsiteImages)
+                .bookings(this.bookings)
                 .build();
     }
 
@@ -45,5 +58,8 @@ public class CampsiteDto {
         this.weekdayPrice = campsite.getWeekdayPrice();
         this.weekendPrice = campsite.getWeekendPrice();
         this.campsiteNumber = campsite.getCampsiteNumber();
+        this.campsiteOptionLinks = campsite.getCampsiteOptionLinks();
+        this.campsiteImages = campsite.getCampsiteImages();
+        this.bookings = campsite.getBookings();
     }
 }

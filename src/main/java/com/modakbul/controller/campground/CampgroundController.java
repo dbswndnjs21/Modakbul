@@ -139,7 +139,7 @@ public class CampgroundController {
             int totalLowestPrice = campgroundService.getLowestPrice(campground, checkInDate, checkOutDate);
             totalLowestPrices.put(campground.getId(), totalLowestPrice);
         }
-        filteredCampgrounds = campgroundService.getCampgroundWithImages(filteredCampgrounds);
+//        filteredCampgrounds = campgroundService.getCampgroundWithImages(filteredCampgrounds);
 
         model.addAttribute("totalLowestPrices", totalLowestPrices);
         model.addAttribute("campgrounds", filteredCampgrounds);

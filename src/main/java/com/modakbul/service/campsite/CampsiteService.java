@@ -93,7 +93,7 @@ public class CampsiteService {
                     .build();
             campsitePriceRepository.save(campsitePrice); // 가격 정보 저장
         }
-        campsiteImageService.saveCampsiteImages(campsite.getId(), images);
+        campsiteImageService.saveCampsiteImages(savedCampsite, images);
 
         CampsiteDto campsiteDto = new CampsiteDto(savedCampsite);
         return campsiteDto;
