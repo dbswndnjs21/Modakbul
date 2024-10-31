@@ -36,35 +36,45 @@ document.addEventListener('DOMContentLoaded', function () {
             if (startDate < today || startDate > maxDate) {
                 return;
             }
-            // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
-            if (isCheckOutSelected) {
-                checkInDate = startDateStr;
-                checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
-                isCheckOutSelected = false;
+
+            // 체크인 날짜가 선택된 상태에서 이전 날짜가 선택된 경우
+            if (isCheckInSelected && startDate < new Date(checkInDate)) {
+                checkOutDate = checkInDate; // 기존 체크인 날짜를 체크아웃 날짜로 설정
+                checkInDate = startDateStr; // 새로 선택된 날짜를 체크인 날짜로 설정
+                isCheckOutSelected = true; // 체크아웃 날짜가 설정되었음을 표시
             } else {
-                // 체크인 날짜가 아직 선택되지 않은 경우 체크인 날짜로 설정
-                if (!isCheckInSelected) {
+                // 체크아웃이 선택된 상태일 때 새로운 체크인 날짜를 선택하도록 설정
+                if (isCheckOutSelected) {
                     checkInDate = startDateStr;
-                    checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10); // 체크아웃을 1박 2일 후로 설정
-                    isCheckInSelected = true; // 체크인 날짜가 설정되었음을 표시
+                    checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10);
+                    isCheckOutSelected = false;
                 } else {
-                    // 체크아웃 날짜는 체크인 이후 날짜만 선택 가능
-                    if (new Date(startDate) > new Date(checkInDate)) {
-                        checkOutDate = startDateStr;
-                        isCheckOutSelected = true; // 체크아웃이 선택되었음을 표시
+                    // 체크인 날짜가 아직 선택되지 않은 경우 체크인 날짜로 설정
+                    if (!isCheckInSelected) {
+                        checkInDate = startDateStr;
+                        checkOutDate = new Date(new Date(checkInDate).setDate(new Date(checkInDate).getDate() + 1)).toISOString().slice(0, 10); // 체크아웃을 1박 2일 후로 설정
+                        isCheckInSelected = true; // 체크인 날짜가 설정되었음을 표시
+                    } else {
+                        // 체크아웃 날짜는 체크인 이후 날짜만 선택 가능
+                        if (new Date(startDate) > new Date(checkInDate)) {
+                            checkOutDate = startDateStr;
+                            isCheckOutSelected = true; // 체크아웃이 선택되었음을 표시
+                        }
                     }
                 }
             }
+
+            // AJAX 요청 및 총 가격 업데이트
             $.ajax({
-                url:'/api/campsite/list',
+                url: '/api/campsite/list',
                 type: 'GET',
-                data:{
+                data: {
                     campgroundId: document.getElementById('campgroundId').value,
                     checkInDate,
                     checkOutDate
                 },
-                success:function (data){
-                    $.each(data, function(campsiteId, totalPrice) {
+                success: function (data) {
+                    $.each(data, function (campsiteId, totalPrice) {
                         // 해당 캠프사이트의 행을 찾기
                         var campsiteRow = document.getElementById('campsite-row-' + campsiteId);
                         if (campsiteRow) {
@@ -76,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     });
 
-// 예약된 캠프사이트 데이터를 받아와 상태를 설정
+                    // 예약된 캠프사이트 데이터를 받아와 상태를 설정
                     $.ajax({
                         url: '/api/campsite/booked',
                         type: 'GET',
@@ -88,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         success: function (bookedCampsites) {
                             // 예약된 캠프사이트를 기반으로 버튼 및 상태 표시 업데이트
                             var allCampsiteRows = document.querySelectorAll('tr[id^="campsite-row-"]');
-                            allCampsiteRows.forEach(function(campsiteRow) {
+                            allCampsiteRows.forEach(function (campsiteRow) {
                                 var campsiteId = campsiteRow.id.split('-')[2]; // 'campsite-row-<id>'에서 id 추출
                                 var bookingBtn = campsiteRow.querySelector('.booking-btn');
                                 var bookingStatus = campsiteRow.querySelector('.booking-status');
@@ -109,13 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.error('예약된 캠프사이트 요청 오류:', status, error);
                         }
                     });
-
-
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('AJAX 요청 오류:', status, error);
                 }
-            })
+            });
+
             // 날짜 업데이트
             document.getElementById('checkInDate').value = checkInDate;
             document.getElementById('checkOutDate').value = checkOutDate;
@@ -188,5 +197,5 @@ function setSelectedCampsite(campsiteId) {
     // Set the campsite ID in the hidden input field
     document.getElementById('campsiteId').value = campsiteId;
     // Automatically submit the form
-    document.querySelector('form').submit();
+    document.getElementById('bookingForm').submit();
 }
