@@ -23,17 +23,9 @@ public class CampgroundImageService {
     @Autowired
     private FileUploadService fileUploadService;
 
-    public String saveCampgroundImages(Long campgroundId, List<MultipartFile> images, String filePath) {
+    public String saveCampgroundImages(Long campgroundId, List<MultipartFile> images) {
         campgroundImageRepository.findByCampgroundId(campgroundId);
-        File destDir = new File(filePath);
 
-        // 파일 저장 경로가 존재하지 않으면 생성
-        if (!destDir.exists()) {
-            boolean created = destDir.mkdirs(); // 상위 디렉토리까지 모두 생성
-            if (!created) {
-                throw new RuntimeException("디렉토리 생성 실패: " + filePath);
-            }
-        }
         int imageOrder = 1;
         // 파일 저장
         for (MultipartFile image : images) {
@@ -54,7 +46,7 @@ public class CampgroundImageService {
                     CampgroundImage campgroundImage = CampgroundImage.builder()
                             .fileName(originalFilename)
                             .saveFileName(uuidFileName)
-                            .imagePath(filePath)
+                            .imagePath(fileUrl)
                             .imageOrder(imageOrder++)
                             .campground(campground)
                             .build();

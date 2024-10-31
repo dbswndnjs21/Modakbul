@@ -26,8 +26,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/campgrounds")
 public class CampgroundController {
-    @Value("${file.path}")
-    private String filePath;
 
     private final CampgroundService campgroundService;
     private final CampsiteService campsiteService;
@@ -103,7 +101,7 @@ public class CampgroundController {
                                 @RequestParam("sigungu") String sigungu,
                                 @RequestParam(value = "subOptionIds", required = false) List<Integer> subOptionIds) {
 
-        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images, filePath);
+        CampgroundDto campgroundDto = campgroundService.createCampground(campground, sido, sigungu, subOptionIds, images);
         return "redirect:/campsite/list?campgroundId=" + campgroundDto.getId();
     }
 

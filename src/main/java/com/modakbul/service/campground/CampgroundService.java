@@ -101,7 +101,7 @@ public class CampgroundService {
         }
     }
 
-    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images, String path) {
+    public CampgroundDto createCampground(CampgroundDto campgroundDto, String sido, String sigungu, List<Integer> subOptionIds, List<MultipartFile> images) {
         // 현재 인증된 사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
@@ -126,7 +126,7 @@ public class CampgroundService {
         // Campground 저장
         Campground savedCampground = campgroundRepository.save(campground);
 
-        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images, path);
+        campgroundImageService.saveCampgroundImages(savedCampground.getId(), images);
 
         CampgroundDto result = new CampgroundDto(savedCampground);
 
