@@ -16,7 +16,8 @@
 <!--이미지 넣어야함-->
 <th:block th:if="${campground != null}">
     <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
-        <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}" class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
+        <img th:src="${campground.campgroundImages[0].imagePath}"
+             class="card-img-top" alt="캠핑장 사진" style="height: 300px; object-fit: cover;" th:alt="${campground.getCampgroundImages()[0].fileName}">
     </th:block>
 </th:block>
 
@@ -80,6 +81,7 @@
             <thead>
             <tr>
                 <th>캠핑장 객실</th>
+                <th>이미지</th>
                 <th>설명</th>
                 <th>최대 인원</th>
                 <th>총 가격</th>
@@ -88,9 +90,19 @@
             </thead>
             <tbody>
             <tr th:each="campsite : ${campsites}" th:id="'campsite-row-' + ${campsite.id}">
-                <td th:text="${campsite.id}">Campsite ID</td>
-                <td th:text="${campsite.campsiteName}">Campsite Name</td>
+                <td th:text="${campsite.campsiteName}">Campsite 이름</td>
+                <td>
+                    <div th:if="${campsite.campsiteImages != null and !campsite.campsiteImages.isEmpty()}">
+                        <img th:src="${campsite.campsiteImages[0].imagePath}"
+                             th:alt="${campsite.campsiteImages[0].fileName}"
+                             style="width: 100px; height: auto;" /> <!-- 첫 번째 이미지 출력 -->
+                    </div>
+                    <div th:if="${campsite.campsiteImages == null or campsite.campsiteImages.isEmpty()}">
+                        <span>이미지 없음</span> <!-- 이미지가 없을 경우 대체 텍스트 -->
+                    </div>
+                </td>
                 <td th:text="${campsite.campsiteDescription}">Description</td>
+                <td th:text="${campsite.headCount}">head count</td>
                 <td class="total-price" th:text="'총가격 : ' + ${(totalPrices[campsite.id])} + ' 원'">Total Price</td>
                 <td>
                     <!-- 예약 버튼: 예약 가능할 때만 보이도록 설정 -->

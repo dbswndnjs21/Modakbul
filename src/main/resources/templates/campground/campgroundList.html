@@ -39,12 +39,12 @@
             <div th:each="campground : ${campgrounds}" class="col-md-6 mb-3">
                 <div class="card" data-id="${campground.id}">
                     <th:block th:if="${campground != null}">
-                        <th:block th:if="${campground.getCampgroundImages() != null and campground.getCampgroundImages().size() > 0}">
-                            <img th:src="@{/upload/{saveFileName}(saveFileName=${campground.getCampgroundImages()[0].saveFileName})}"
+                        <th:block th:if="${campground.campgroundImages != null and #lists.size(campground.campgroundImages) > 0}">
+                            <img th:src="${campground.campgroundImages[0].imagePath}"
                                  class="card-img-top"
                                  alt="캠핑장 사진"
                                  style="height: 300px; object-fit: cover;"
-                                 th:alt="${campground.getCampgroundImages()[0].fileName}">
+                                 th:alt="${campground.campgroundImages[0].fileName}">
                         </th:block>
                     </th:block>
                     <div class="card-body">

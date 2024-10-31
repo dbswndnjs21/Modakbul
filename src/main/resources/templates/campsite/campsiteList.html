@@ -61,10 +61,10 @@
         <thead>
         <tr>
             <th>번호</th>
-            <th>캠핑장객실 이름</th>
+            <th>이미지</th>
+            <th>캠핑장 객실 이름</th>
             <th>설명</th>
             <th>수용 인원</th>
-<!--            <th>카테고리</th>-->
             <th>가격</th>
             <th>주말가격</th>
             <th>액션</th>
@@ -74,6 +74,16 @@
         <!-- 타임리프를 사용하여 campsite 리스트 반복 출력 -->
         <tr th:each="campsite, iterStat : ${campsites}">
             <td th:text="${iterStat.index + 1}"></td> <!-- 번호 출력 -->
+            <td>
+                <div th:if="${campsite.campsiteImages != null and !campsite.campsiteImages.isEmpty()}">
+                    <img th:src="${campsite.campsiteImages[0].imagePath}"
+                         th:alt="${campsite.campsiteImages[0].fileName}"
+                         style="width: 100px; height: auto;" /> <!-- 첫 번째 이미지 출력 -->
+                </div>
+                <div th:if="${campsite.campsiteImages == null or campsite.campsiteImages.isEmpty()}">
+                    <span>이미지 없음</span> <!-- 이미지가 없을 경우 대체 텍스트 -->
+                </div>
+            </td>
             <td th:text="${campsite.campsiteName}"></td> <!-- 캠프사이트 이름 출력 -->
             <td th:text="${campsite.campsiteDescription}"></td> <!-- 설명 출력 -->
             <td th:text="${campsite.headCount}"></td> <!-- 수용 인원 출력 -->
