@@ -64,9 +64,9 @@ public class CampgroundController {
 
         List<CampsiteDto> campsites = campsiteService.findByCampgroundId(id);
         List<CampsiteDto> bookedCampsites = campsiteService.findBookedCampsitesByCampgroundId(id,checkInDate,checkOutDate);
-
+        CampgroundDto campground = campgroundService.getCampgroundById(id);
         model.addAttribute("bookedCampsites", bookedCampsites); // 예약 가능한 캠프사이트 추가
-        model.addAttribute("campground", campgroundService.getCampgroundById(id));
+        model.addAttribute("campground", campground);
         model.addAttribute("campsites", campsites);
 
         Map<Long, Integer> totalPrices = new HashMap<>();

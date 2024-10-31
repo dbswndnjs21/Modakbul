@@ -40,7 +40,7 @@
                 <div class="card" data-id="${campground.id}">
                     <th:block th:if="${campground != null}">
                         <th:block th:if="${campground.campgroundImages != null and #lists.size(campground.campgroundImages) > 0}">
-                            <img th:src="${campground.campgroundImages[0].imagePath}"
+                            <img th:src="@{${campground.campgroundImages[0].imagePath} + ${campground.campgroundImages[0].saveFileName}}"
                                  class="card-img-top"
                                  alt="캠핑장 사진"
                                  style="height: 300px; object-fit: cover;"
