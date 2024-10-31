@@ -12,6 +12,7 @@ import com.modakbul.repository.campsite.CampsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +27,8 @@ public class CampsiteService {
     private CampsitePriceRepository campsitePriceRepository;
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private CampsiteImageService campsiteImageService;
 
     public List<CampsiteDto> CampsiteListToCampsiteDtoList(List<Campsite> campsites){
         return campsites.stream()
@@ -66,7 +69,7 @@ public class CampsiteService {
     }
 
     // Campsite 저장
-    public CampsiteDto saveCampsite(CampsiteDto campsite) {
+    public CampsiteDto saveCampsite(CampsiteDto campsite, List<MultipartFile> images) {
         Campground campground = new Campground();
         campground.setId(campsite.getCampgroundId());
         Campsite savedCampsite = campsiteRepository.save(campsite.toEntity(campground));
@@ -88,9 +91,10 @@ public class CampsiteService {
                     .campsite(savedCampsite)
                     .price(price)
                     .build();
-
             campsitePriceRepository.save(campsitePrice); // 가격 정보 저장
         }
+        campsiteImageService.saveCampsiteImages(campsite.getId(), images);
+
         CampsiteDto campsiteDto = new CampsiteDto(savedCampsite);
         return campsiteDto;
     }

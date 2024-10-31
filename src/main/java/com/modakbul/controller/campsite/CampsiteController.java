@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -54,12 +55,13 @@ public class CampsiteController {
 
     @PostMapping("/campsite/add")
     public String addCampsite(@ModelAttribute CampsiteDto campsiteDto,
+                              @RequestParam("images")List<MultipartFile> images,
                               @RequestParam("campgroundId") Long campgroundId) {
         CampgroundDto campground = campgroundService.getCampgroundById(campgroundId);
         campsiteDto.setCampgroundId(campground.getId());
 
-        campsiteService.saveCampsite(campsiteDto);
-        return "redirect:/campgrounds";  // 캠프사이트 목록으로 리다이렉트
+        campsiteService.saveCampsite(campsiteDto, images);
+        return "redirect:/campsite/list?campgroundId="+campgroundId;  // 캠프사이트 목록으로 리다이렉트
     }
 
     @GetMapping("/api/campsite/booked")
