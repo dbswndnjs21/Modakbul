@@ -34,6 +34,9 @@ public class ChatRoomController {
 	public String getChatRoom(@PathVariable("campgroundId") Long campgroundId,
 	                           @AuthenticationPrincipal CustomUserDetails member, 
 	                           Model model) {
+		if (member == null) {
+	        return "redirect:/login"; // 로그인 페이지로 리다이렉트
+	    }
 	    Long memberId = member.getId(); // CustomUserDetails에서 사용자 ID를 가져옴
 	    String userId = member.getUsername();
 	    String campgroundName = null;
