@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/member/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/host/**").hasAuthority("HOST")
+                        .requestMatchers("/booking/**").hasAuthority("MEMBER")
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin
