@@ -17,12 +17,6 @@
   <!-- 메인 콘텐츠 영역 -->
   <section class="container my-5">
     <h2 class="text-center mb-4">글쓰기</h2>
-    <!-- 값 확인용 -->
-     <div>
-      <p>Member ID: <span th:text="${memberId}"></span></p>
-      <p>User ID: <span th:text="${userId}"></span></p>
-      <p>Member Name: <span th:text="${member.userName}"></span></p>
-    </div>
     
     <form th:action="@{/freeboard/freeBoardWrite}" method="POST" enctype="multipart/form-data">
       <input type="hidden" name="id" th:value="${memberId}" />
