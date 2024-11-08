@@ -1,4 +1,5 @@
 <header class="header-bg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <img src="/images/header.png" alt="헤더 이미지" class="header-img">
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -6,7 +7,8 @@
         <li class="nav-item"><a class="nav-link" id="home" th:href="@{/}">Modakbul</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/campgrounds}">예약하기</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/freeboard/freeBoardList}">게시판</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/help}">문의하기</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/chat/chatList(campgroundId=1)}">문의내역</a></li>
+        <li th:if="${role != 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/help}">문의하기</a></li>
         <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
         <li th:if="${member != null}">
           <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
