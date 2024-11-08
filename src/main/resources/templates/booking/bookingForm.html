@@ -28,7 +28,7 @@
         <input type="hidden" name="checkOutDate" th:value="${checkOutDate}">
         <input type="hidden" id="campgroundName" name="campgroundName" th:value="${campground.getCampgroundName()}">
         <input type="hidden" id="campsiteName" name="campsiteName" th:value="${campsite.campsiteName}">
-        <input type="text" id="totalPrice" name="totalPrice" th:value="${totalPrice}">
+        <input type="text" id="totalPrice" name="totalPrice"  readonly="readonly" th:value="${totalPrice}">
         <!-- 숨겨진 필드로 쿠폰 사용 여부 전송 -->
         <input type="hidden" id="couponUsed" name="couponUsed" value="N">
 
