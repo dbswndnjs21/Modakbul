@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/host/**").hasAuthority("HOST")
                         .requestMatchers("/booking/**").hasAuthority("MEMBER")
+                        .requestMatchers("/campgrounds/new").hasAuthority("MEMBER")
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin
