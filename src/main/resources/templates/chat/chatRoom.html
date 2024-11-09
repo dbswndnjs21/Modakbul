@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅룸</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/chatRoom.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script> <!-- SockJS 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script> <!-- STOMP 추가 -->
+</head>
+<body>
+    <!-- 헤더 영역 -->
+    <header th:replace="~{fragments/header :: header}"></header>
+
+    <!-- 채팅룸 내용 영역 -->
+    <section class="container my-5">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-3" th:text="'채팅 - ' + ${campgroundName}">채팅룸 제목</h4>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <button class="btn btn-danger btn-sm" id="leave-chat-btn">채팅 나가기</button>
+                    </div>
+                </div>
+            </div>
+			
+            <div class="card-body">
+                <div class="message-section" style="max-height: 400px; overflow-y: auto;">
+                    <div class="message-list">
+                        <!-- 메시지 목록 -->
+                        <th:block th:each="message : ${messages}">
+                            <div class="message" th:class="${message.memberId == memberId} ? 'text-end' : ''">
+                                <strong th:text="${message.userId}"></strong>
+                                <span th:text="${message.content}"></span>
+                                <small class="text-muted" th:text="${#temporals.format(message.createdAt, 'HH:mm:ss')}"></small>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <!-- 메시지 입력 폼 -->
+                <form id="message-form">
+                    <div class="input-group mt-3">
+                        <input type="text" class="form-control" id="message-input" placeholder="메시지를 입력하세요" required>
+                        <button type="submit" class="btn btn-send">전송</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+		
+        <!-- 목록 버튼 추가 -->
+        <div class="text-center my-4">
+            <a th:href="@{/chat/chatList(campgroundId=${chatRoom.campgroundId})}" class="btn btn-chat-list">채팅 리스트</a>
+        </div>
+    </section>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        const chatRoomId = /*[[${chatRoom.id}]]*/ null; 
+        const memberId = /*[[${memberId}]]*/ null; 
+        const userId = /*[[${userId}]]*/ null; 
+        let lastDate = null; 
+        
+        // 현재 프로토콜에 따라 WebSocket URL 생성
+        const protocol = window.location.protocol === "https:" ? "https://" : "http://";
+        const wsUrl = `${protocol}${window.location.host}/chat-websocket`; // SockJS는 http/https 사용
+        console.log("WebSocket URL:", wsUrl); // 디버깅용 로그 추가	
+        
+        // 웹소켓 연결
+        const socket = new SockJS(wsUrl);
+        const stompClient = Stomp.over(socket);
+
+        // 날짜를 추가하기 위한 헬퍼 함수
+        function addDateIfChanged(formattedDate) {
+            if (lastDate !== formattedDate) {
+                $('.message-list').append(`<div class="text-center my-2"><strong>${formattedDate}</strong></div>`);
+                lastDate = formattedDate; // 마지막 날짜 업데이트
+            }
+        }
+
+        // 이전 메시지 가져오기
+        $.get(`/chat/messages/${chatRoomId}`, function(messages) {
+            messages.forEach(function(message) {
+                // 날짜 및 시간 포맷 설정 (YYYY-MM-DD 형식)
+                const createdAt = new Date(message.createdAt);
+                const formattedDate = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0');
+
+                // 날짜가 바뀔 경우 날짜를 표시
+                addDateIfChanged(formattedDate);
+
+                // 메시지와 시간 포맷 설정
+                const messageTime = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0') + ' ' +
+                    String(createdAt.getHours()).padStart(2, '0') + ':' +
+                    String(createdAt.getMinutes()).padStart(2, '0') + ':' +
+                    String(createdAt.getSeconds()).padStart(2, '0');
+
+                const messageElement = `
+                    <div class="message ${message.memberId == memberId ? 'text-end' : ''}">
+                        <strong>${message.userId}</strong>
+                        <small class="text-muted">${messageTime}</small><br>
+                        <span>${message.message}</span>
+                    </div>`;
+                    
+                $('.message-list').append(messageElement);
+            });
+            $('.message-section').scrollTop($('.message-section')[0].scrollHeight); // 스크롤 최하단으로 이동
+        });
+
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (messageOutput) {
+                const message = JSON.parse(messageOutput.body);
+                
+                // 날짜 및 시간 포맷 설정 (YYYY-MM-DD 형식)
+                const createdAt = new Date(message.createdAt);
+                const formattedDate = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0');
+
+                // 날짜가 바뀔 경우 날짜를 표시
+                addDateIfChanged(formattedDate);
+
+                // 메시지와 시간 포맷 설정
+                const messageTime = createdAt.getFullYear() + '-' +
+                    String(createdAt.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(createdAt.getDate()).padStart(2, '0') + ' ' +
+                    String(createdAt.getHours()).padStart(2, '0') + ':' +
+                    String(createdAt.getMinutes()).padStart(2, '0') + ':' +
+                    String(createdAt.getSeconds()).padStart(2, '0');
+
+                const messageElement = `
+                    <div class="message ${message.memberId == memberId ? 'text-end' : ''}">
+                        <strong>${message.userId}</strong>
+                        <small class="text-muted">${messageTime}</small><br>
+                        <span>${message.message}</span>
+                    </div>`;
+                    
+                $('.message-list').append(messageElement);
+                $('.message-section').scrollTop($('.message-section')[0].scrollHeight);
+            });
+        });
+
+        // 메시지 전송
+        $('#message-form').on('submit', function (e) {
+            e.preventDefault();
+            const messageContent = $('#message-input').val();
+            const message = {
+                message: messageContent,   // 메시지 내용
+                memberId: memberId,          // 사용자 ID
+                chatRoomId: chatRoomId     // 채팅방 ID
+            };
+
+            console.log("보내는 메시지:", message); // 디버깅용 로그 추가
+
+            stompClient.send("/app/chat/sendMessage", {}, JSON.stringify(message));
+            $('#message-input').val('');
+        });
+
+        $('#leave-chat-btn').on('click', function () {
+            stompClient.disconnect();
+            window.location.href = '/chat/chatList?campgroundId=1';
+        });
+    });
+</script>
+
+</body>
+</html>

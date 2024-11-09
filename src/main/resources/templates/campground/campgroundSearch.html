@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Campground List</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/freeBoardList.css}">
+  <link rel="stylesheet" th:href="@{/css/footer.css}">
+  <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css' rel='stylesheet' />
+  <link rel="stylesheet" th:href="@{/css/campground/calendar.css}">
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js'></script>
+</head>
+<body>
+<!-- 헤더 영역 -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<!-- 메인 컨텐츠 -->
+<div class="container mt-4">
+  <div class="mb-3 d-flex">
+    <div class="me-2 flex-fill">
+      <label for="locationSelect" class="form-label">지역</label>
+      <select id="locationSelect" class="form-select">
+        <option value="">시도</option>
+        <!-- 옵션들 추가 -->
+      </select>
+    </div>
+
+    <div class="flex-fill">
+      <label for="locationDetailSelect" class="form-label">세부 지역</label>
+      <select id="locationDetailSelect" class="form-select">
+        <option value="">선택하세요</option>
+        <!-- 옵션들 추가 -->
+      </select>
+    </div>
+  </div>
+
+  <form action="/campgrounds/list" method="get" onsubmit="return validateForm();" class="d-flex mb-3">
+    <input type="text" name="query" class="form-control me-2" placeholder="글램핑, 가평" aria-label="Search Campgrounds">
+    <button type="submit" class="btn btn-primary">검색하기</button>
+    <!-- Hidden inputs to hold selected dates -->
+    <input type="hidden" id="checkInDate" name="checkInDate">
+    <input type="hidden" id="checkOutDate" name="checkOutDate">
+    <input type="hidden" id="locationDetailId" name="locationDetailId">
+  </form>
+    <span>체크인 날짜: <span id="checkInDisplay">선택 안됨</span></span>
+    <span>체크아웃 날짜: <span id="checkOutDisplay">선택 안됨</span></span>
+  <button id="toggleButton" class="btn btn-secondary mb-3">보이기</button>
+</div>
+<div id='calendar'></div>
+
+<!-- 푸터 영역 -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<script src="/js/campgroundSearch.js"></script>
+<script src="/js/calendar.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/admin.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+<!-- 사이드바 포함 -->
+<div th:insert="~{admin/fragments/sidebar :: sidebar}"></div>
+
+
+<div class="main-content">
+    <h1>멤버 목록</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>아이디</th>
+            <th>이메일</th>
+            <th>이름</th>
+            <th>전화번호</th>
+            <th>역할</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="members : ${members}">
+            <td th:text="${members.id}"></td>
+            <td th:text="${members.userId}"></td>
+            <td th:text="${members.mail}"></td>
+            <td th:text="${members.userName}"></td>
+            <td th:text="${members.phone}"></td>
+            <td th:text="${members.role}"></td>
+            <td>
+                <form th:action="@{/admin/delete/{id}(id=${members.id})}" method="post">
+                    <input type="hidden" name="_method" value="DELETE"/>
+                    <button type="submit" onclick="return confirm('정말로 이 멤버를 삭제하시겠습니까?');">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h1>캠핑장 승인 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>캠핑장 이름</th>
+            <th>주소</th>
+            <th>전화번호</th>
+            <th>승인 상태</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="camp : ${camp}">
+            <td th:text="${camp.id}"></td>
+            <td>
+                <a th:href="@{/campgrounds/{id}(id=${camp.id}, checkInDate=${today}, checkOutDate=${tomorrow})}"
+                   target="_blank" th:text="${camp.campgroundName}"></a>
+            </td>
+            <td th:text="${camp.address}"></td>
+            <td th:text="${camp.phone}"></td>
+            <td th:text="${camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : '')}"></td>
+            <td>
+                <form th:action="@{/admin/approve/{id}(id=${camp.id})}" method="post" th:if="${camp.approve == 1}" onsubmit="return confirm('이 캠핑장을 승인하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <button type="submit">승인</button>
+                </form>
+                <form th:action="@{/admin/approveCancel/{id}(id=${camp.id})}" method="post" th:if="${camp.approve == 2}" onsubmit="return confirm('이 캠핑장 승인을 취소하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <button type="submit">승인 취소</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+
+
+
+    <hr>
+
+    <h1>자유 게시판 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성 시간</th>
+            <th>수정 시간</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="freeboard : ${freeboard}">
+            <td th:text="${freeboard.id}"></td>
+            <td>
+                <a th:href="@{/freeboard/freeBoardView(id=${freeboard.id})}" target="_blank" th:text="${freeboard.title}"></a>
+            </td>
+            <td th:text="${freeboard.content}"></td>
+            <td th:text="${#temporals.format(freeboard.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(freeboard.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td>
+                <form th:action="@{/admin/freeboard/delete/{id}(id=${freeboard.id})}" method="post" onsubmit="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h1>댓글 목록</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>게시판 ID</th>
+            <th>회원 ID</th>
+            <th>댓글 내용</th>
+            <th>작성 시간</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}"></td>
+            <td>
+                <a th:href="@{/freeboard/freeBoardView(id=${comment.freeboardId})}" target="_blank" th:text="${comment.freeboardId}"></a>
+            </td>
+            <td th:text="${comment.memberId}"></td>
+            <td th:text="${comment.content}"></td>
+            <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+
+            <td>
+                <form th:action="@{/freeboard/freeboardCommentDelete/{commentId}(commentId=${comment.id})}" method="post" onsubmit="return confirm('정말로 이 댓글을 삭제하시겠습니까?');">
+                    <button type="submit">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>

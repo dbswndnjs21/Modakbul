@@ -1,26 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>모닥불</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lc0yWEqAAAAAAAE7SptQSwGfetMv_vXBmpVb-IP"></script>
+    <script>
+        function reCapt() {
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Lc0yWEqAAAAAAAE7SptQSwGfetMv_vXBmpVb-IP', {action: 'submit'}).then(function(token) {
+                    $('#token').val(token);
+                });
+            });
+        }
+    </script>
 </head>
 <body>
-<h2>로그인</h2>
-<form th:action="@{/login}" method="post">
-    <label for="userId">사용자 아이디 : </label>
-    <input type="text" id="userId" name="userId">
-    <br>
-    <label for="password">비밀번호 : </label>
-    <input type="password" id="password" name="password">
-    <br>
-    <button type="submit">로그인</button>
-</form>
+<div class="login-container">
+    <h2>
+     <a th:href="@{/}">모닥불</a>
+    </h2>
+    <form th:action="@{/login}" method="post" onsubmit="reCapt()">
+        <div class="input-group">
+            <label for="userId"></label>
+            <input type="text" id="userId" name="userId" required placeholder="아이디를 입력해주세요.">
+        </div>
+        <div class="input-group">
+            <label for="password"></label>
+            <input type="password" id="password" name="password" required placeholder="비밀번호를 입력해주세요.">
+            <span id="togglePassword" class="toggle-password" title="비밀번호 보기"
+                  onclick="togglePasswordVisibility()">👁️</span>
+        </div>
+        <!-- 로그인 실패 시 메시지 표시 -->
+        <div th:if="${param.error}" class="error-message">
+            아이디나 비밀번호가 옳지 않습니다.
+        </div>
+        <input type="hidden" id="token" name="token" value="">
+        <button type="submit" class="login-button">로그인</button>
+    </form>
 
-<h2>로그인 옵션</h2>
-<li><a th:href="@{/oauth2/authorization/kakao}">카카오 로그인</a></li>
-<li><a th:href="@{/oauth2/authorization/naver}">네이버 로그인</a></li>
-<li><a th:href="@{/oauth2/authorization/google}">구글 로그인</a></li>
+    <button type="button" class="join-button" th:attr="data-href=@{/joinCheck}"
+            onclick="location.href=this.getAttribute('data-href')">회원가입
+    </button>
+    <a th:href="@{/login/search}" class="search">아이디/비밀번호 찾기</a>
+
+    <div class="sns-login-box">
+        <h3>SNS 간편 로그인</h3>
+        <ul class="social-login">
+            <li>
+                <a th:href="@{/oauth2/authorization/kakao}" alt="카카오 로그인" class="social-icon">
+                    <img src="/images/kakaoLogin.png" height="70" width="70">
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/oauth2/authorization/naver}" alt="네이버 로그인" class="social-icon">
+                    <img src="/images/naverLogin.png" height="70" width="70">
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/oauth2/authorization/google}" alt="구글 로그인" class="social-icon">
+                    <img src="/images/googleLogin.png" height="70" width="70">
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // 비밀번호 표시/숨기기 기능
+    function togglePasswordVisibility() {
+        const inputField = document.getElementById('password');
+        const icon = document.getElementById('togglePassword');
+
+        if (inputField.type === "password") {
+            inputField.type = "text"; // 비밀번호 표시
+            icon.textContent = "🙈"; // 아이콘 변경 (숨기기)
+        } else {
+            inputField.type = "password"; // 비밀번호 숨기기
+            icon.textContent = "👁️"; // 아이콘 변경 (보기)
+        }
+    }
+</script>
 </body>
-</html>
 </html>

@@ -1,0 +1,112 @@
+@charset "UTF-8";
+@font-face {
+  font-family: 'HakgyoansimDunggeunmisoTTF-B';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-B.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+.header-bg {
+  background: url('/images/12123.png') no-repeat center center;
+  background-size: cover; /* 이미지를 헤더 영역에 맞춰서 크기 조정 */
+  color: white;
+  text-align: center;
+  border-radius: 0 0 20px 20px;
+  min-height: 400px; /* 최소 높이 설정 */
+  position: relative; /* 자식 요소의 절대 위치를 위한 기준 */
+}
+
+.header-img {
+  width: 100%;
+}
+
+/* 네비게이션 바 스타일 */
+.navbar {
+  background-color: white; /* 불투명 배경 설정 */
+  z-index: 1000; /* 다른 요소보다 위에 표시 */
+  position: sticky;
+  top : 0;
+  width: 100%;
+  height: auto; /* 높이 자동 조정 */
+  padding: 10px 0; /* 적당한 패딩 설정 */
+  margin : 0;
+}
+
+.navbar a {
+  color: black;
+}
+
+.nav-link {
+  font-family: 'Lora', sans-serif;
+  font-size: 15px;
+  position: relative;
+  color: black;
+  text-decoration: none; /* 기본 밑줄 제거 */
+  transition: color 0.3s ease; /* 글씨색 변환 애니메이션 */
+}
+#home{
+  font-family: 'HakgyoansimDunggeunmisoTTF-B';
+  font-size: 40px;
+  position: absolute;
+  left: 20px; /* 화면의 왼쪽 끝에 배치 */
+  padding-left: 20px; /* 적당한 좌측 패딩 추가 */
+  bottom: -10px;
+}
+
+.navbar-brand {
+  padding-left: 300px;
+  font-family: 'Lora', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700; /* Bold 폰트 */
+  color: black;
+}
+
+.navbar-brand:hover {
+  color: black;
+}
+
+.nav-link:hover {
+  color: black; /* 커서 올렸을 때도 글씨는 검정으로 유지 */
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px; /* 글씨와 밑줄 사이 간격 조정 */
+  height: 3px; /* 밑줄 두께 */
+  background-color: orange; /* 밑줄 색상 */
+  transform: scaleX(0); /* 처음에는 안 보이게 설정 */
+  transform-origin: right; /* 오른쪽에서 왼쪽으로 나타나게 설정 */
+  transition: transform 0.3s ease; /* 애니메이션 설정 */
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1); /* hover 시에 밑줄 표시 */
+  transform-origin: left; /* 왼쪽에서 오른쪽으로 나타나게 설정 */
+}
+
+.header-bg h1 {
+  font-size: 4rem;
+  margin: 20px 0; /* 상하 간격 설정 */
+}
+
+.header-bg p {
+  font-size: 1.5rem;
+}
+
+#join-btn{
+  background-color: orange; /* 주황색 배경 */
+  color: white; /* 글씨는 흰색으로 설정 */
+  bottom: -3px;
+  padding: 5px 10px; /* 패딩 추가 */
+  border-radius: 5px; /* 모서리를 둥글게 */
+  font-weight: bold; /* 글씨 굵게 */
+  transition: background-color 0.3s ease; /* 배경색 전환 애니메이션 */
+}
+#join-btn:hover{
+  background-color: darkorange; /* 호버 시 더 진한 주황색 */
+  color: white; /* 호버 시 글씨 색 유지 */
+}
+

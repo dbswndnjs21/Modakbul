@@ -1,7 +1,7 @@
 package com.modakbul.config;
 
 import com.modakbul.security.CustomUserDetailsService;
-import com.modakbul.service.OAuth2UserService;
+import com.modakbul.service.member.OAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +30,11 @@ public class SecurityConfig {
         http
                 .csrf(csrfConfigurer -> csrfConfigurer.disable())
                 .authorizeRequests(authz -> authz
-                        .requestMatchers("/member/**").authenticated() //이거때문인가? ㄴㄴ 그거 내가 /member/login를 permitAll 줬는데도 그럤어
+                        .requestMatchers("/member/**").authenticated()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/host/**").hasAuthority("HOST")
+                        .requestMatchers("/booking/**").hasAuthority("MEMBER")
+                        .requestMatchers("/campgrounds/new").hasAnyAuthority("MEMBER", "HOST")
                         .anyRequest().permitAll()
                 )
                 .formLogin(formLogin -> formLogin
@@ -39,6 +42,7 @@ public class SecurityConfig {
                         .usernameParameter("userId") //
                         .loginProcessingUrl("/login")//
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logoutConfig -> logoutConfig.logoutSuccessUrl("/"))

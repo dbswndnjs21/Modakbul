@@ -1,32 +1,27 @@
 <header class="header-bg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <img src="/images/header.png" alt="헤더 이미지" class="header-img">
   <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}">모닥불</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" th:href="@{/}">홈</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/}">예약하기</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/board/boardlist}">게시판</a></li>
-          <li class="nav-item"><a class="nav-link" th:href="@{/}">문의하기</a></li>
-            <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">회원 로그인</a></li>
-            <li th:if="${member != null}">
-                <span th:text="${member.userName} + '님 반갑습니다!'"></span>
-                <form th:action="@{/logout}" method="post">
-                    <input type="submit" value="로그아웃">
-                </form>
-            </li>
-
-    	  <li class="nav-item"><a class="nav-link" th:href="@{/join}">회원가입</a></li>
-          
-        </ul>
-      </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" id="home" th:href="@{/}">Modakbul</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/campgrounds}">예약하기</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/freeboard/freeBoardList}">게시판</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/chat/chatList(campgroundId=1)}">문의내역</a></li>
+        <li th:if="${role != 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/help}">문의하기</a></li>
+        <li th:if="${member == null}"><a class="nav-link" th:href="@{/login}">로그인</a></li>
+        <li th:if="${member != null}">
+          <span th:text="${member.userName} + '님 반갑습니다!'" class="nav-link"></span>
+        <li th:if="${member != null}"><a class="nav-link" th:href="@{/logout}">로그아웃</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/admin}">관리자페이지</a></li>
+        <li th:if="${role == 'HOST'}" class="nav-item"><a class="nav-link" th:href="@{/host}">호스트페이지</a></li>
+        <li th:if="${role == 'MEMBER'}"class="nav-item"><a class="nav-link" th:href="@{/join/host}">호스트전환</a></li>
+        <li th:if="${role == 'MEMBER' }"class="nav-item"><a class="nav-link" th:href="@{/mypage}">마이페이지</a></li>
+        <li th:if="${member == null}" class="nav-item"><a class="nav-link" id="join-btn" th:href="@{/joinCheck}">회원가입</a></li>
+        <li th:if="${role == 'ADMIN'}" class="nav-item"><a class="nav-link" th:href="@{/order/kakaoForm}">결제 테스트</a></li>
+        <li th:if="${role == 'ADMIN'}"  class="nav-item"><a class="nav-link" th:href="@{/iamport}">아이포트 테스트</a></li>
+      </ul>
+    </div>
     </div>
   </nav>
-  <h1>자연 속에서의 휴식</h1>
-  <p>당신만의 완벽한 캠핑 경험을 찾아보세요</p>
-  <a th:href="@{/reservation}" class="btn btn-success btn-lg">지금 예약하기</a>
 </header>
-

@@ -1,6 +1,8 @@
 package com.modakbul.security;
 
-import com.modakbul.entity.Member;
+import com.modakbul.entity.member.Member;
+import com.modakbul.entity.payment.Membership;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 public class CustomUserDetails implements UserDetails, OAuth2User {
 
+    @Getter
     private Member member;
     private Map<String, Object> attributes;  // OAuth2User의 속성
 
@@ -42,9 +45,23 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     public String getUsername() {
         return member.getUserId();
     }
-
+    
+    public Long getId() {
+    	return member.getId();
+    }
+    
     public String getUserName() {
         return member.getUserName();
+    }
+    public String getRole(){
+        return member.getRole();
+    }
+    public Membership getMembership(){
+        return member.getMembership();
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     // OAuth2User 메서드 구현
@@ -57,4 +74,6 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
     public String getName() {
         return member.getUserName(); // OAuth2User의 getName()은 회원 이름 반환
     }
+
+
 }

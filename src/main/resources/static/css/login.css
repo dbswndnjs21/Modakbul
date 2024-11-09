@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+h2 a {
+    color: black; /* 기본 색상 검정으로 설정 */
+    text-decoration: none; /* 밑줄 제거 */
+    font-weight: bold; /* 두께 설정 */
+}
+
+h2 a:hover {
+    color: black; /* 호버 시에도 검정색 유지 */
+}
+
+.input-group {
+    width: 278px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff7f50; /* 주황색 */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px; /* 폰트 크기 조정 (필요에 따라) */
+}
+
+.login-button:hover {
+    background-color: #ff6347; /* 버튼 호버 색상 */
+}
+
+.join-button {
+    border: black;
+    width: 100%;
+    padding: 10px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+}
+
+.sns-login-box {
+    border: 1px solid #ccc; /* 테두리 추가 */
+    border-radius: 5px; /* 테두리 모서리 둥글게 */
+    padding: 10px; /* 내부 여백 */
+    margin-top: 20px; /* 로그인 폼과 간격 추가 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.social-login {
+    display: flex; /* Flexbox 사용 */
+    justify-content: space-around; /* 아이템들 사이에 균등한 간격 추가 */
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0; /* 위 아래 여백 추가 */
+}
+
+.social-login li {
+    margin: 0;
+}
+
+.social-icon {
+    display: inline-block;
+    width: 50px; /* 아이콘 크기 */
+    height: 50px; /* 아이콘 크기 */
+    border-radius: 50%; /* 원형 */
+    background-color: #f0f2f5; /* 배경색 (필요에 따라 조정) */
+    padding: 10px;
+    transition: background-color 0.3s; /* 배경색 변화 애니메이션 */
+}
+
+.social-icon:hover {
+    background-color: #e0e0e0; /* 호버 시 배경색 변화 */
+}
+
+.social-icon img {
+    width: 100%; /* 아이콘 이미지 크기 */
+    height: auto; /* 비율 유지 */
+}
+
+.search {
+    text-align: right;
+    color: black; /* 기본 색상 */
+    text-decoration: none; /* 밑줄 제거 */
+    font-size: 12px;
+    font-weight: bold;
+}
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px; /* 아이콘 크기 조절 */
+}
+.error-message {
+    color: red; /* 빨간색으로 오류 메시지 색상 설정 */
+    margin-top: 10px; /* 버튼과 간격을 설정 */
+    margin-bottom: 20px; /* 메시지와 다음 요소 간격 설정 */
+    text-align: center; /* 메시지 중앙 정렬 */
+}
+
+

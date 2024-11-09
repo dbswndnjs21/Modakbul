@@ -1,0 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    border: 1px solid #b3afaf;
+}
+
+h1 {
+    font-size: 36px;  /* 기본 글자 크기 */
+    margin: 0;        /* 기본 마진 제거 */
+    color: black;     /* 기본 글자 색상 */
+    text-decoration: none; /* 링크의 밑줄 제거 (링크로 사용될 경우) */
+    transition: none; /* 호버 시 변화 없음 */
+}
+
+h1:hover {
+    color: black; /* 호버 시 색상 변화 없음 */
+    font-size: 36px; /* 호버 시 글자 크기 변화 없음 */
+}
+.social-icons {
+    display: flex; /* 가로로 배치 */
+    justify-content: center; /* 가운데 정렬 */
+    gap: 20px; /* 아이콘 간의 간격 */
+    margin: 20px 0; /* 상하 여백 */
+}
+.social-icon img {
+    width: 50px; /* 너비 조정 */
+    height: 50px; /* 높이 조정 */
+    transition: transform 0.3s; /* 호버 시 변환 효과 */
+}
+
+.social-icon:hover img {
+    transform: scale(1.1); /* 호버 시 아이콘 크기 증가 */
+}
+
+p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+a {
+    color: black; /* 기본 링크 색상 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+}
+
+a:hover {
+    color: black; /* 호버 시 색상 유지 */
+}
+
+a:visited {
+    color: black; /* 방문한 링크 색상 유지 */
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.email {
+    background-color: orange; /* 이메일 색상 */
+}
+
+.btn {
+    border: 1px solid #fa8558;
+    width: 225px;
+    display: inline-block; /* 버튼처럼 보이도록 설정 */
+    padding: 15px 30px; /* 여백 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    background-color: #ffa77f; /* 배경색 */
+    color: white; /* 글자색 */
+    font-size: 16px; /* 글자 크기 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    text-decoration: none; /* 밑줄 제거 */
+    transition: background-color 0.3s; /* 배경색 변화 효과 */
+}
+
+.btn:hover {
+    background-color: #fa8558; /* 호버 시 배경색 변화 */
+}

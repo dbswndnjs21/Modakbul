@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" th:href="@{/css/myPage.css}">
+</head>
+<body>
+<div class="container">
+    <!-- 사이드바 -->
+    <div th:insert="~{mypage/fragments/sidebar :: sidebar}"></div>
+
+
+    <!-- 메인 콘텐츠 -->
+    <section class="main-content">
+        <header>
+            <h1>환영합니다, <span th:text="${member.userName}">사용자</span>님!</h1>
+        </header>
+
+
+
+    </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>캠핑장 목록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/host/host.css}">
+</head>
+<body>
+<!-- 사이드바 포함 -->
+<div th:replace="host/fragments/sidebar :: sidebar"></div>
+
+<div class="main-content">
+    <h1>캠핑장 목록</h1>
+    <a class="add-btn" href="/campgrounds/add">캠핑장 추가하기</a>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>캠핑장 이름</th>
+            <th>주소</th>
+            <th>전화번호</th>
+            <th>승인 상태</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- campgroundsByHostId 리스트를 순회하며 각 캠핑장 정보를 출력 -->
+        <tr th:each="camp, iterStat : ${campground}" th:if="${iterStat.index < 10}">
+            <td th:text="${camp.id}"></td>
+            <td th:text="${camp.campgroundName}"></td>
+            <td th:text="${camp.address}"></td>
+            <td th:text="${camp.phone}"></td>
+            <td th:text="${camp.approve == 0 ? '수정중' : (camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : ''))}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

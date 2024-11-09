@@ -1,0 +1,97 @@
+/* join.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f3f4f6; /* 부드러운 배경색 */
+    color: #333; /* 기본 텍스트 색상 */
+    text-align: center;
+    margin: 0;
+    padding: 50px;
+}
+
+.container {
+    background-color: #ffffff; /* 흰색 배경 */
+    border-radius: 10px; /* 둥근 모서리 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+    padding: 40px;
+    max-width: 500px; /* 최대 너비 설정 */
+    margin: auto; /* 중앙 정렬 */
+}
+
+h1 {
+    font-size: 2em; /* 크게 표시 */
+    margin-bottom: 20px; /* 아래쪽 여백 */
+}
+
+.form-group {
+    margin-bottom: 20px; /* 각 입력 필드 간의 여백 */
+    text-align: left; /* 레이블 정렬 */
+}
+
+label {
+    display: block; /* 블록 요소로 설정 */
+    margin-bottom: 5px; /* 아래쪽 여백 */
+    font-weight: bold; /* 굵게 표시 */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%; /* 너비 100% */
+    padding: 10px; /* 안쪽 여백 */
+    border: 1px solid #ccc; /* 테두리 */
+    border-radius: 5px; /* 둥근 테두리 */
+    transition: border-color 0.3s; /* 테두리 색상 변경 효과 */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #ff7f50; /* 포커스 시 테두리 색상 변경 */
+    outline: none; /* 기본 아웃라인 제거 */
+}
+
+button {
+    background-color: #ff7f50; /* 버튼 배경색 */
+    color: white; /* 버튼 텍스트 색상 */
+    padding: 10px 15px; /* 버튼 안쪽 여백 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 둥근 테두리 */
+    cursor: pointer; /* 커서 모양 변경 */
+    font-size: 1.1em; /* 버튼 텍스트 크기 */
+    transition: background-color 0.3s; /* 배경색 변경 효과 */
+}
+
+button:hover {
+    background-color: #ff6347; /* 호버 시 배경색 변경 */
+}
+
+p {
+    margin-top: 20px; /* 위쪽 여백 */
+}
+
+a {
+    color: #ff7f50; /* 링크 색상 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+a:hover {
+    color: #ff7f50; /* 호버 시에도 같은 색상 */
+    text-decoration: none; /* 호버 시에도 밑줄 제거 */
+}
+.validation-message {
+    color: red;
+}
+.valid-message {
+    color: green;
+}
+.eye-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.form-group {
+    position: relative;
+}

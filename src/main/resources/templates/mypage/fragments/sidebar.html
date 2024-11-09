@@ -1,0 +1,26 @@
+<!-- templates/mypage/fragments/sidebar.html -->
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="profile">
+        <a href="/" class="profile-button">
+            <img src="/images/1.png" alt="프로필 이미지">
+        </a>
+        <h2 th:text="${member.userName}"></h2>
+
+        <h2 th:text="'회원님의 등급은' + ${membership}  +'입니다. '" ></h2>
+
+
+
+
+
+    </div>
+    <nav class="menu">
+        <ul>
+            <li><a href="/mypage">마이 페이지</a></li>
+            <li><a th:href="@{/chat/chatList}">채팅 목록</a></li>
+            <li><a href="/mypage/reservations">예약 내역</a></li>
+            <li><a href="/mypage/coupon">쿠폰</a></li>
+            <li><a href="/mypage/checkPasswordPage">회원 정보 수정</a></li> <!-- 비밀번호 확인 페이지로 링크 변경 -->
+            <li><a href="/logout">로그아웃</a></li>
+        </ul>
+    </nav>
+</aside>

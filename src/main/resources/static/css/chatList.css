@@ -1,0 +1,101 @@
+@charset "UTF-8";
+
+/* 전체 페이지 스타일 */
+body {
+    background-color: rgba(255, 255, 255, 0.95);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+}
+
+/* 컨테이너 */
+.container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+}
+
+/* 제목 스타일 */
+h3 {
+    color: #ff7f50; /* 주황빛 텍스트 */
+    margin-bottom: 20px; /* 아래쪽 여백 */
+}
+
+/* 채팅방 리스트 */
+.list-group {
+    width: 100%; /* 전체 너비 사용 */
+    max-width: 600px; /* 최대 너비 설정 */
+}
+
+/* 채팅방 카드 */
+.list-group-item {
+    border: 2px solid #ff7f50; /* 주황빛 테두리 */
+    border-radius: 10px; /* 카드 모서리 둥글게 */
+    background-color: #ffffff; /* 카드 배경 흰색 */
+    margin: 10px 0; /* 카드 간의 간격 */
+    transition: background-color 0.3s; /* 배경색 전환 효과 */
+}
+
+.list-group-item:hover {
+    background-color: rgba(255, 127, 80, 0.1); /* 호버 시 배경색 변경 */
+}
+
+/* 채팅방 링크 */
+.list-group-item a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: #333; /* 기본 텍스트 색상 */
+    display: block; /* 블록 요소로 만들어 클릭 가능 영역 증가 */
+    padding: 10px; /* 내부 여백 */
+}
+
+/* 채팅방 링크 텍스트 */
+.list-group-item a:hover {
+    color: #ff7f50; /* 호버 시 텍스트 색상 변경 */
+}
+
+@media (max-width: 600px) {
+    .list-group {
+        max-width: 100%; /* 작은 화면에서 최대 너비를 100%로 설정 */
+    }
+
+    .list-group-item {
+        margin: 5px 0; /* 카드 간격 줄이기 */
+    }
+}
+
+/* 페이지 네비게이션 스타일 */
+.pagination {
+    margin-top: 20px; /* 위쪽 여백 */
+}
+
+.pagination .page-item {
+    margin: 0 5px; /* 각 페이지 아이템 간의 간격 */
+}
+
+.pagination .page-link {
+    border-radius: 5px; /* 둥근 모서리 */
+    border: 1px solid #ff7f50; /* 주황빛 테두리 */
+    color: #ff7f50; /* 주황빛 텍스트 */
+    transition: background-color 0.3s, color 0.3s; /* 배경색과 텍스트 색상 전환 효과 */
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(255, 127, 80, 0.2); /* 호버 시 배경색 */
+    color: #ffffff; /* 호버 시 텍스트 색상 */
+}
+
+.pagination .active .page-link {
+    background-color: #ff7f50; /* 현재 페이지 색상 */
+    color: #ffffff; /* 현재 페이지 텍스트 색상 */
+}
+
+.pagination .disabled .page-link {
+    color: #cccccc; /* 비활성 페이지 색상 */
+    pointer-events: none; /* 클릭 불가능 설정 */
+}
+
+/* 작은 화면에서 페이지 네비게이션 스타일 */
+@media (max-width: 600px) {
+    .pagination {
+        flex-wrap: wrap; /* 작은 화면에서 줄 바꿈 */
+    }
+}

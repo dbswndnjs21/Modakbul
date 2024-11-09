@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>캠핑장 목록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/campGround.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+<!-- 사이드바 포함 -->
+<div th:insert="~{admin/fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+    <h1>캠핑장 승인 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>캠핑장 이름</th>
+            <th>주소</th>
+            <th>전화번호</th>
+            <th>승인 상태</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="camp : ${camp}" th:if="${camp.approve != 0}">
+            <td th:text="${camp.id}"></td>
+            <td>
+                <a th:href="@{/campgrounds/{id}(id=${camp.id}, checkInDate=${today}, checkOutDate=${tomorrow})}" target="_blank" th:text="${camp.campgroundName}"></a>
+            </td>
+            <td th:text="${camp.address}"></td>
+            <td th:text="${camp.phone}"></td>
+            <td th:text="${camp.approve == 1 ? '신청중' : (camp.approve == 2 ? '승인됨' : '')}"></td>
+            <td>
+                <form th:action="@{/admin/approve/{id}(id=${camp.id})}" method="post" onsubmit="return confirm('이 캠핑장을 승인하시겠습니까?');">
+                    <input type="hidden" name="_method" value="POST"/> <!-- 필요한 경우 -->
+                    <button type="submit" th:if="${camp.approve == 1}">승인</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+</body>
+</html>

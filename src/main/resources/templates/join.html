@@ -1,71 +1,234 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{/css/join.css}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
 </head>
 <body>
-<button id="join1">회원가입</button> <button id="join2">관리자가입</button>
+<div class="container">
 
-<div id="memberjoin">
-    <h1>회원 가입</h1>
-    <form th:action="@{/join}" method="post">
-        <label for="userName1">이름:</label>
-        <input type="text" id="userName1" name="userName" required>
-        <br>
-        <label for="userId1">사용자 ID:</label>
-        <input type="text" id="userId1" name="userId" required>
-        <br>
-        <label for="password1">비밀번호:</label>
-        <input type="password" id="password1" name="password" required>
-        <br>
-        <label for="phone1">전화번호:</label>
-        <input type="text" id="phone1" name="phone" required>
-        <br>
-        <label for="mail1">이메일:</label>
-        <input type="email" id="mail1" name="mail" required>
-        <br>
-        <input type="hidden" name="role" value="MEMBER">
-        <button type="submit">가입</button>
-    </form>
-</div>
+    <div id="memberjoin">
+        <h1>
+        <a th:href="@{/}">모닥불</a>
+        </h1>
+        <h3>회원가입</h3>
+        <form id="memberJoinForm" th:action="@{/join}" method="post">
+            <div class="form-group">
+                <label for="userName1">이름*</label>
+                <input type="text" id="userName1" name="userName" required placeholder="이름을 입력해 주세요.">
+            </div>
+            <div class="form-group">
+                <label for="userId1">ID*</label>
+                <input type="text" id="userId1" name="userId" required placeholder="ID를 입력해 주세요.">
+                <span id="userIdCheckMessage" class="validation-message"></span>
+            </div>
+            <div class="form-group">
+                <label for="password1">비밀번호*</label>
+                <input type="password" id="password1" name="password" required placeholder="비밀번호를 입력해 주세요.(8자리 이상 20자리 미만)">
+                <span id="passwordValidationMessage" class="validation-message"></span>
+                <span class="eye-icon" id="togglePassword1" title="비밀번호 보기">👁️</span>
+            </div>
+            <div class="form-group">
+                <label for="password2">비밀번호 확인*</label>
+                <input type="password" id="password2" name="passwordConfirm" required placeholder="비밀번호를 다시 입력해 주세요.">
+                <span id="passwordMatchMessage" class="validation-message"></span>
+                <span class="eye-icon" id="togglePassword2" title="비밀번호 보기">👁️</span>
+            </div>
+            <div class="form-group">
+                <label for="phone1">전화번호*</label>
+                <input type="text" id="phone1" name="phone" required placeholder="전화번호를 입력해 주세요.">
+            </div>
+            <div class="form-group">
+                <label for="mail1">이메일*</label>
+                <input type="email" id="mail1" name="mail" required placeholder="이메일을 입력해 주세요.">
+                <button type="button" id="sendAuthCode">인증 코드 발송</button>
+                <span id="emailCheckMessage" class="validation-message"></span>
+            </div>
+            <div class="form-group" id="authCodeGroup" style="display: none;">
+                <label for="authCode">인증 코드:</label>
+                <input type="text" id="authCode" name="authCode" required>
+                <button type="button" id="verifyAuthCode">인증 코드 확인</button>
+                <div id="timer" style="color: red; font-weight: bold;"></div>
+                <span id="authCodeCheckMessage" class="validation-message"></span>
+            </div>
 
-<div id="adminjoin">
-    <h1>관리자 가입</h1>
-    <form th:action="@{/join}" method="post">
-        <label for="userName2">이름:</label>
-        <input type="text" id="userName2" name="userName" required>
-        <br>
-        <label for="userId2">사용자 ID:</label>
-        <input type="text" id="userId2" name="userId" required>
-        <br>
-        <label for="password2">비밀번호:</label>
-        <input type="password" id="password2" name="password" required>
-        <br>
-        <label for="phone2">전화번호:</label>
-        <input type="text" id="phone2" name="phone" required>
-        <br>
-        <label for="mail2">이메일:</label>
-        <input type="email" id="mail2" name="mail" required>
-        <br>
-        <input type="hidden" name="role" value="ADMIN">
-        <button type="submit">가입</button>
-    </form>
+            <input type="hidden" name="role" value="MEMBER">
+            <button type="button" id="joinButton">가입</button>
+        </form>
+    </div>
 </div>
 
 <script type="text/javascript">
-    $(function (){
-        $("#memberjoin").hide();
-        $("#adminjoin").hide();
-        $("#join1").click(function () {
-            $("#memberjoin").show();
-            $("#adminjoin").hide();
+    let timerInterval;
+    let timeLeft = 180;
+    let isEmailVerified = false;
+
+    $(function () {
+        $("#userId1").on("input", function () {
+            const userId = $(this).val();
+            if (userId) {
+                $.ajax({
+                    url: '/checkUserId',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ userId: userId }),
+                    success: function (response) {
+                        if (response === "사용 가능") {
+                            $("#userIdCheckMessage").text("사용 가능한 ID입니다.").css("color", "green");
+                        } else {
+                            $("#userIdCheckMessage").text("이미 사용 중인 ID입니다.").css("color", "red");
+                        }
+                    },
+                    error: function () {
+                        $("#userIdCheckMessage").text("ID 확인 중 오류가 발생했습니다.");
+                    }
+                });
+            } else {
+                $("#userIdCheckMessage").text("");
+            }
         });
-        $("#join2").click(function () {
-            $("#memberjoin").hide();
-            $("#adminjoin").show();
+
+        $("#mail1").on("input", function () {
+            const email = $(this).val();
+            if (email) {
+                $.ajax({
+                    url: '/checkEmail',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email }),
+                    success: function (response) {
+                        if (response === "사용 가능") {
+                            $("#emailCheckMessage").text("사용 가능한 이메일입니다.").css("color", "green");
+                        } else {
+                            $("#emailCheckMessage").text("이미 사용 중인 이메일입니다.").css("color", "red");
+                        }
+                    },
+                    error: function () {
+                        $("#emailCheckMessage").text("이메일 확인 중 오류가 발생했습니다.");
+                    }
+                });
+            } else {
+                $("#emailCheckMessage").text("");
+            }
+        });
+
+        $("#password1, #password2").on("input", function () {
+            const password = $("#password1").val();
+            const passwordConfirm = $("#password2").val();
+            if (password.length < 8 || password.length > 20) {
+                $("#passwordValidationMessage").text("비밀번호는 8자리 이상 20자리 미만이어야 합니다.");
+            } else {
+                $("#passwordValidationMessage").text("");
+            }
+
+            if (password !== passwordConfirm) {
+                $("#passwordMatchMessage").text("비밀번호가 일치하지 않습니다.");
+            } else {
+                $("#passwordMatchMessage").text("비밀번호가 일치합니다.").css("color", "green");
+            }
+        });
+
+        $("#sendAuthCode").click(function () {
+            const email = $("#mail1").val();
+
+            if (validateEmail(email)) {
+                $.ajax({
+                    url: '/emailCheck',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email }),
+                    success: function () {
+                        alert('인증 코드가 이메일로 전송되었습니다.');
+                        startTimer();
+                        $("#authCodeGroup").show();
+                    },
+                    error: function () {
+                        alert('메일 발송 중 오류가 발생했습니다.');
+                    }
+                });
+            } else {
+                alert('유효하지 않은 이메일입니다. 다시 입력해 주세요.');
+            }
+        });
+        $("#verifyAuthCode").click(function () {
+            const authCode = $("#authCode").val();
+            const email = $("#mail1").val();
+
+            if (authCode) {
+                $.ajax({
+                    url: '/verifyAuthCode',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ email: email, authCode: authCode }),
+                    success: function (response) {
+                        if (response === "인증 성공") {
+                            $("#authCodeCheckMessage").text("인증이 완료되었습니다.").css("color", "green");
+                            isEmailVerified = true;
+                            clearInterval(timerInterval); // 타이머 종료
+                            $("#timer").text(""); // 타이머 제거
+                        } else {
+                            $("#authCodeCheckMessage").text("인증 코드가 일치하지 않습니다.").css("color", "red");
+                        }
+                    },
+                    error: function () {
+                        $("#authCodeCheckMessage").text("인증 코드 확인 중 오류가 발생했습니다.").css("color", "red");
+                    }
+                });
+            } else {
+                alert('인증 코드를 입력해 주세요.');
+            }
+        });
+
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 180;
+            $("#timer").text("남은 시간: 3:00");
+
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                $("#timer").text("남은 시간: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds);
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    $("#timer").text("인증 시간이 만료되었습니다.");
+                    alert("인증 시간이 만료되었습니다. 인증번호를 다시 요청하세요.");
+                }
+            }, 1000);
+        }
+
+        function validateEmail(email) {
+            const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return regex.test(email);
+        }
+
+        $("#joinButton").click(function () {
+            if (!isEmailVerified) {
+                alert("이메일 인증이 필요합니다.");
+                return;
+            }
+            $("#memberJoinForm").submit();
+        });
+
+        $("#togglePassword1").click(function () {
+            const passwordField = $("#password1");
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+            $(this).text(type === "password" ? "👁️" : "🙈");
+        });
+
+        $("#togglePassword2").click(function () {
+            const passwordField = $("#password2");
+            const type = passwordField.attr("type") === "password" ? "text" : "password";
+            passwordField.attr("type", type);
+            $(this).text(type === "password" ? "👁️" : "🙈");
         });
     });
 </script>

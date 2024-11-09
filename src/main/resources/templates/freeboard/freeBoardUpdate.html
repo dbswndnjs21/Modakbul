@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글쓰기 - 모닥불 게시판</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/freeBoardWrite.css}">
+<link rel="stylesheet" th:href="@{/css/footer.css}">
+
+</head>
+<body>
+	<!-- 헤더 영역 -->
+	<header th:replace="~{fragments/header :: header}"></header>
+
+	<!-- 메인 콘텐츠 영역 -->
+	<section class="container my-5">
+		<h2 class="text-center mb-4">글수정</h2>
+		<!-- 값 확인용 -->
+		
+
+		<form th:action="@{/freeboard/freeBoardUpdate}" method="POST"
+			enctype="multipart/form-data">
+			<input type="hidden" name="id" th:value="${board.Id}" /> <input
+				type="hidden" name="removedImages" id="removedImages" />
+
+			<div class="mb-3">
+				<label for="title" class="form-label">제목</label> <input type="text"
+					id="title" name="title" th:value="${board.title}"
+					class="form-control" required>
+			</div>
+			<div class="mb-3">
+				<label for="content" class="form-label">내용</label>
+				<textarea id="content" name="content" class="form-control" rows="5"
+					required>[[${board.content}]]</textarea>
+			</div>
+			<div class="mb-3">
+				<label for="images" class="form-label">사진 업로드</label> <input
+					type="file" id="files" name="files" class="form-control"
+					accept="image/*" multiple onchange="previewImages()">
+			</div>
+			<!-- 이미지 미리보기 영역 -->
+			<div id="preview" class="d-flex flex-wrap">
+				<div th:each="image : ${board.images}" class="preview-container">
+					<img th:if="${board.images != null and board.images.size() > 0}"
+						th:src="${image.imagePath}" alt="미리보기 이미지"
+						th:alt="${image.fileName}" />
+					<button type="button" class="remove-btn"
+						th:data-image-name="${image.saveFileName}"
+						onclick="removeImage(this)">X</button>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-success w-100">등록</button>
+		</form>
+		<div class="text-center mt-3">
+			<a th:href="@{/freeboard/freeBoardList}" class="btn btn-secondary">취소</a>
+		</div>
+	</section>
+
+	<!-- 푸터 영역 -->
+	<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		// 삭제된 이미지 파일명을 저장할 배열
+		var removedImagesArray = [];
+
+		function previewImages() {
+			var preview = document.getElementById('preview');
+			var files = document.getElementById('files').files;
+
+			// 새로운 미리보기 이미지 추가
+			for (var i = 0; i < files.length; i++) {
+				(function(fileIndex) {
+					var file = files[fileIndex];
+					var reader = new FileReader();
+
+					reader.onload = function(e) {
+						// 이미지 컨테이너 생성
+						var container = document.createElement('div');
+						container.className = 'preview-container';
+
+						// 이미지 엘리먼트 생성
+						var img = document.createElement('img');
+						img.src = e.target.result;
+						img.alt = '미리보기 이미지';
+
+						// 삭제 버튼 생성
+						var removeBtn = document.createElement('button');
+						removeBtn.className = 'remove-btn';
+						removeBtn.innerHTML = 'X';
+						removeBtn.onclick = function() {
+							removeImage(this, ''); // 기존에는 삭제할 파일명 필요 없음
+							container.remove(); // 클릭 시 해당 미리보기 이미지 삭제
+						};
+
+						// 컨테이너에 이미지와 삭제 버튼 추가
+						container.appendChild(img);
+						container.appendChild(removeBtn);
+						preview.appendChild(container);
+					};
+
+					reader.readAsDataURL(file); // 파일을 Data URL로 읽어 들임
+				})(i);
+			}
+		}
+
+		// 이미지 삭제 시 호출되는 함수
+		function removeImage(button) {
+			var imageName = button.getAttribute('data-image-name'); // data-image-name에서 이미지 파일명 가져오기
+			console.log("삭제할 이미지: " + imageName); // 삭제할 이미지 파일명 확인
+
+			// 이미지 미리보기 제거
+			button.parentElement.remove();
+
+			// 삭제된 이미지 파일명을 배열에 추가
+			removedImagesArray.push(imageName);
+
+			// hidden input에 배열 값을 업데이트
+			document.getElementById('removedImages').value = removedImagesArray
+					.join(',');
+		}
+	</script>
+</body>
+</html>

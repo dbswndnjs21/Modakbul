@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>자유 게시판 관리</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/freeBoard.css}">
+</head>
+<body>
+<!-- 사이드바 포함 -->
+<div th:insert="~{admin/fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+    <h1>자유 게시판 관리</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성 시간</th>
+            <th>수정 시간</th>
+            <th>작업</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="freeboard, iterStat : ${freeboard}" th:if="${iterStat.index < 10}">
+            <td th:text="${freeboard.id}"></td>
+            <td>
+                <a th:href="@{/freeboard/freeBoardView(id=${freeboard.id})}" target="-_blank"
+                   th:text="${freeboard.title}"></a>
+            </td>
+            <td th:text="${freeboard.content}"></td>
+            <td th:text="${freeboard.createdAt}"></td>
+            <td th:text="${freeboard.updatedAt}"></td>
+            <td>
+                <form th:action="@{/admin/freeboard/delete/{id}(id=${freeboard.id})}" method="post">
+                    <input type="hidden" name="_method" value="delete">
+                    <button type="submit" onclick="return confirm('정말로 이 게시글을 삭제하시겠습니까?');">삭제</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

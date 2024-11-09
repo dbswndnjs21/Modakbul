@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        // 카카오페이 결제 팝업창 연결
+        $(function() {
+            $("#btn-pay-ready").click(function(e) {
+                e.preventDefault();
+
+                // 주문번호 생성
+                const orderNumber = createOrderNum();
+
+                let data = {
+                    name: '아이폰 16 pro',    // 카카오페이에 보낼 대표 상품명
+                    totalPrice: 10000,        // 총 결제금액
+                    orderNumber: orderNumber    // 생성한 주문번호 추가
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/order/pay/ready',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        location.href = response.next_redirect_pc_url;
+                    }
+                });
+            });
+        });
+
+        $(function() {
+            $('#cancelPaymentButton').on('click', function() {
+                var orderNumber = document.getElementById("orderNumber").value
+                console.log(orderNumber)
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/order/pay/cancel',
+                    data: { orderNumber: orderNumber },
+                    success: function(response) {
+                        // 서버에서 반환한 URL로 리다이렉트
+                        console.log("결제 취소 정보:", response);
+                        $('#responseDiv').html('<p>결제 취소 정보: ' + JSON.stringify(response) + '</p>');
+
+                        // response로 받은 url로 이동
+                        // window.location.href = response;
+                    },
+                    error: function(xhr, status, error) {
+                        // 오류 처리
+                        console.error("결제 취소 중 오류 발생:", error);
+                        alert("결제 취소에 실패했습니다.");
+                    }
+                });
+            });
+        });
+
+        // 주문번호 생성 함수
+        function createOrderNum() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 두 자리 포맷
+            const day = String(date.getDate()).padStart(2, '0'); // 두 자리 포맷
+            let orderNum = `${year}${month}${day}`;
+
+            for (let i = 0; i < 5; i++) {
+                orderNum += Math.floor(Math.random() * 10); // 0부터 9까지 랜덤 숫자 추가
+            }
+
+            return orderNum;
+        }
+    </script>
+</head>
+<body>
+<h1>카카오페이 결제</h1>
+<button id="btn-pay-ready">결제 준비하기</button><br>
+<button id="cancelPaymentButton">결제 취소</button>
+<form>
+    예약번호 <input type="text" name="orderNumber" id="orderNumber">
+</form>
+<div id="responseDiv" style="margin-top: 20px;"></div> <!-- AJAX 응답을 보여줄 div -->
+</body>
+</html>
