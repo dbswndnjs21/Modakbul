@@ -69,4 +69,8 @@ public class Member {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "membership_id") // 외래 키로 사용할 membership_id
     private Membership membership; // Membership 엔티티와의 관계 설정
+
+    public Member(String userId) {
+        this.userId = userId;
+    }
 }
