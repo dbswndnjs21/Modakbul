@@ -1,5 +1,6 @@
 package com.modakbul.service.member;
 
+import com.modakbul.service.redis.RedisService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -19,29 +20,8 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
     private static final String senderEmail = "modakbul192@gmail.com";
-    private static final Map<String, AuthCode> authCodeMap = new HashMap<>(); // 이메일과 인증 코드 저장
+    private final RedisService redisService;
 
-    public class AuthCode {
-        private String code;
-        private LocalDateTime sentTime;
-
-        public AuthCode(String code) {
-            this.code = code;
-            this.sentTime = LocalDateTime.now();
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public LocalDateTime getSentTime() {
-            return sentTime;
-        }
-
-        public boolean isExpired() {
-            return LocalDateTime.now().isAfter(sentTime.plusMinutes(3)); // 3분 후 만료
-        }
-    }
 
     public String createNumber() {
         Random random = new Random();
@@ -95,7 +75,6 @@ public class MailService {
     public void sendResetPasswordEmail(String recipientEmail) throws MessagingException {
         String resetLink = "https://modakbul.shop/resetPassword?email=" + recipientEmail; // 비밀번호 재설정 링크
         MimeMessage message = createResetPasswordMail(recipientEmail, resetLink);
-
         try {
             javaMailSender.send(message);
         } catch (MailException e) {
@@ -136,7 +115,7 @@ public class MailService {
         MimeMessage message = createMail(sendEmail, number);
         try {
             javaMailSender.send(message);
-            authCodeMap.put(sendEmail, new AuthCode(number)); // 인증 코드와 발송 시간 저장
+            redisService.setCode(sendEmail, number); // Redis에 인증 코드 저장
         } catch (MailException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("메일 발송 중 오류가 발생했습니다.");
@@ -145,13 +124,10 @@ public class MailService {
 
     // 인증 코드 검증
     public boolean verifyAuthCode(String email, String inputAuthCode) {
-        AuthCode authCode = authCodeMap.get(email);
-        if (authCode != null) {
-            if (!authCode.isExpired() && authCode.getCode().equals(inputAuthCode)) {
-                authCodeMap.remove(email); // 인증 성공 후 삭제
-                return true;
-            }
+        String storedCode = redisService.getCode(email);
+        if (storedCode != null && storedCode.equals(inputAuthCode)) {
+            return true;
         }
-        return false; // 실패
+        return false;
     }
 }
