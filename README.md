@@ -14,3 +14,6 @@
 
 ### Infra
 ![인프라](https://github.com/aflyingmole/image/blob/main/infra.png)
+
+### ERD
+![erd](https://github.com/aflyingmole/image/blob/main/모닥불.png)
