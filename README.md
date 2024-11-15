@@ -1,3 +1,6 @@
+<p align="center">
+    <img src="https://github.com/aflyingmole/image/blob/main/fire.png" alt="pick-git-logo" width="220" height="220">
+</p>
 <div align="center">
   🔥 캠핑장 예약 플랫폼, <br>
   <a href="https://modakbul.shop">모닥불(modakbul)</a>
