@@ -21,3 +21,7 @@
 
 ### ERD
 ![erd](https://github.com/aflyingmole/image/blob/main/모닥불.png)
+
+
+## 메인화면
+![main](https://github.com/aflyingmole/image/blob/main/main.png)
