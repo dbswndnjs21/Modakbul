@@ -55,7 +55,7 @@ jobs:
           echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
           echo "FILE_PATH=${{ secrets.FILE_PATH }}" >> .env
           echo "APP_BASE_URL=${{ secrets.APP_BASE_URL }}" >> .env
-          echo "AWS_DEFAULT_REGION=us-east-1 >> .env
+          echo "AWS_DEFAULT_REGION=us-east-1" >> .env
 
       # 5. EC2로 빌드 파일 및 .env 파일 전송
       - name: Deploy to EC2
