@@ -38,6 +38,8 @@ jobs:
           # SSH 설정
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          env:
+            EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           chmod 600 ~/.ssh/id_rsa
 
           # EC2에 빌드 파일 전송
