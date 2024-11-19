@@ -22,6 +22,9 @@ jobs:
           distribution: 'temurin'
 
       # 3. Gradle 빌드 (테스트 코드 실행 제외)
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew  # gradlew에 실행 권한 추가
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
