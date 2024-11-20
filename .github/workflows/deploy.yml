@@ -83,7 +83,6 @@ jobs:
 
           # .env 파일을 읽고 애플리케이션 실행
           export $(cat /home/ubuntu/app/.env | xargs) # 환경 변수 로드
-          nohup java -jar /home/ubuntu/app/app.jar &
-          exit
+          nohup java -jar /home/ubuntu/app/app.jar
 
           EOF
