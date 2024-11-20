@@ -13,7 +13,7 @@
 
 
 
-## 🛠 Tech Stacks
+## 🛠 Tech Stacks 
 
 ### Frontend
 ![프론트](https://github.com/aflyingmole/image/blob/main/front.png)
