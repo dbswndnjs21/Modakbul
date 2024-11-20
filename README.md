@@ -27,6 +27,9 @@
 ### ERD
 ![erd](https://github.com/aflyingmole/image/blob/main/모닥불.png)
 
+### CI / CD 아키텍쳐
+![cicd](https://github.com/aflyingmole/image/blob/main/cicd.png)
+
 
 ## 메인화면
 ![main](https://github.com/aflyingmole/image/blob/main/main.png)
