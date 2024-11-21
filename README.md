@@ -22,7 +22,7 @@
 ![백엔드](https://github.com/aflyingmole/image/blob/main/back.png)
 
 ### Infra
-![인프라](https://github.com/aflyingmole/image/blob/main/infra.png)
+![인프라](https://github.com/aflyingmole/image/blob/main/infra3.png)
 
 ### ERD
 ![erd](https://github.com/aflyingmole/image/blob/main/모닥불.png)
